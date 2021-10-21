@@ -23,7 +23,7 @@ import com.ly.chatcompose.ui.theme.ChatComposeTheme
 import com.ly.chatcompose.ui.theme.elevatedSurface
 
 @Composable
-fun AppBar(
+fun CAppBar(
     modifier: Modifier = Modifier,
     onNavIconPress: () -> Unit = {},
     title: @Composable RowScope.() -> Unit,
@@ -62,7 +62,7 @@ fun AppBar(
 @Preview
 @Composable
 fun AppBarPreview() {
-    AppBar(title = {
+    CAppBar(title = {
         Text(text = "Preview")
     })
 
@@ -72,7 +72,7 @@ fun AppBarPreview() {
 @Composable
 fun AppBarPreviewDark() {
     ChatComposeTheme(true) {
-        AppBar(title = {
+        CAppBar(title = {
             Text(text = "Preview")
         })
     }
