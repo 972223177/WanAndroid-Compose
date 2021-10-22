@@ -21,7 +21,7 @@ import com.ly.chatcompose.conversation.ConversationUiState
 import com.ly.chatcompose.conversation.Message
 
 
-private val initialMessages = listOf(
+ val initialMessages = listOf(
     Message(
         "me",
         "Check it out!",
