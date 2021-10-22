@@ -18,12 +18,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.statusBarsHeight
 import com.ly.chatcompose.R
+import com.ly.chatcompose.ValueSetter
+import com.ly.chatcompose.VoidCallback
 import com.ly.chatcompose.data.colleagueProfile
 import com.ly.chatcompose.data.meProfile
 import com.ly.chatcompose.ui.theme.ChatComposeTheme
 
 @Composable
-fun ColumnScope.CDrawer(onProfileClicked: (String) -> Unit, onChatClicked: (String) -> Unit) {
+fun ColumnScope.CDrawer(onProfileClicked: ValueSetter<String>, onChatClicked: ValueSetter<String>) {
     Spacer(modifier = Modifier.statusBarsHeight())
     DrawerHeader()
     Divider()
@@ -72,7 +74,7 @@ private fun DrawerItemHeader(text: String) {
 }
 
 @Composable
-private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit) {
+private fun ChatItem(text: String, selected: Boolean, onChatClicked: VoidCallback) {
     val background = if (selected) {
         Modifier.background(MaterialTheme.colors.primary.copy(alpha = 0.08f))
     } else {
@@ -110,7 +112,7 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
 }
 
 @Composable
-private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileClicked: () -> Unit) {
+private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileClicked: VoidCallback) {
     Row(
         modifier = Modifier
             .height(48.dp)

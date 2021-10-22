@@ -18,16 +18,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ly.chatcompose.ComposableExtCallback
 import com.ly.chatcompose.R
+import com.ly.chatcompose.VoidCallback
 import com.ly.chatcompose.ui.theme.ChatComposeTheme
 import com.ly.chatcompose.ui.theme.elevatedSurface
 
 @Composable
 fun CAppBar(
     modifier: Modifier = Modifier,
-    onNavIconPress: () -> Unit = {},
-    title: @Composable RowScope.() -> Unit,
-    actions: @Composable RowScope.() -> Unit = {},
+    onNavIconPress: VoidCallback = {},
+    title: ComposableExtCallback<RowScope>,
+    actions: ComposableExtCallback<RowScope> = {},
 ) {
     val backgroundColor = MaterialTheme.colors.elevatedSurface(elevation = 3.dp)
     Column(Modifier.background(backgroundColor.copy(alpha = 0.95f))) {

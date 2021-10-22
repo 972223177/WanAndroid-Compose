@@ -1,12 +1,9 @@
 package com.ly.chatcompose.components
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
@@ -20,17 +17,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.VectorPainter
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ly.chatcompose.ComposableCallback
+import com.ly.chatcompose.ValueGetter
 import com.ly.chatcompose.ui.theme.ChatComposeTheme
 import kotlin.math.roundToInt
 
 @Composable
 fun AnimatingFabContent(
-    icon: @Composable () -> Unit,
-    text: @Composable () -> Unit,
+    icon: ComposableCallback,
+    text: ComposableCallback,
     modifier: Modifier = Modifier,
     extended: Boolean = true
 ) {
@@ -80,10 +78,10 @@ fun AnimatingFabContent(
 
 @Composable
 private fun IconAndTextRow(
-    icon: @Composable () -> Unit,
-    text: @Composable () -> Unit,
-    opacityProgress: () -> Float,
-    widthProgress: () -> Float,
+    icon: ComposableCallback,
+    text: ComposableCallback,
+    opacityProgress: ValueGetter<Float>,
+    widthProgress: ValueGetter<Float>,
     modifier: Modifier
 ) {
     Layout(content = {
@@ -123,9 +121,9 @@ private const val transitionDuration = 200
 @Composable
 fun AnimFabContentPre() {
     ChatComposeTheme {
-        Surface() {
+        Surface {
             Scaffold {
-                Box {
+                Box(Modifier.fillMaxSize()) {
                     var collapsed by remember {
                         mutableStateOf(false)
                     }
@@ -147,12 +145,14 @@ fun AnimFabContentPre() {
                             )
                         },
                         text = {
-                            Text(text = "Message")
+                            Text(text = "Message", color = Color.White)
                         },
                         extended = !collapsed,
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .padding(end = 16.dp, bottom = 16.dp)
+                            .height(45.dp)
+                            .background(Color.Cyan)
                     )
                 }
             }

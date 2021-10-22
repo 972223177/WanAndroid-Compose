@@ -7,14 +7,16 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.ly.chatcompose.ComposableCallback1
+import com.ly.chatcompose.ValueSetter
 import com.ly.chatcompose.ui.theme.ChatComposeTheme
 
 @Composable
 fun CScaffold(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
-    onProfileClicked: (String) -> Unit,
-    onChatClicked: (String) -> Unit,
-    content: @Composable (PaddingValues) -> Unit
+    onProfileClicked: ValueSetter<String>,
+    onChatClicked: ValueSetter<String>,
+    content: ComposableCallback1<PaddingValues>
 ) {
     ChatComposeTheme {
         Scaffold(
