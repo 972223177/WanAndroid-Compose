@@ -2,19 +2,40 @@ package com.ly.chatcompose.conversation
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.focusTarget
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.SemanticsPropertyKey
+import androidx.compose.ui.semantics.SemanticsPropertyReceiver
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ly.chatcompose.FunctionalityNotAvailablePopup
+import com.ly.chatcompose.R
 import com.ly.chatcompose.ValueSetter
 import com.ly.chatcompose.VoidCallback
 import com.ly.chatcompose.ui.theme.ChatComposeTheme
+import com.ly.chatcompose.ui.theme.compositedOnSurface
+import com.ly.chatcompose.ui.theme.elevatedSurface
 
 enum class InputSelector {
     NONE, MAP, DM, EMOJI, PHONE, PICTURE
@@ -25,13 +46,198 @@ enum class EmojiStickerSelector {
 }
 
 @Composable
+fun UserInput(
+    onMessageSend: ValueSetter<String>,
+    modifier: Modifier = Modifier,
+    resetScroll: VoidCallback = {}
+) {
+    var currentInputSelector by rememberSaveable {
+        mutableStateOf(InputSelector.NONE)
+    }
+    val dismissKeyboard = {
+        currentInputSelector = InputSelector.NONE
+    }
+
+    if (currentInputSelector != InputSelector.NONE) {
+        BackPressHandler(onBackPressed = dismissKeyboard)
+    }
+
+    var textState by remember {
+        mutableStateOf(TextFieldValue())
+    }
+
+    var textFieldFocusState by remember {
+        mutableStateOf(false)
+    }
+    Column(modifier = modifier) {
+        Divider()
+        UserInputText(
+            onTextChanged = { textState = it },
+            textFieldValue = textState,
+            keyboardShown = currentInputSelector == InputSelector.NONE && textFieldFocusState,
+            onTextFieldFocused = { focused ->
+                if (focused) {
+                    currentInputSelector = InputSelector.NONE
+                    resetScroll()
+                }
+                textFieldFocusState = focused
+            },
+            focusState = textFieldFocusState
+        )
+
+    }
+
+}
+
+val KeyboardShownKey = SemanticsPropertyKey<Boolean>("KeyboardShownKey")
+var SemanticsPropertyReceiver.keyboardShownProperty by KeyboardShownKey
+
+@Composable
+private fun UserInputText(
+    keyboardType: KeyboardType = KeyboardType.Text,
+    onTextChanged: (TextFieldValue) -> Unit,
+    textFieldValue: TextFieldValue,
+    keyboardShown: Boolean,
+    onTextFieldFocused: (Boolean) -> Unit,
+    focusState: Boolean
+) {
+    val a11yLabel = stringResource(id = R.string.textfield_desc)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(48.dp)
+            .semantics {
+                contentDescription = a11yLabel
+                keyboardShownProperty = keyboardShown
+            },
+        horizontalArrangement = Arrangement.End
+    ) {
+        Surface {
+            Box(
+                modifier = Modifier
+                    .height(48.dp)
+                    .weight(1f)
+                    .align(Alignment.Bottom)
+            ) {
+                var lastFocusState by remember { mutableStateOf(false) }
+                BasicTextField(
+                    value = textFieldValue,
+                    onValueChange = { onTextChanged(it) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                        .align(Alignment.CenterStart)
+                        .onFocusChanged { state ->
+                            if (lastFocusState != state.isFocused) {
+                                onTextFieldFocused(state.isFocused)
+                            }
+                            lastFocusState = state.isFocused
+                        },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = keyboardType,
+                        imeAction = ImeAction.Send
+                    ),
+                    maxLines = 1,
+                    cursorBrush = SolidColor(LocalContentColor.current),
+                    textStyle = LocalTextStyle.current.copy(color = LocalContentColor.current)
+                )
+
+                val disableContentColor =
+                    MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+                if (textFieldValue.text.isEmpty() && !focusState) {
+                    Text(
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(start = 16.dp),
+                        text = stringResource(id = R.string.textfield_hint),
+                        style = MaterialTheme.typography.body1.copy(color = disableContentColor)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun EmojiSelector(onTextAdded: ValueSetter<String>, focusRequester: FocusRequester) {
+    var selected by remember {
+        mutableStateOf(EmojiStickerSelector.EMOJI)
+    }
+    val a11yLabel = stringResource(id = R.string.emoji_selector_desc)
+    Column(modifier = Modifier
+        .focusRequester(focusRequester)
+        .focusTarget()
+        .semantics { contentDescription = a11yLabel }) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp)
+        ) {
+            ExtendedSelectorInnerButton(
+                text = stringResource(id = R.string.emojis_label),
+                onClick = {
+                    selected = EmojiStickerSelector.EMOJI
+                },
+                selected = true,
+                modifier = Modifier.weight(1f)
+            )
+            ExtendedSelectorInnerButton(
+                text = stringResource(id = R.string.stickers_label),
+                onClick = {
+                    selected = EmojiStickerSelector.STICKER
+                },
+                selected = false,
+                modifier = Modifier.weight(1f)
+            )
+        }
+        Row(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            EmojiTable(onTextAdded = onTextAdded, modifier = Modifier.padding(8.dp))
+        }
+    }
+    if (selected == EmojiStickerSelector.STICKER) {
+        FunctionalityNotAvailablePopup {
+            selected = EmojiStickerSelector.EMOJI
+        }
+    }
+}
+
+@Composable
+fun getSelectorExpandedColor(): Color {
+    return if (MaterialTheme.colors.isLight) {
+        MaterialTheme.colors.compositedOnSurface(alpha = 0.04f)
+    } else {
+        MaterialTheme.colors.elevatedSurface(elevation = 8.dp)
+    }
+}
+
+@Composable
 fun ExtendedSelectorInnerButton(
     text: String,
     onClick: VoidCallback,
     selected: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val colors = ButtonDefaults.buttonColors()
+    val colors =
+        ButtonDefaults.buttonColors(
+            backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = 0.08f),
+            disabledBackgroundColor = getSelectorExpandedColor(),
+            contentColor = MaterialTheme.colors.onSurface,
+            disabledContentColor = MaterialTheme.colors.onSurface.copy(alpha = 0.74f)
+        )
+    TextButton(
+        onClick = onClick,
+        modifier = modifier
+            .padding(horizontal = 8.dp, vertical = 8.dp)
+            .height(30.dp),
+        shape = MaterialTheme.shapes.medium,
+        enabled = selected,
+        colors = colors,
+        contentPadding = PaddingValues(0.dp)
+    ) {
+        Text(
+            text = text, style = MaterialTheme.typography.subtitle2
+        )
+    }
 }
 
 @Composable
@@ -56,6 +262,41 @@ fun EmojiTable(onTextAdded: ValueSetter<String>, modifier: Modifier = Modifier) 
                     )
                 }
             }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun UserInputPre() {
+    ChatComposeTheme {
+        Surface {
+            UserInput(onMessageSend = {
+
+            })
+        }
+    }
+}
+
+@Preview
+@Composable
+fun EmojiSelectorPre() {
+    ChatComposeTheme {
+        Surface {
+            val requester by remember {
+                mutableStateOf(FocusRequester())
+            }
+            EmojiSelector(onTextAdded = {}, focusRequester = requester)
+        }
+    }
+}
+
+@Preview
+@Composable
+fun ExtendedSelectorInnerButtonPre() {
+    ChatComposeTheme {
+        Surface {
+            ExtendedSelectorInnerButton(text = "Extended", onClick = {}, selected = true)
         }
     }
 }
