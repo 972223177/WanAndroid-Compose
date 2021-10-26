@@ -1,5 +1,8 @@
 package com.ly.chatcompose.conversation
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -7,6 +10,8 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -17,11 +22,14 @@ import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -45,6 +53,7 @@ enum class EmojiStickerSelector {
     EMOJI, STICKER
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun UserInput(
     onMessageSend: ValueSetter<String>,
@@ -84,9 +93,196 @@ fun UserInput(
             },
             focusState = textFieldFocusState
         )
+        UserInputSelector(
+            onSelectorChange = { currentInputSelector = it },
+            sendMessageEnabled = textState.text.isNotBlank(),
+            onMessageSent = {
+                onMessageSend(textState.text)
+                textState = TextFieldValue()
+                resetScroll()
+                dismissKeyboard()
+            },
+            currentInputSelector = currentInputSelector
+        )
+        SelectorExpanded(
+            currentSelector = currentInputSelector,
+            onCloseRequested = dismissKeyboard,
+            onTextAdded = { textState = textState.addText(it) },
+        )
 
     }
 
+}
+
+private fun TextFieldValue.addText(newString: String): TextFieldValue {
+    val newText = text.replaceRange(this.selection.start, this.selection.end, newString)
+    val newSelection = TextRange(start = newText.length, end = newText.length)
+    return copy(text = newText, selection = newSelection)
+}
+
+@ExperimentalAnimationApi
+@Composable
+fun SelectorExpanded(
+    currentSelector: InputSelector,
+    onCloseRequested: VoidCallback,
+    onTextAdded: ValueSetter<String>
+) {
+    if (currentSelector == InputSelector.NONE) return
+    val focusRequester = FocusRequester()
+    SideEffect {
+        if (currentSelector == InputSelector.EMOJI) {
+            focusRequester.requestFocus()
+        }
+    }
+    val selectorExpandedColor = getSelectorExpandedColor()
+    Surface(color = selectorExpandedColor, elevation = 3.dp) {
+        when (currentSelector) {
+            InputSelector.MAP -> FunctionalityNotAvailablePanel()
+            InputSelector.DM -> NotAvailablePopup(onCloseRequested)
+            InputSelector.EMOJI -> EmojiSelector(
+                onTextAdded = onTextAdded,
+                focusRequester = focusRequester
+            )
+            InputSelector.PHONE -> FunctionalityNotAvailablePanel()
+            InputSelector.PICTURE -> FunctionalityNotAvailablePanel()
+            else -> throw  NotImplementedError()
+        }
+    }
+}
+
+@ExperimentalAnimationApi
+@Composable
+fun FunctionalityNotAvailablePanel() {
+    AnimatedVisibility(
+        visibleState = remember {
+            MutableTransitionState(false).apply { targetState = false }
+        },
+        enter = expandHorizontally() + fadeIn(),
+        exit = shrinkHorizontally() + fadeOut()
+    ) {
+        Column(
+            modifier = Modifier
+                .height(320.dp)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(id = R.string.not_available),
+                style = MaterialTheme.typography.subtitle1
+            )
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                Text(
+                    text = stringResource(id = R.string.not_available_subtitle),
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.paddingFrom(FirstBaseline, before = 32.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun UserInputSelector(
+    onSelectorChange: ValueSetter<InputSelector>,
+    sendMessageEnabled: Boolean,
+    onMessageSent: VoidCallback,
+    currentInputSelector: InputSelector,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .height(56.dp)
+            .wrapContentHeight()
+            .padding(horizontal = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        InputSelectorButton(
+            onClick = { onSelectorChange(InputSelector.EMOJI) },
+            icon = Icons.Outlined.Mood,
+            description = stringResource(id = R.string.emoji_selector_bt_desc),
+            selected = currentInputSelector == InputSelector.EMOJI
+        )
+        InputSelectorButton(
+            onClick = { onSelectorChange(InputSelector.DM) },
+            icon = Icons.Outlined.AlternateEmail,
+            description = stringResource(id = R.string.dm_desc),
+            selected = currentInputSelector == InputSelector.DM
+        )
+        InputSelectorButton(
+            onClick = { onSelectorChange(InputSelector.PICTURE) },
+            icon = Icons.Outlined.InsertPhoto,
+            description = stringResource(id = R.string.attach_photo_desc),
+            selected = currentInputSelector == InputSelector.PICTURE
+        )
+        InputSelectorButton(
+            onClick = { onSelectorChange(InputSelector.MAP) },
+            icon = Icons.Outlined.Place,
+            description = stringResource(id = R.string.map_selector_desc),
+            selected = currentInputSelector == InputSelector.MAP
+        )
+        InputSelectorButton(
+            onClick = { onSelectorChange(InputSelector.PHONE) },
+            icon = Icons.Outlined.Duo,
+            description = stringResource(
+                id = R.string.videochat_desc
+            ),
+            selected = currentInputSelector == InputSelector.PHONE
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        val border = if (!sendMessageEnabled) {
+            BorderStroke(width = 1.dp, color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f))
+        } else {
+            null
+        }
+        val disabledContentColor =
+            MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
+        val buttonColors = ButtonDefaults.buttonColors(
+            disabledBackgroundColor = MaterialTheme.colors.surface,
+            disabledContentColor = disabledContentColor
+        )
+        Button(
+            onClick = onMessageSent,
+            enabled = sendMessageEnabled,
+            modifier = Modifier.padding(horizontal = 16.dp),
+            colors = buttonColors,
+            contentPadding = PaddingValues(0.dp),
+            border = border
+        ) {
+            Text(
+                text = stringResource(id = R.string.send),
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+    }
+
+}
+
+@Composable
+fun InputSelectorButton(
+    onClick: VoidCallback,
+    icon: ImageVector,
+    description: String,
+    selected: Boolean
+) {
+    IconButton(onClick = onClick) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+            val tint = if (selected) MaterialTheme.colors.primary else LocalContentColor.current
+            Icon(
+                imageVector = icon,
+                contentDescription = description,
+                tint = tint,
+                modifier = Modifier
+                    .padding(12.dp)
+                    .size(20.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun NotAvailablePopup(onDismissed: VoidCallback) {
+    FunctionalityNotAvailablePopup(onDismissed)
 }
 
 val KeyboardShownKey = SemanticsPropertyKey<Boolean>("KeyboardShownKey")
@@ -195,7 +391,7 @@ fun EmojiSelector(onTextAdded: ValueSetter<String>, focusRequester: FocusRequest
         }
     }
     if (selected == EmojiStickerSelector.STICKER) {
-        FunctionalityNotAvailablePopup {
+        NotAvailablePopup {
             selected = EmojiStickerSelector.EMOJI
         }
     }
@@ -266,14 +462,13 @@ fun EmojiTable(onTextAdded: ValueSetter<String>, modifier: Modifier = Modifier) 
     }
 }
 
+@ExperimentalAnimationApi
 @Preview
 @Composable
 fun UserInputPre() {
     ChatComposeTheme {
         Surface {
-            UserInput(onMessageSend = {
-
-            })
+            UserInput(onMessageSend = {})
         }
     }
 }
