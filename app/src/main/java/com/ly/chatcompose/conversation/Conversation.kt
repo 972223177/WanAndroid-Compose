@@ -1,5 +1,6 @@
 package com.ly.chatcompose.conversation
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.border
@@ -33,7 +34,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.insets.statusBarsPadding
 import com.ly.chatcompose.FunctionalityNotAvailablePopup
 import com.ly.chatcompose.R
 import com.ly.chatcompose.ValueSetter
@@ -44,6 +47,48 @@ import com.ly.chatcompose.ui.theme.ChatComposeTheme
 import com.ly.chatcompose.ui.theme.elevatedSurface
 import kotlinx.coroutines.launch
 
+@ExperimentalAnimationApi
+@Composable
+fun ConversationContent(
+    uiState: ConversationUiState,
+    navigateToProfile: ValueSetter<String>,
+    modifier: Modifier = Modifier,
+    onNavIconPressed: VoidCallback = {}
+) {
+    val authorMe = stringResource(id = R.string.author_me)
+    val timeNow = stringResource(id = R.string.now)
+    val scrollState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    Surface(modifier = modifier) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(Modifier.fillMaxSize()) {
+                Messages(
+                    messages = uiState.messages,
+                    navigateToProfile = navigateToProfile,
+                    scrollState = scrollState,
+                    modifier = Modifier.weight(1f)
+                )
+                UserInput(
+                    onMessageSend = { content ->
+                        uiState.addMessage(Message(authorMe, content, timeNow))
+                    },
+                    resetScroll = {
+                        scope.launch {
+                            scrollState.scrollToItem(0)
+                        }
+                    },
+                    modifier = Modifier.navigationBarsWithImePadding(),
+                )
+            }
+            ChannelNameBar(
+                channelName = uiState.channelName,
+                channelMembers = uiState.channelMembers,
+                onNavIconPressed = onNavIconPressed,
+                modifier = Modifier.statusBarsPadding()
+            )
+        }
+    }
+}
 
 @Composable
 fun ChannelNameBar(
@@ -84,7 +129,7 @@ fun ChannelNameBar(
             )
             Icon(
                 imageVector = Icons.Outlined.Info,
-                contentDescription = "info",
+                contentDescription = stringResource(id = R.string.info),
                 modifier = Modifier
                     .clickable {
                         functionalityNotAvailablePopupShown = true
@@ -99,7 +144,7 @@ fun ChannelNameBar(
 @Composable
 fun Messages(
     messages: List<Message>,
-    navigateTopProfile: ValueSetter<String>,
+    navigateToProfile: ValueSetter<String>,
     scrollState: LazyListState,
     modifier: Modifier = Modifier
 ) {
@@ -132,7 +177,7 @@ fun Messages(
                 }
                 item {
                     Message(
-                        onAuthorClick = { navigateTopProfile(it) },
+                        onAuthorClick = { navigateToProfile(it) },
                         msg = content,
                         isUserMe = content.author == authorMe,
                         isFirstMessageByAuthor = isFirstMessageByAuthor,
@@ -346,7 +391,7 @@ fun ClickableMessage() {
         Surface {
             Column {
                 val scrollState = rememberLazyListState()
-                Messages(messages = initialMessages, navigateTopProfile = {
+                Messages(messages = initialMessages, navigateToProfile = {
 
                 }, scrollState = scrollState)
             }

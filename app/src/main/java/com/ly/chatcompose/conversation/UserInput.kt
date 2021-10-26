@@ -155,7 +155,7 @@ fun SelectorExpanded(
 fun FunctionalityNotAvailablePanel() {
     AnimatedVisibility(
         visibleState = remember {
-            MutableTransitionState(false).apply { targetState = false }
+            MutableTransitionState(false).apply { targetState = true }
         },
         enter = expandHorizontally() + fadeIn(),
         exit = shrinkHorizontally() + fadeOut()
