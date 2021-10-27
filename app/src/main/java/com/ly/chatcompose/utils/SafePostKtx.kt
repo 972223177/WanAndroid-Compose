@@ -1,6 +1,8 @@
 package com.ly.chatcompose.utils
 
+import android.view.View
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.*
@@ -56,4 +58,47 @@ inline fun CoroutineScope.launchOnMain(millis: Long = 0L, crossinline block: () 
             block()
         }
     }
+}
+
+/**
+ * 自动移除callback，需要手动传lifecycleOwner
+ */
+fun View?.safePost(lifecycleOwner: LifecycleOwner, block: () -> Unit) {
+    if (this == null) return
+    val postImpl = ViewSafePostImpl(lifecycleOwner.lifecycle, this, 0L, block)
+    lifecycleOwner.lifecycle.addObserver(postImpl)
+    postImpl.register()
+}
+
+fun View?.safePostDelay(lifecycleOwner: LifecycleOwner, millis: Long, block: () -> Unit) {
+    if (this == null) return
+    val postImpl = ViewSafePostImpl(lifecycleOwner.lifecycle, this, millis, block)
+    lifecycleOwner.lifecycle.addObserver(postImpl)
+    postImpl.register()
+}
+
+class ViewSafePostImpl(
+    private val lifecycle: Lifecycle,
+    private val view: View,
+    private val millis: Long = 0L,
+    private val block: () -> Unit
+) : LifecycleEventObserver {
+
+    fun register() {
+        if (lifecycle.currentState == Lifecycle.State.DESTROYED) return
+        with(view) {
+            if (millis > 0L) {
+                postDelayed(block, millis)
+            } else {
+                post(block)
+            }
+        }
+    }
+
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        if (lifecycle.currentState <= Lifecycle.State.DESTROYED) {
+            view.removeCallbacks(block)
+        }
+    }
+
 }

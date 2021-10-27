@@ -42,6 +42,8 @@ class ProfileFragment : Fragment() {
                 ChatComposeTheme {
                     if (userData == null) {
                         ProfileError()
+                    }else{
+                        ProfileScreen(userData = userData!!)
                     }
                 }
             }

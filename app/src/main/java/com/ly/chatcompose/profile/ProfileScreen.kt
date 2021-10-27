@@ -1,14 +1,14 @@
 package com.ly.chatcompose.profile
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material.icons.outlined.Create
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
@@ -18,12 +18,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
 import com.ly.chatcompose.FunctionalityNotAvailablePopup
 import com.ly.chatcompose.R
 import com.ly.chatcompose.VoidCallback
 import com.ly.chatcompose.components.AnimatingFabContent
+import com.ly.chatcompose.components.CAppBar
 import com.ly.chatcompose.components.baselineHeight
 import com.ly.chatcompose.data.ProfileScreenState
+import com.ly.chatcompose.data.meProfile
 import com.ly.chatcompose.ui.theme.ChatComposeTheme
 
 @Composable
@@ -38,7 +41,54 @@ fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: VoidCallback =
     }
     val scrollState = rememberScrollState()
     Column(modifier = Modifier.fillMaxSize()) {
-
+        CAppBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding(),
+            onNavIconPress = onNavIconPressed,
+            actions = {
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                    Icon(
+                        imageVector = Icons.Outlined.MoreVert, contentDescription = stringResource(
+                            id = R.string.more_options
+                        ), modifier = Modifier
+                            .clickable {
+                                functionalityNotAvailablePopupShown = true
+                            }
+                            .padding(horizontal = 12.dp, vertical = 16.dp)
+                            .height(24.dp)
+                    )
+                }
+            },
+            title = {},
+        )
+        BoxWithConstraints(modifier = Modifier.weight(1f)) {
+            Surface {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                ) {
+                    ProfileHeader(
+                        scrollState = scrollState,
+                        data = userData,
+                        containerHeight = this@BoxWithConstraints.maxHeight
+                    )
+                    UserInfoFields(
+                        userData = userData,
+                        containerHeight = this@BoxWithConstraints.maxHeight
+                    )
+                }
+            }
+            ProfileFab(
+                extended = scrollState.value == 0,
+                userIsMe = userData.isMe(),
+                modifier = Modifier.align(
+                    Alignment.BottomEnd
+                ),
+                onFabClick = { functionalityNotAvailablePopupShown = true }
+            )
+        }
     }
 }
 
@@ -162,6 +212,15 @@ fun ProfileFab(
                 extended = extended,
             )
         }
+    }
+}
+
+
+@Preview(widthDp = 340, name = "340 width -me")
+@Composable
+fun ProfileScreenPre340() {
+    ChatComposeTheme {
+        ProfileScreen(userData = meProfile)
     }
 }
 
