@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material.icons.outlined.NavigateBefore
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import com.ly.chatcompose.R
 import com.ly.chatcompose.VoidCallback
 import com.ly.chatcompose.ui.theme.ChatComposeTheme
+import kotlin.math.abs
+import kotlin.math.roundToInt
 
 
 @Composable
@@ -45,25 +49,40 @@ fun PersonalLargeAvatar(scrollState: ScrollState, containerHeight: Dp) {
 @Composable
 fun PersonalToolbar(
     scrollState: ScrollState,
+    containerHeight: Dp,
     onNavIconPressed: VoidCallback = {},
     onMoreEditPress: VoidCallback = {}
 ) {
-
-
+    val totalHeight = with(LocalDensity.current) {
+        containerHeight.toPx()
+    }
+    val percent = abs(scrollState.value / totalHeight)
+    val tint = if ((1.0f - percent) > 0.05f) Color.White else Color.Black
+    val bgColor = Color(255, 255, 255, (255 * percent).roundToInt())
     TopAppBar(
         navigationIcon = {
-            Icon(
-                imageVector = Icons.Outlined.NavigateBefore,
-                contentDescription = "back",
-                modifier = Modifier
-                    .clickable(onClick = onNavIconPressed)
-                    .padding(16.dp)
-            )
+            IconButton(onClick = onNavIconPressed) {
+                Icon(
+                    imageVector = Icons.Outlined.NavigateBefore,
+                    tint = tint,
+                    contentDescription = "back",
+                )
+            }
         },
+        elevation = 0.dp,
         title = {
 
         },
-        backgroundColor = Color.White
+        backgroundColor = bgColor,
+        actions = {
+            IconButton(onClick = onMoreEditPress) {
+                Icon(
+                    imageVector = Icons.Outlined.MoreHoriz,
+                    contentDescription = "more",
+                    tint = tint,
+                )
+            }
+        }
     )
 }
 
@@ -72,7 +91,7 @@ fun PersonalToolbar(
 fun PersonalToolbarPre() {
     ChatComposeTheme {
         val scrollState = rememberScrollState()
-        PersonalToolbar(scrollState = scrollState)
+        PersonalToolbar(scrollState = scrollState, 340.dp)
     }
 }
 
