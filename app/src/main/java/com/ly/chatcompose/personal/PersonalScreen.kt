@@ -1,19 +1,17 @@
 package com.ly.chatcompose.personal
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.Surface
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material.icons.outlined.NavigateBefore
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -28,6 +26,10 @@ import com.ly.chatcompose.ui.theme.ChatComposeTheme
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
+@Composable
+fun PersonalHeader(scrollState: ScrollState, containerHeight: Dp) {
+
+}
 
 @Composable
 fun PersonalLargeAvatar(scrollState: ScrollState, containerHeight: Dp) {
@@ -50,15 +52,27 @@ fun PersonalLargeAvatar(scrollState: ScrollState, containerHeight: Dp) {
 fun PersonalToolbar(
     scrollState: ScrollState,
     containerHeight: Dp,
+    modifier: Modifier = Modifier,
     onNavIconPressed: VoidCallback = {},
     onMoreEditPress: VoidCallback = {}
 ) {
+    var bg by remember {
+        mutableStateOf(Color.Transparent)
+    }
+    var tint by remember {
+        mutableStateOf(Color.White)
+    }
     val totalHeight = with(LocalDensity.current) {
         containerHeight.toPx()
     }
-    val percent = abs(scrollState.value / totalHeight)
-    val tint = if ((1.0f - percent) > 0.05f) Color.White else Color.Black
-    val bgColor = Color(255, 255, 255, (255 * percent).roundToInt())
+
+    LaunchedEffect(key1 = scrollState.value, block = {
+        val percent = abs(scrollState.value / totalHeight)
+        val value = ((1f - percent) * 255).roundToInt()
+        tint = Color(255, value, value, 255)
+        bg = Color(255, 255, 255, (255 * percent).roundToInt())
+
+    })
     TopAppBar(
         navigationIcon = {
             IconButton(onClick = onNavIconPressed) {
@@ -73,7 +87,8 @@ fun PersonalToolbar(
         title = {
 
         },
-        backgroundColor = bgColor,
+        modifier = modifier,
+        backgroundColor = bg,
         actions = {
             IconButton(onClick = onMoreEditPress) {
                 Icon(
@@ -91,7 +106,37 @@ fun PersonalToolbar(
 fun PersonalToolbarPre() {
     ChatComposeTheme {
         val scrollState = rememberScrollState()
-        PersonalToolbar(scrollState = scrollState, 340.dp)
+        Box(modifier = Modifier.fillMaxSize()) {
+            BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                Surface {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(scrollState)
+                    ) {
+
+                        PersonalLargeAvatar(
+                            scrollState = scrollState,
+                            containerHeight = this@BoxWithConstraints.maxHeight
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(840.dp)
+                                .background(Color.Cyan)
+                        )
+                    }
+                }
+            }
+            PersonalToolbar(
+                scrollState = scrollState,
+                340.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+            )
+        }
+
     }
 }
 

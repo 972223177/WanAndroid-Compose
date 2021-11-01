@@ -1,8 +1,9 @@
 package com.ly.chatcompose
 
+import com.ly.chatcompose.config.WanService
+import com.ly.chatcompose.config.createService
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
-
-import org.junit.Assert.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -10,8 +11,11 @@ import org.junit.Assert.*
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ExampleUnitTest {
+
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun addition_isCorrect() = runBlocking {
+        val service = createService<WanService>()
+        val json = service.searchByAuthor("鸿洋")
+        println(json)
     }
 }

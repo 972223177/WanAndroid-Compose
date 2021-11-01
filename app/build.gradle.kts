@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -54,6 +55,9 @@ android {
 dependencies {
     implementation(Libs.Kotlin.stdlib)
     implementation(Libs.Coroutines.android)
+    implementation(Libs.Kotlin.serialization)
+    implementation(Libs.Http.retrofit)
+    implementation(Libs.Http.logger)
 
     implementation(Libs.AndroidX.Activity.activityCompose)
     implementation(Libs.AndroidX.coreKtx)

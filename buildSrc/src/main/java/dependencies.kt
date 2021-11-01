@@ -35,7 +35,9 @@ object Libs {
         const val version = "1.5.31"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
+        const val serializationPlugin = "org.jetbrains.kotlin:kotlin-serialization:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
+        const val serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0"
     }
 
     object Coroutines {
@@ -102,13 +104,22 @@ object Libs {
 
         object Lifecycle {
             private const val version = "2.4.0-rc01"
-//            const val extensions = "androidx.lifecycle:lifecycle-extensions:$version"
+
+            //            const val extensions = "androidx.lifecycle:lifecycle-extensions:$version"
             const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
             const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
             const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:$version"
-            val libs = listOf( livedata, viewmodel, viewModelCompose)
+            val libs = listOf(livedata, viewmodel, viewModelCompose)
         }
     }
+
+    object Http {
+        const val okhttpVersion = "4.9.2"
+        const val retrofit = "com.squareup.retrofit2:retrofit:2.9.0"
+        const val logger = "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
+    }
+
+
 }
 
 object Urls {
