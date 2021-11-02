@@ -7,22 +7,37 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.Surface
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import coil.compose.LocalImageLoader
+import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.placeholder.placeholder
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ly.chatcompose.components.CScaffold
+import com.ly.chatcompose.config.WanService
+import com.ly.chatcompose.config.createService
 import com.ly.chatcompose.conversation.BackPressHandler
 import com.ly.chatcompose.conversation.LocalBackPressedDispatcher
 import com.ly.chatcompose.databinding.ContentMainBinding
+import com.ly.chatcompose.model.Banner
+import com.ly.chatcompose.screen.HomeScreen
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private val mViewModel by viewModels<MainViewModel>()
+
+    @ExperimentalPagerApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -60,7 +75,10 @@ class MainActivity : AppCompatActivity() {
                                 scaffoldState.drawerState.close()
                             }
                         }) {
-                            AndroidViewBinding(factory = ContentMainBinding::inflate)
+//                            AndroidViewBinding(factory = ContentMainBinding::inflate)
+                        Surface {
+                            HomeScreen()
+                        }
                     }
                 }
             }

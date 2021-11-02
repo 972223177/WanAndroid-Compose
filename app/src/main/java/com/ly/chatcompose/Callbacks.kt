@@ -27,3 +27,7 @@ typealias ComposableCallback2<T, T1> = @Composable (T, T1) -> Unit
 typealias ComposableCallback3<T, T1, T2> = @Composable (T, T1, T2) -> Unit
 
 typealias ComposableExtCallback<T> = @Composable T.() -> Unit
+
+typealias ComposableExtCallback1<T, V> = @Composable T.(V) -> Unit
+
+typealias ComposableExtCallback2<T, V, R> = @Composable T.(V, R) -> Unit

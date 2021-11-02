@@ -62,7 +62,11 @@ dependencies {
     implementation(Libs.AndroidX.Activity.activityCompose)
     implementation(Libs.AndroidX.coreKtx)
     implementation(Libs.AndroidX.appcompat)
-    implementation(Libs.Accompanist.insets)
+    implementation(Libs.coil)
+    for(lib in Libs.Accompanist.libs){
+        implementation(lib)
+    }
+
     implementation(Libs.material)
     for (lib in Libs.AndroidX.Compose.libs) {
         implementation(lib)
