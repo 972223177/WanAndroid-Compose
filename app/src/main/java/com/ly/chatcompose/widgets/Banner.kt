@@ -1,10 +1,7 @@
 package com.ly.chatcompose.widgets
 
 import android.util.Log
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -38,6 +35,7 @@ fun Banner(
             mutableStateOf(initialPage)
         }
         DisposableEffect(key1 = itemCount, effect = {
+
             val timer = Timer()
             val timerTask = object : TimerTask() {
                 override fun run() {
@@ -54,16 +52,16 @@ fun Banner(
                 timerTask.cancel()
             }
         })
-        Box {
+        Box(modifier = modifier) {
             HorizontalPager(
                 count = Int.MAX_VALUE,
-                modifier = modifier,
+                modifier = Modifier.fillMaxSize(),
                 state = pagerState
             ) { page ->
                 val realIndex = page % itemCount
                 onItemChanged(realIndex)
             }
-            indicator(nextPage.value)
+            indicator(pagerState.currentPage % itemCount)
 
         }
     } else {

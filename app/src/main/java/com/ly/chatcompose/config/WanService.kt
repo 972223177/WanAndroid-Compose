@@ -7,6 +7,10 @@ import com.ly.chatcompose.model.Page
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+val wanService by lazy {
+    createService<WanService>()
+}
+
 interface WanService {
 
     @GET("tree/json")

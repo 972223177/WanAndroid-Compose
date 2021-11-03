@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.ly.chatcompose"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 31
         versionCode = 1
         versionName = "1.0"
@@ -58,6 +58,7 @@ dependencies {
     implementation(Libs.Kotlin.serialization)
     implementation(Libs.Http.retrofit)
     implementation(Libs.Http.logger)
+    implementation(Libs.mmkv)
 
     implementation(Libs.AndroidX.Activity.activityCompose)
     implementation(Libs.AndroidX.coreKtx)

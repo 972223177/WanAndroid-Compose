@@ -28,6 +28,8 @@ object Libs {
 
     const val coil = "io.coil-kt:coil-compose:1.4.0"
 
+    const val mmkv = "com.tencent:mmkv-static:1.2.11"
+
     object Accompanist {
         const val version = "0.20.0"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
@@ -35,8 +37,10 @@ object Libs {
         const val pager = "com.google.accompanist:accompanist-pager:$version"
         const val permission = "com.google.accompanist:accompanist-permissions:$version"
         const val refresh = "com.google.accompanist:accompanist-swiperefresh:$version"
+        const val systemUiController =
+            "com.google.accompanist:accompanist-systemuicontroller:$version"
 
-        val libs = listOf(insets, placeholder, pager, permission, refresh)
+        val libs = listOf(insets, placeholder, pager, permission, refresh, systemUiController)
     }
 
 

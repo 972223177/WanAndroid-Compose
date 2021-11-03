@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import java.util.concurrent.TimeUnit
 
 
 private val client by lazy {
@@ -14,12 +15,15 @@ private val client by lazy {
             println(
                 "************${request.headers}************\n" +
                         "* method:${request.method}\n" +
-                        "* url:${request.url}\n"+
+                        "* url:${request.url}\n" +
                         "* requestBody:${request.body}\n" +
                         "********************************************\n"
             )
             return@addInterceptor it.proceed(request)
         }
+        .connectTimeout(HttpConstant.DEFAULT_TIMEOUT, TimeUnit.SECONDS)
+        .readTimeout(HttpConstant.DEFAULT_TIMEOUT, TimeUnit.SECONDS)
+        .writeTimeout(HttpConstant.DEFAULT_TIMEOUT, TimeUnit.SECONDS)
         .build()
 }
 
