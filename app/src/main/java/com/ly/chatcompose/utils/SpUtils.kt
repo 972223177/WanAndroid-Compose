@@ -10,19 +10,15 @@ import kotlin.reflect.KProperty
 /**
  * SpUtils代理，不支持Set<String>类型
  * 用法：
- *      var author by preference("linyu")
+ *      var author by preference(default = "ly", key = "author", saveId = "test")
  * @param defaultValue 默认参必填
- * @param key 保存时用的key,不传时，就默认使用代理参数的名称
+ * @param key 保存时用的key,不传时，就默认使用代理参数的名称,选填
+ * @param saveId 如果有值就与默认的区别存储，取值之前一定要先确认是否有必要填saveId，选填
  */
-fun <T> preference(defaultValue: T, key: String? = null): SpDelegate<T> =
-    SpDelegate(defaultValue, key)
+fun <T> preference(defaultValue: T, key: String? = null, saveId: String? = null): SpDelegate<T> =
+    SpDelegate(defaultValue, saveId, key)
 
 object SpUtils {
-
-
-    val mmkvInstance: MMKV by lazy {
-        MMKV.defaultMMKV()
-    }
 
     fun init(context: Context) {
         MMKV.initialize(context)
@@ -32,74 +28,92 @@ object SpUtils {
         MMKV.initialize(context, rootDir)
     }
 
-    fun create(name: String) {
-        MMKV.mmkvWithID(name)
-    }
+    fun create(name: String?): MMKV =
+        if (name.isNullOrEmpty()) MMKV.defaultMMKV() else MMKV.mmkvWithID(name)
 
 
-    fun put(key: String, value: Int): Boolean = mmkvInstance.encode(key, value)
+    fun put(key: String, value: Int, saveId: String? = null): Boolean =
+        create(saveId).encode(key, value)
 
-    fun put(key: String, value: Long): Boolean = mmkvInstance.encode(key, value)
+    fun put(key: String, value: Long, saveId: String? = null): Boolean =
+        create(saveId).encode(key, value)
 
-    fun put(key: String, value: String): Boolean = mmkvInstance.encode(key, value)
+    fun put(key: String, value: String, saveId: String? = null): Boolean =
+        create(saveId).encode(key, value)
 
-    fun put(key: String, value: Boolean): Boolean = mmkvInstance.encode(key, value)
+    fun put(key: String, value: Boolean, saveId: String? = null): Boolean =
+        create(saveId).encode(key, value)
 
-    fun put(key: String, value: Float): Boolean = mmkvInstance.encode(key, value)
+    fun put(key: String, value: Float, saveId: String? = null): Boolean =
+        create(saveId).encode(key, value)
 
-    fun put(key: String, value: Double): Boolean = mmkvInstance.encode(key, value)
+    fun put(key: String, value: Double, saveId: String? = null): Boolean =
+        create(saveId).encode(key, value)
 
-    fun put(key: String, value: ByteArray): Boolean = mmkvInstance.encode(key, value)
+    fun put(key: String, value: ByteArray, saveId: String? = null): Boolean =
+        create(saveId).encode(key, value)
 
-    fun put(key: String, value: Parcelable): Boolean =
-        mmkvInstance.encode(key, value)
+    fun put(key: String, value: Parcelable, saveId: String? = null): Boolean =
+        create(saveId).encode(key, value)
 
-    fun put(key: String, value: Set<String>): Boolean =
-        mmkvInstance.encode(key, value)
+    fun put(key: String, value: Set<String>, saveId: String? = null): Boolean =
+        create(saveId).encode(key, value)
 
-    fun get(key: String, defaultValue: Int): Int =
-        mmkvInstance.decodeInt(key, defaultValue)
+    fun get(key: String, defaultValue: Int, saveId: String? = null): Int =
+        create(saveId).decodeInt(key, defaultValue)
 
-    fun get(key: String, defaultValue: Long): Long =
-        mmkvInstance.decodeLong(key, defaultValue)
+    fun get(key: String, defaultValue: Long, saveId: String? = null): Long =
+        create(saveId).decodeLong(key, defaultValue)
 
-    fun get(key: String, defaultValue: String = ""): String =
-        mmkvInstance.decodeString(key, defaultValue) ?: defaultValue
+    fun get(key: String, defaultValue: String = "", saveId: String? = null): String =
+        create(saveId).decodeString(key, defaultValue) ?: defaultValue
 
-    fun get(key: String, defaultValue: Boolean): Boolean =
-        mmkvInstance.decodeBool(key, defaultValue)
+    fun get(key: String, defaultValue: Boolean, saveId: String? = null): Boolean =
+        create(saveId).decodeBool(key, defaultValue)
 
 
-    fun get(key: String, defaultValue: Float): Float =
-        mmkvInstance.decodeFloat(key, defaultValue)
+    fun get(key: String, defaultValue: Float, saveId: String? = null): Float =
+        create(saveId).decodeFloat(key, defaultValue)
 
-    fun get(key: String, defaultValue: Double): Double =
-        mmkvInstance.decodeDouble(key, defaultValue)
+    fun get(key: String, defaultValue: Double, saveId: String? = null): Double =
+        create(saveId).decodeDouble(key, defaultValue)
 
-    fun get(key: String, defaultValue: ByteArray = ByteArray(0)): ByteArray =
-        mmkvInstance.decodeBytes(key, defaultValue) ?: defaultValue
+    fun get(
+        key: String,
+        defaultValue: ByteArray = ByteArray(0),
+        saveId: String? = null
+    ): ByteArray =
+        create(saveId).decodeBytes(key, defaultValue) ?: defaultValue
 
-    inline fun <reified T : Parcelable> get(key: String): Parcelable? =
-        mmkvInstance.decodeParcelable(key, T::class.java)
+    inline fun <reified T : Parcelable> get(key: String, saveId: String? = null): Parcelable? =
+        create(saveId).decodeParcelable(key, T::class.java)
 
-    inline fun <reified T : Parcelable> get(key: String, defaultValue: T): Parcelable =
-        mmkvInstance.decodeParcelable(key, T::class.java, defaultValue) ?: defaultValue
+    inline fun <reified T : Parcelable> get(
+        key: String,
+        defaultValue: T,
+        saveId: String? = null
+    ): Parcelable =
+        create(saveId).decodeParcelable(key, T::class.java, defaultValue) ?: defaultValue
 
-    fun get(key: String, defaultValue: Set<String> = emptySet()): Set<String> =
-        mmkvInstance.decodeStringSet(key, defaultValue) ?: defaultValue
+    fun get(
+        key: String,
+        defaultValue: Set<String> = emptySet(),
+        saveId: String? = null
+    ): Set<String> =
+        create(saveId).decodeStringSet(key, defaultValue) ?: defaultValue
 
-    fun contains(key: String): Boolean = mmkvInstance.contains(key)
+    fun contains(key: String, saveId: String? = null): Boolean = create(saveId).contains(key)
 
-    fun remove(key: String) = mmkvInstance.removeValueForKey(key)
+    fun remove(key: String, saveId: String?) = create(saveId).removeValueForKey(key)
 
-    fun fileSize(id: String): Long = mmkvInstance.totalSize()
+    fun fileSize(id: String, saveId: String? = null): Long = create(saveId).totalSize()
 }
 
-interface ISpUtils {
-
-}
-
-class SpDelegate<T>(private val default: T, private val key: String? = null) :
+class SpDelegate<T>(
+    private val default: T,
+    private val saveId: String? = null,
+    private val key: String? = null
+) :
     ReadWriteProperty<Any?, T> {
 
     private var value: T = default
@@ -114,27 +128,27 @@ class SpDelegate<T>(private val default: T, private val key: String? = null) :
 
     @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
     private fun findPreference(key: String): T = when (default) {
-        is String -> SpUtils.get(key, default)
-        is Long -> SpUtils.get(key, default)
-        is Int -> SpUtils.get(key, default)
-        is Float -> SpUtils.get(key, default)
-        is Double -> SpUtils.get(key, default)
-        is Boolean -> SpUtils.get(key, default)
-        is ByteArray -> SpUtils.get(key, default)
-        is Parcelable -> SpUtils.get(key, default)
+        is String -> SpUtils.get(key, default, saveId)
+        is Long -> SpUtils.get(key, default, saveId)
+        is Int -> SpUtils.get(key, default, saveId)
+        is Float -> SpUtils.get(key, default, saveId)
+        is Double -> SpUtils.get(key, default, saveId)
+        is Boolean -> SpUtils.get(key, default, saveId)
+        is ByteArray -> SpUtils.get(key, default, saveId)
+        is Parcelable -> SpUtils.get(key, default, saveId)
         else -> throw  IllegalArgumentException("Unsupported type")
     } as T
 
     private fun putPreference(key: String, value: T) {
         when (value) {
-            is String -> SpUtils.put(key, value)
-            is Long -> SpUtils.put(key, value)
-            is Int -> SpUtils.put(key, value)
-            is Float -> SpUtils.put(key, value)
-            is Double -> SpUtils.put(key, value)
-            is Boolean -> SpUtils.put(key, value)
-            is ByteArray -> SpUtils.put(key, value)
-            is Parcelable -> SpUtils.put(key, value)
+            is String -> SpUtils.put(key, value, saveId)
+            is Long -> SpUtils.put(key, value, saveId)
+            is Int -> SpUtils.put(key, value, saveId)
+            is Float -> SpUtils.put(key, value, saveId)
+            is Double -> SpUtils.put(key, value, saveId)
+            is Boolean -> SpUtils.put(key, value, saveId)
+            is ByteArray -> SpUtils.put(key, value, saveId)
+            is Parcelable -> SpUtils.put(key, value, saveId)
             else -> throw  IllegalArgumentException("Unsupported type")
         }
     }
