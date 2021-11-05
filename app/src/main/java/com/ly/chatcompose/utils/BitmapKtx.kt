@@ -1,39 +1,51 @@
 package com.ly.chatcompose.utils
 
 import android.content.ContentValues
-import android.content.Context
-import android.graphics.*
-import android.os.Build
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
+import android.media.MediaScannerConnection
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.ColorInt
 import java.io.File
 
+
 /**
  * 保存到相册
- * todo android10 以下还有问题
+ *
  */
-fun Bitmap.saveGallery(picName: String): Boolean {
-    val contentValues = ContentValues().apply {
-        put(MediaStore.MediaColumns.DISPLAY_NAME, picName)
-        put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
-        } else {
-            val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-            val file = File(dir, picName)
-            put(MediaStore.MediaColumns.DATA, file.path)
-        }
+@Suppress("DEPRECATION")
+fun Bitmap.save2Gallery(fileName: String): Boolean {
+    //需要取到根目录的Picture文件夹
+    val mPicFile = File(
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+        "$fileName.jpg"
+    )
+    val resolver = appContext.contentResolver
+    val pathArray = arrayOf(mPicFile.absolutePath)
+    val typeArray = arrayOf("image/jpeg")
+    val mPicPath = mPicFile.absolutePath
+    val values = ContentValues().apply {
+        put(MediaStore.Images.ImageColumns.DATA, mPicPath)
+        put(MediaStore.Images.ImageColumns.DISPLAY_NAME, fileName)
+        put(MediaStore.Images.ImageColumns.MIME_TYPE, "image/jpeg")
+        put(MediaStore.Images.ImageColumns.DATE_TAKEN, System.currentTimeMillis().toString() + "")
     }
-    val insertUri = appContext.contentResolver.insert(
-        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-        contentValues
-    ) ?: return false
-
-    return appContext.contentResolver.openOutputStream(insertUri)?.use {
+    // 插入相册
+    val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values) ?: return false
+    val success = resolver.openOutputStream(uri)?.use {
         compress(Bitmap.CompressFormat.JPEG, 100, it)
         true
     } ?: false
+    if (success) {
+        //通知下扫描到这个新的图片
+        MediaScannerConnection.scanFile(
+            appContext, pathArray, typeArray
+        ) { _, _ -> }
+    }
+    return success
 }
 
 /**
