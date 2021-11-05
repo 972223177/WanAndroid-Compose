@@ -1,18 +1,30 @@
 package com.ly.chatcompose
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Surface
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.viewinterop.AndroidViewBinding
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
@@ -22,6 +34,10 @@ import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionRequired
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ly.chatcompose.components.CScaffold
@@ -32,11 +48,15 @@ import com.ly.chatcompose.conversation.LocalBackPressedDispatcher
 import com.ly.chatcompose.databinding.ContentMainBinding
 import com.ly.chatcompose.model.Banner
 import com.ly.chatcompose.screen.HomeScreen
+import com.ly.chatcompose.utils.dp2px
+import com.ly.chatcompose.utils.mosaic
+import com.ly.chatcompose.utils.saveGallery
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private val mViewModel by viewModels<MainViewModel>()
 
+    @ExperimentalPermissionsApi
     @ExperimentalPagerApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +97,46 @@ class MainActivity : AppCompatActivity() {
                         }) {
 //                            AndroidViewBinding(factory = ContentMainBinding::inflate)
                         Surface {
-                            HomeScreen()
+//                            HomeScreen()
+                            var mosaic: Bitmap? = null
+                            val writePermission =
+                                rememberPermissionState(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            Box(modifier = Modifier
+                                .size(50.dp)
+                                .background(Color.Cyan)
+                                .clickable {
+                                    writePermission.launchPermissionRequest()
+                                }) {
+
+                            }
+                            AndroidView(factory = {
+                                val imageView = AppCompatImageView(it)
+                                val bitmap = BitmapFactory.decodeResource(
+                                    it.resources,
+                                    R.drawable.someone_else
+                                )
+                                mosaic =
+                                    bitmap.mosaic(dp2px(10f), 0, 0, bitmap.width, bitmap.height)
+                                imageView.setImageBitmap(mosaic)
+                                return@AndroidView imageView
+                            }, modifier = Modifier.clickable {
+                                val hasPermission = ContextCompat.checkSelfPermission(
+                                    this,
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                )
+                                if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+                                    ActivityCompat.requestPermissions(
+                                        this,
+                                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 11
+                                    )
+                                } else {
+                                    if (mosaic != null) {
+                                        mosaic?.saveGallery("mosaicPic")
+                                    }
+                                }
+
+                            })
+
                         }
                     }
                 }

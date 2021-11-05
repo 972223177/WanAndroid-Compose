@@ -1,5 +1,7 @@
 package com.ly.chatcompose.config
 
+import com.ly.chatcompose.config.inteceptors.CookieInterceptor
+import com.ly.chatcompose.config.inteceptors.HeaderInterceptor
 import kotlinx.serialization.Serializable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -10,6 +12,8 @@ import java.util.concurrent.TimeUnit
 private val client by lazy {
     OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor())
+        .addInterceptor(CookieInterceptor())
+        .addInterceptor(HeaderInterceptor())
         .addInterceptor {
             val request = it.request()
             println(

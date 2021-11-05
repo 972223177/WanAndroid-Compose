@@ -2,6 +2,7 @@ package com.ly.chatcompose
 
 import com.ly.chatcompose.config.WanService
 import com.ly.chatcompose.config.createService
+import com.ly.chatcompose.utils.removeAllBlank
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
@@ -14,8 +15,8 @@ class ExampleUnitTest {
 
     @Test
     fun addition_isCorrect() = runBlocking {
-        val service = createService<WanService>()
-        val json = service.searchByAuthor("鸿洋")
-        println(json)
+        val testStr = "1\t\t\n\n2\r3 \n    d"
+        println(testStr)
+        println(testStr.removeAllBlank())
     }
 }

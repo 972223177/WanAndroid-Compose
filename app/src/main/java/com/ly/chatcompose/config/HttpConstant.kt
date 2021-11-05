@@ -14,11 +14,22 @@ object HttpConstant {
     const val TODO_WEBSITE = "lg/todo"
     const val COIN_WEBSITE = "lg/coin"
 
-    const val SET_COOKIE_KEY="set-cookie"
+    const val SET_COOKIE_KEY = "set-cookie"
 
-    const val COOKIE_NAME="Cookie"
+    const val COOKIE_NAME = "Cookie"
+
+    const val TOKEN_KEY = "token"
+
+    const val CACHE_SAVE_ID = "httpCache"
 
     const val MAX_CACHE_SIZE = 1024 * 1024 * 50 //50m
+
+    val verifyCookieMethods by lazy {
+        listOf(
+            COLLECTIONS_WEBSITE, UNCOLLECTIONS_WEBSITE, ARTICLE_WEBSITE, TODO_WEBSITE,
+            COIN_WEBSITE
+        )
+    }
 
     fun encodeCookie(cookies: List<String>): String {
         val sb = StringBuilder()
