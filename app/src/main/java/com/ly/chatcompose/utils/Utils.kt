@@ -1,6 +1,7 @@
 package com.ly.chatcompose.utils
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -11,6 +12,7 @@ object Utils {
     private var context: Context? = null
 
     fun init(context: Context) {
+        if (context !is Application) throw RuntimeException("必须在application中初始化")
         this.context = context
     }
 
@@ -29,5 +31,5 @@ val appContext: Context
 @RequiresApi(Build.VERSION_CODES.M)
 inline fun <reified T> getSystemService(): T? = appContext.getSystemService(T::class.java)
 
-@Suppress("UNCHECK_CAST")
+@Suppress("UNCHECKED_CAST")
 fun <T> getSystemService(name: String): T? = appContext.getSystemService(name) as? T

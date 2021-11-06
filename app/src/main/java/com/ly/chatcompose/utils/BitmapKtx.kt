@@ -1,15 +1,15 @@
 package com.ly.chatcompose.utils
 
 import android.content.ContentValues
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
+import android.database.Cursor
+import android.graphics.*
 import android.media.MediaScannerConnection
+import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.ColorInt
 import java.io.File
+import java.io.FileOutputStream
 
 
 /**
@@ -35,10 +35,12 @@ fun Bitmap.save2Gallery(fileName: String): Boolean {
     }
     // 插入相册
     val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values) ?: return false
-    val success = resolver.openOutputStream(uri)?.use {
-        compress(Bitmap.CompressFormat.JPEG, 100, it)
-        true
-    } ?: false
+    val success = resolver.openOutputStream(uri)?.runCatching {
+        use {
+            compress(Bitmap.CompressFormat.JPEG, 100, it)
+            true
+        }
+    }?.getOrNull() ?: false
     if (success) {
         //通知下扫描到这个新的图片
         MediaScannerConnection.scanFile(
@@ -46,6 +48,73 @@ fun Bitmap.save2Gallery(fileName: String): Boolean {
         ) { _, _ -> }
     }
     return success
+}
+
+fun Bitmap.save2Cache(name: String = ""): Boolean {
+    val cacheDir = appContext.run {
+        cacheDir ?: externalCacheDir
+    } ?: return false
+    val fileName = if (name.isEmpty()) "${System.currentTimeMillis()}.jpg" else name
+    val file = File(cacheDir, fileName)
+    return FileOutputStream(file).runCatching {
+        use {
+            compress(Bitmap.CompressFormat.JPEG, 100, it)
+            true
+        }
+    }.getOrNull() ?: false
+}
+
+@Suppress("DEPRECATION")
+fun String.getImageContentUri(): Uri? {
+    if (isEmpty()) return null
+    var cursor: Cursor? = null
+    val contentResolver = appContext.contentResolver
+    try {
+        cursor = contentResolver.query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            arrayOf(MediaStore.Images.Media._ID),
+            MediaStore.Images.Media.DATA + "=? ", arrayOf(this), null
+        )
+        if (cursor?.moveToFirst() == true) {
+            val columnIndex = cursor.getColumnIndex(MediaStore.MediaColumns._ID)
+            val id = cursor.getInt(columnIndex)
+            val baseUri = Uri.parse("content://media/external/images/media")
+            return Uri.withAppendedPath(baseUri, "$id")
+        }
+        val file = File(this)
+        if (!file.exists()) return null
+        val contentValues = ContentValues().also {
+            it.put(MediaStore.Images.Media.DATA, this)
+        }
+        return contentResolver.insert(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            contentValues
+        )
+    } catch (e: Exception) {
+        e.printStackTrace()
+    } finally {
+        cursor?.close()
+    }
+    return null
+}
+
+
+fun Uri.getBitmap(): Bitmap? {
+    return try {
+        val parcelFileDescriptor =
+            appContext.contentResolver.openFileDescriptor(this, "r") ?: return null
+        parcelFileDescriptor.use {
+            BitmapFactory.decodeFileDescriptor(it.fileDescriptor)
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
+
+fun String.getBitmap(): Bitmap? {
+    val uri = getImageContentUri() ?: return null
+    return uri.getBitmap()
 }
 
 /**
