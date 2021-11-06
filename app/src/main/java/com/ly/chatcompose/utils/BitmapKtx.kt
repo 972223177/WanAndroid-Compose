@@ -50,18 +50,19 @@ fun Bitmap.save2Gallery(fileName: String): Boolean {
     return success
 }
 
-fun Bitmap.save2Cache(name: String = ""): Boolean {
+fun Bitmap.save2Cache(name: String = ""): File? {
     val cacheDir = appContext.run {
         cacheDir ?: externalCacheDir
-    } ?: return false
+    } ?: return null
     val fileName = if (name.isEmpty()) "${System.currentTimeMillis()}.jpg" else name
     val file = File(cacheDir, fileName)
-    return FileOutputStream(file).runCatching {
+    val result = FileOutputStream(file).runCatching {
         use {
             compress(Bitmap.CompressFormat.JPEG, 100, it)
-            true
         }
-    }.getOrNull() ?: false
+    }
+    result.exceptionOrNull()?.printStackTrace()
+    return file
 }
 
 @Suppress("DEPRECATION")
