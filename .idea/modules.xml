@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ChatCompose.iml" filepath="$PROJECT_DIR$/.idea/modules/ChatCompose.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ChatCompose.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ChatCompose.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ChatCompose.buildSrc.iml" filepath="$PROJECT_DIR$/.idea/modules/ChatCompose.buildSrc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/WanAndroid-Compose.iml" filepath="$PROJECT_DIR$/.idea/modules/WanAndroid-Compose.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/WanAndroid-Compose.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/WanAndroid-Compose.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/WanAndroid-Compose.buildSrc.iml" filepath="$PROJECT_DIR$/.idea/modules/WanAndroid-Compose.buildSrc.iml" />
     </modules>
   </component>
 </project>
