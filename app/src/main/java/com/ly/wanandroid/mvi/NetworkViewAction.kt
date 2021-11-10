@@ -1,31 +1,59 @@
 package com.ly.wanandroid.mvi
 
-sealed class NetworkViewAction
+/**
+ * 创建密封类时，实现这个接口
+ * 处理view的事件
+ */
+interface IViewAction
 
-object PageRequest : NetworkViewAction()
+object NoneViewAction : IViewAction
 
-object PartRequest : NetworkViewAction()
+/**
+ * 创建密封类时，实现这个接口
+ * 消费view的事件
+ */
+interface IViewEvent
 
-object MultiRequest : NetworkViewAction()
+object NoneViewEvent : IViewEvent
 
-object ErrorRequest : NetworkViewAction()
+sealed class ListViewStatus {
+    object None : ListViewStatus()
 
+    object Refreshing : ListViewStatus()
 
-sealed class PageStatus
+    data class Refreshed<T>(
+        val success: Boolean,
+        val hasMore: Boolean,
+        val data: List<T> = emptyList()
+    ) : ListViewStatus()
 
-object Loading : PageStatus()
+    object Loading : ListViewStatus()
 
-object Success : PageStatus()
+    data class Loaded<T>(
+        val success: Boolean,
+        val hasMore: Boolean,
+        val data: List<T> = emptyList()
+    ) : ListViewStatus()
 
-data class Empty(val hint: String) : PageStatus()
+    data class Empty(val hint: String) : ListViewStatus()
+}
 
-data class Error(val throwable: Throwable) : PageStatus()
+sealed class PageStatus {
+    object None : PageStatus()
 
+    object Loading : PageStatus()
 
-sealed class NetworkViewEvent
+    data class Success<T>(val data: T) : PageStatus()
 
-data class ShowToast(val msg: String) : NetworkViewEvent()
+    data class Error(val throwable: Throwable) : PageStatus()
 
-object ShowLoading : NetworkViewEvent()
+}
 
-object DismissLoading : NetworkViewEvent()
+sealed class CommonEvent {
+    data class ShowToast(val msg: String) : CommonEvent()
+
+    object ShowLoading : CommonEvent()
+
+    object DismissLoading : CommonEvent()
+
+}
