@@ -13,4 +13,9 @@ class AppApplication : Application() {
         Utils.init(this)
         SpUtils.init(this)
     }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        Utils.close()
+    }
 }

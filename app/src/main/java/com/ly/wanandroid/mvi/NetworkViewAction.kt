@@ -1,31 +1,47 @@
 package com.ly.wanandroid.mvi
 
-sealed class NetworkViewAction
+interface IViewAction
 
-object PageRequest : NetworkViewAction()
+object NoneViewAction : IViewAction
 
-object PartRequest : NetworkViewAction()
+sealed class ListViewStatus {
+    object None : ListViewStatus()
 
-object MultiRequest : NetworkViewAction()
+    object Refreshing : ListViewStatus()
 
-object ErrorRequest : NetworkViewAction()
+    data class Refreshed<T>(
+        val success: Boolean,
+        val hasMore: Boolean,
+        val data: List<T> = emptyList()
+    ) : ListViewStatus()
 
+    object Loading : ListViewStatus()
 
-sealed class PageStatus
+    data class Loaded<T>(
+        val success: Boolean,
+        val hasMore: Boolean,
+        val data: List<T> = emptyList()
+    ) : ListViewStatus()
 
-object Loading : PageStatus()
+    data class Empty(val hint: String) : ListViewStatus()
+}
 
-object Success : PageStatus()
+sealed class PageStatus {
+    object None : PageStatus()
 
-data class Empty(val hint: String) : PageStatus()
+    object Loading : PageStatus()
 
-data class Error(val throwable: Throwable) : PageStatus()
+    data class Success<T>(val data: T) : PageStatus()
 
+    data class Error(val throwable: Throwable) : PageStatus()
 
-sealed class NetworkViewEvent
+}
 
-data class ShowToast(val msg: String) : NetworkViewEvent()
+sealed class NetworkViewEvent {
+    data class ShowToast(val msg: String) : NetworkViewEvent()
 
-object ShowLoading : NetworkViewEvent()
+    object ShowLoading : NetworkViewEvent()
 
-object DismissLoading : NetworkViewEvent()
+    object DismissLoading : NetworkViewEvent()
+
+}
