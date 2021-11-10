@@ -50,8 +50,37 @@ abstract class MviViewModel<A : IViewAction, E : IViewEvent> : ViewModel() {
         }
     }
 
-    private fun <T> partRequest(block: suspend FlowCollector<T>.() -> Unit){
-
+    /**
+     * partRequest(block = {
+     *      emit(result)
+     *  }){
+     *     _viewEvent.value = ViewEvent(it)
+     *  }
+     */
+    private fun <T> partRequest(
+        showLoading: Boolean = true,
+        showErrorToast: Boolean = false,
+        block: suspend FlowCollector<T>.() -> Unit,
+        success: suspend (T) -> Unit
+    ) {
+        viewModelScope.launch {
+            flow(block)
+                .onStart {
+                    if (showLoading) {
+                        _commonEvent.setEvent(CommonEvent.ShowLoading)
+                    }
+                }.onEach(success)
+                .catch { error ->
+                    if (showErrorToast) {
+                        toast(error.message ?: "")
+                    }
+                }
+                .onCompletion {
+                    if (showLoading) {
+                        _commonEvent.setEvent(CommonEvent.DismissLoading)
+                    }
+                }.collect()
+        }
     }
 
 }
