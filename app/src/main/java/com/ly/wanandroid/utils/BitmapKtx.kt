@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.ColorInt
+import androidx.core.graphics.createBitmap
 import java.io.File
 import java.io.FileOutputStream
 
@@ -224,4 +225,39 @@ fun Bitmap.mosaicWithCount(zoneCount: Int): Bitmap {
     val min = width.coerceAtMost(height)
     if (zoneCount >= min) return this
     return mosaic(min / zoneCount)
+}
+
+
+fun Bitmap.roundCorners(
+    topLeft: Float,
+    topRight: Float,
+    bottomLeft: Float,
+    bottomRight: Float
+): Bitmap {
+    val destBp = createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(destBp)
+    val path = Path()
+    path.addRoundRect(
+        RectF(
+            0f,
+            0f,
+            width.toFloat(),
+            height.toFloat()
+        ),
+        floatArrayOf(
+            topLeft,
+            topLeft,
+            topRight,
+            topRight,
+            bottomRight,
+            bottomRight,
+            bottomLeft,
+            bottomLeft
+        ),
+        Path.Direction.CCW
+    )
+    canvas.clipPath(path)
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    canvas.drawBitmap(this,0f,0f,paint)
+    return destBp
 }

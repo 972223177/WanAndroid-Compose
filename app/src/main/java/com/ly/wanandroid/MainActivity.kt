@@ -12,10 +12,12 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Surface
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -33,9 +35,8 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.ly.wanandroid.components.CScaffold
 import com.ly.wanandroid.conversation.BackPressHandler
 import com.ly.wanandroid.conversation.LocalBackPressedDispatcher
+import com.ly.wanandroid.utils.*
 import com.ly.wanandroid.utils.dp2px
-import com.ly.wanandroid.utils.mosaic
-import com.ly.wanandroid.utils.save2Gallery
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -86,42 +87,42 @@ class MainActivity : AppCompatActivity() {
                             var mosaic: Bitmap? = null
                             val writePermission =
                                 rememberPermissionState(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                            Box(modifier = Modifier
-                                .size(50.dp)
-                                .background(Color.Cyan)
-                                .clickable {
-                                    writePermission.launchPermissionRequest()
-                                }) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            ) {
 
-                            }
-                            AndroidView(factory = {
-                                val imageView = AppCompatImageView(it)
-                                val bitmap = BitmapFactory.decodeResource(
-                                    it.resources,
-                                    R.drawable.someone_else
-                                )
-                                mosaic =
-                                    bitmap.mosaic(dp2px(10f), 0, 0, bitmap.width, bitmap.height)
-                                imageView.setImageBitmap(mosaic)
-                                return@AndroidView imageView
-                            }, modifier = Modifier.clickable {
-                                val hasPermission = ContextCompat.checkSelfPermission(
-                                    this,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                                )
-                                if (hasPermission != PackageManager.PERMISSION_GRANTED) {
-                                    ActivityCompat.requestPermissions(
-                                        this,
-                                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 11
+                                AndroidView(factory = {
+                                    val imageView = AppCompatImageView(it)
+                                    val bitmap = BitmapFactory.decodeResource(
+                                        it.resources,
+                                        R.drawable.someone_else
                                     )
-                                } else {
-                                    if (mosaic != null) {
-                                        mosaic?.save2Gallery("mosaicPic")
-                                    }
-                                }
+                                    mosaic =
+                                        bitmap.roundCorners(dp2pxf(10f), dp2pxf(10f), dp2pxf(10f), dp2pxf(10f))
+                                    imageView.setImageBitmap(mosaic)
+                                    return@AndroidView imageView
+                                }, modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .clickable {
+                                        val hasPermission = ContextCompat.checkSelfPermission(
+                                            this@MainActivity,
+                                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                        )
+                                        if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+                                            ActivityCompat.requestPermissions(
+                                                this@MainActivity,
+                                                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                                                11
+                                            )
+                                        } else {
+                                            if (mosaic != null) {
+                                                mosaic?.save2Gallery("mosaicPic")
+                                            }
+                                        }
 
-                            })
-
+                                    })
+                            }
                         }
                     }
                 }
