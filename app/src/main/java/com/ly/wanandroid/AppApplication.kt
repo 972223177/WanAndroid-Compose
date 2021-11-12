@@ -1,17 +1,22 @@
 package com.ly.wanandroid
 
 import android.app.Application
+import com.ly.wanandroid.utils.syncInitTask
+import com.ly.wanandroid.utils.InitTaskRunner
 import com.ly.wanandroid.utils.SpUtils
 import com.ly.wanandroid.utils.Utils
-import com.tencent.mmkv.MMKV
 
 class AppApplication : Application() {
 
-
     override fun onCreate() {
         super.onCreate()
-        Utils.init(this)
-        SpUtils.init(this)
+        InitTaskRunner(this)
+            .add(syncInitTask("Utils") {
+                Utils.init(this)
+            })
+            .add(syncInitTask("SpUtils") {
+                SpUtils.init(this)
+            }).run()
     }
 
     override fun onTerminate() {

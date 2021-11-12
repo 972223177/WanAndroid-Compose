@@ -1,7 +1,6 @@
 package com.ly.wanandroid
 
 import android.Manifest
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -9,21 +8,15 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.Surface
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
@@ -36,7 +29,6 @@ import com.ly.wanandroid.components.CScaffold
 import com.ly.wanandroid.conversation.BackPressHandler
 import com.ly.wanandroid.conversation.LocalBackPressedDispatcher
 import com.ly.wanandroid.utils.*
-import com.ly.wanandroid.utils.dp2px
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -105,22 +97,7 @@ class MainActivity : AppCompatActivity() {
                                 }, modifier = Modifier
                                     .align(Alignment.Center)
                                     .clickable {
-                                        val hasPermission = ContextCompat.checkSelfPermission(
-                                            this@MainActivity,
-                                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                                        )
-                                        if (hasPermission != PackageManager.PERMISSION_GRANTED) {
-                                            ActivityCompat.requestPermissions(
-                                                this@MainActivity,
-                                                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                                                11
-                                            )
-                                        } else {
-                                            if (mosaic != null) {
-                                                mosaic?.save2Gallery("mosaicPic")
-                                            }
-                                        }
-
+                                        this@MainActivity.goToSetting()
                                     })
                             }
                         }
