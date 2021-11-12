@@ -12,10 +12,10 @@ class AppApplication : Application() {
         super.onCreate()
         InitTaskRunner(this)
             .add(syncInitTask("Utils") {
-                Utils.init(this)
+                Utils.init(it)
             })
             .add(syncInitTask("SpUtils") {
-                SpUtils.init(this)
+                SpUtils.init(it)
             }).run()
     }
 

@@ -7,9 +7,32 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
 
-class InitTaskRunner(private val application: Application) {
+/**
+ * @author ly
+ * 第三方SDK初始化工具 分异步和同步，按level初始化，值小的先
+ * @use: InitTaskRunner(application , listOf(task1))
+ *          .add(syncInitTask("task2"){ app ->
+ *                  //同步初始化
+ *           })
+ *          .add(asyncInitTask("task3" , level = 1 , onlyMainProcess = true){ app ->
+ *                  //异步初始化
+ *          })
+ *          add(object:InitTask{
+ *             override val level:Int = 0
+ *             override val taskName:String = "task4"
+ *             override val onlyMainProcess:Boolean = true
+ *             override val sync:Boolean = true
+ *             override fun init(application:Application){
+ *                  //...你的初始化代码
+ *             }
+ *          }).run()
+ */
+class InitTaskRunner(
+    private val application: Application,
+    tasks: List<InitTask> = emptyList()
+) {
 
-    private val mTasks = mutableListOf<InitTask>()
+    private val mTasks = ArrayList(tasks)
 
     private val mCoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 

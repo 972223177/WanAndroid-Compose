@@ -4,9 +4,12 @@ import android.Manifest
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -85,15 +88,10 @@ class MainActivity : AppCompatActivity() {
                             ) {
 
                                 AndroidView(factory = {
-                                    val imageView = AppCompatImageView(it)
-                                    val bitmap = BitmapFactory.decodeResource(
-                                        it.resources,
-                                        R.drawable.someone_else
-                                    )
-                                    mosaic =
-                                        bitmap.roundCorners(dp2pxf(10f), dp2pxf(10f), dp2pxf(10f), dp2pxf(10f))
-                                    imageView.setImageBitmap(mosaic)
-                                    return@AndroidView imageView
+                                    val view = AppCompatEditText(it)
+                                    view.layoutParams = ViewGroup.LayoutParams(dp2px(150f),WRAP_CONTENT)
+                                    view.divideWithGroup(4,'-')
+                                    return@AndroidView view
                                 }, modifier = Modifier
                                     .align(Alignment.Center)
                                     .clickable {
