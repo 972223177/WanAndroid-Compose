@@ -1,4 +1,4 @@
-package com.ly.wanandroid.config
+package com.ly.wanandroid.config.http
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer

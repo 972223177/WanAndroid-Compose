@@ -22,7 +22,7 @@ import com.ly.wanandroid.ValueSetter
 import com.ly.wanandroid.VoidCallback
 import com.ly.wanandroid.data.colleagueProfile
 import com.ly.wanandroid.data.meProfile
-import com.ly.wanandroid.ui.theme.ChatComposeTheme
+import com.ly.wanandroid.ui.theme.WanAndroidTheme
 
 @Composable
 fun ColumnScope.CDrawer(onProfileClicked: ValueSetter<String>, onChatClicked: ValueSetter<String>) {
@@ -148,7 +148,7 @@ private fun ProfileItem(text: String, @DrawableRes profilePic: Int?, onProfileCl
 @Preview
 @Composable
 fun ProfileItemPre() {
-    ChatComposeTheme(false) {
+    WanAndroidTheme(false) {
         Surface {
             ProfileItem(text = "ProfileItemPrv", profilePic = R.drawable.ic_baseline_person_24) {
 
@@ -160,7 +160,7 @@ fun ProfileItemPre() {
 @Preview
 @Composable
 fun ChatItemPre() {
-    ChatComposeTheme(false) {
+    WanAndroidTheme(false) {
         Surface {
             ChatItem(text = "ChatItemPre", selected = false) {
 
@@ -172,7 +172,7 @@ fun ChatItemPre() {
 @Preview
 @Composable
 fun DrawerHeaderPre() {
-    ChatComposeTheme {
+    WanAndroidTheme {
         Surface {
             DrawerHeader()
         }
@@ -182,7 +182,7 @@ fun DrawerHeaderPre() {
 @Preview
 @Composable
 fun DrawerPre() {
-    ChatComposeTheme {
+    WanAndroidTheme {
         Surface {
             Column {
                 CDrawer(onProfileClicked = {}, onChatClicked = {})

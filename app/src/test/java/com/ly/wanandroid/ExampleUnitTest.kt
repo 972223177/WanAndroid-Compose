@@ -1,10 +1,11 @@
 package com.ly.wanandroid
 
-import com.ly.wanandroid.config.WanService
-import com.ly.wanandroid.config.createService
-import com.ly.wanandroid.utils.removeAllBlank
-import kotlinx.coroutines.runBlocking
+import android.os.CountDownTimer
+import com.ly.wanandroid.utils.countdown
+import kotlinx.coroutines.*
+import okhttp3.internal.toHexString
 import org.junit.Test
+import java.util.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -15,8 +16,20 @@ class ExampleUnitTest {
 
     @Test
     fun addition_isCorrect() = runBlocking {
-        val testStr = "1\t\t\n\n2\r3 \n    d"
-        println(testStr)
-        println(testStr.removeAllBlank())
+        var lastMillis = System.currentTimeMillis()
+        val job = countdown(10 * 1000L, 1000L, onFinish = {
+            val currentMillis = System.currentTimeMillis()
+            println("${currentMillis - lastMillis}->onFinish")
+        }) {
+            val currentMillis = System.currentTimeMillis()
+            println("${currentMillis - lastMillis}->$it")
+            lastMillis = currentMillis
+        }
+
+        launch {
+            delay(2000L)
+            job.cancel()
+        }
+        Unit
     }
 }

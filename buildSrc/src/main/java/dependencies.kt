@@ -94,10 +94,11 @@ object Libs {
         }
 
         object Navigation {
-            private const val version = "2.3.5"
+            private const val version = "2.4.0-alpha10"
             const val fragment = "androidx.navigation:navigation-fragment-ktx:$version"
             const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
-            val libs = listOf(fragment, uiKtx)
+            const val compose = "androidx.navigation:navigation-compose:$version"
+            val libs = listOf(fragment, uiKtx, compose)
         }
 
         object Test {

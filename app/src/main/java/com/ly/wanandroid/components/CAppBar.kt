@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.ly.wanandroid.ComposableExtCallback
 import com.ly.wanandroid.R
 import com.ly.wanandroid.VoidCallback
-import com.ly.wanandroid.ui.theme.ChatComposeTheme
+import com.ly.wanandroid.ui.theme.WanAndroidTheme
 import com.ly.wanandroid.ui.theme.elevatedSurface
 
 @Composable
@@ -73,7 +73,7 @@ fun AppBarPreview() {
 @Preview
 @Composable
 fun AppBarPreviewDark() {
-    ChatComposeTheme(true) {
+    WanAndroidTheme(true) {
         CAppBar(title = {
             Text(text = "Preview")
         })

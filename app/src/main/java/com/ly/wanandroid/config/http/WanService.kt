@@ -1,4 +1,4 @@
-package com.ly.wanandroid.config
+package com.ly.wanandroid.config.http
 
 import com.ly.wanandroid.model.Article
 import com.ly.wanandroid.model.Banner

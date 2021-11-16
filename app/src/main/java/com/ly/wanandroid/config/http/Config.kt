@@ -1,7 +1,7 @@
-package com.ly.wanandroid.config
+package com.ly.wanandroid.config.http
 
-import com.ly.wanandroid.config.inteceptors.CookieInterceptor
-import com.ly.wanandroid.config.inteceptors.HeaderInterceptor
+import com.ly.wanandroid.config.http.inteceptors.CookieInterceptor
+import com.ly.wanandroid.config.http.inteceptors.HeaderInterceptor
 import kotlinx.serialization.Serializable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

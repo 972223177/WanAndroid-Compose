@@ -16,14 +16,13 @@ import androidx.compose.ui.unit.sp
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
-import com.google.accompanist.insets.ViewWindowInsetObserver
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ly.wanandroid.ValueSetter
-import com.ly.wanandroid.config.wanService
+import com.ly.wanandroid.config.http.wanService
 import com.ly.wanandroid.model.Banner
 import com.ly.wanandroid.utils.isNetworkAvailable
 import com.ly.wanandroid.widgets.Banner

@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.ly.wanandroid.ComposableCallback1
 import com.ly.wanandroid.ValueSetter
-import com.ly.wanandroid.ui.theme.ChatComposeTheme
+import com.ly.wanandroid.ui.theme.WanAndroidTheme
 
 @Composable
 fun CScaffold(
@@ -18,7 +18,7 @@ fun CScaffold(
     onChatClicked: ValueSetter<String>,
     content: ComposableCallback1<PaddingValues>
 ) {
-    ChatComposeTheme {
+    WanAndroidTheme {
         Scaffold(
             scaffoldState = scaffoldState,
             drawerContent = {

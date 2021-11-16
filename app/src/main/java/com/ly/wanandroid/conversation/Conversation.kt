@@ -43,7 +43,7 @@ import com.ly.wanandroid.ValueSetter
 import com.ly.wanandroid.VoidCallback
 import com.ly.wanandroid.components.CAppBar
 import com.ly.wanandroid.data.initialMessages
-import com.ly.wanandroid.ui.theme.ChatComposeTheme
+import com.ly.wanandroid.ui.theme.WanAndroidTheme
 import com.ly.wanandroid.ui.theme.elevatedSurface
 import kotlinx.coroutines.launch
 
@@ -387,7 +387,7 @@ fun ClickableMessage(message: Message, authorClicked: ValueSetter<String>) {
 @Preview
 @Composable
 fun ClickableMessage() {
-    ChatComposeTheme {
+    WanAndroidTheme {
         Surface {
             Column {
                 val scrollState = rememberLazyListState()

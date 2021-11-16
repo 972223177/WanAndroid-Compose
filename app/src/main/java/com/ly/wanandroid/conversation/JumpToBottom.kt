@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ly.wanandroid.R
 import com.ly.wanandroid.VoidCallback
-import com.ly.wanandroid.ui.theme.ChatComposeTheme
+import com.ly.wanandroid.ui.theme.WanAndroidTheme
 
 private enum class Visibility {
     VISIBLE, GONE
@@ -58,7 +58,7 @@ fun JumpToBottom(enabled: Boolean, onClicked: VoidCallback, modifier: Modifier =
 @Preview
 @Composable
 fun JumpToBottomPre() {
-    ChatComposeTheme {
+    WanAndroidTheme {
         Surface {
             JumpToBottom(enabled = true, onClicked = { })
         }

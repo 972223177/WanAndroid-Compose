@@ -1,5 +1,6 @@
 package com.ly.wanandroid.utils
 
+import android.content.res.Configuration
 import android.os.Build
 
 @Suppress("DEPRECATION")
@@ -42,4 +43,12 @@ fun isAppInstalled(packageName: String): Boolean {
         e.printStackTrace()
         false
     }
+}
+
+/**
+ * 系统是否打开了夜间模式
+ */
+fun isSystemNightModeOpened(): Boolean {
+    val uiMode = appContext.resources.configuration.uiMode
+    return (uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 }

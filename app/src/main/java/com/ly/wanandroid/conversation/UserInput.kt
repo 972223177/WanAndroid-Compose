@@ -41,7 +41,7 @@ import com.ly.wanandroid.FunctionalityNotAvailablePopup
 import com.ly.wanandroid.R
 import com.ly.wanandroid.ValueSetter
 import com.ly.wanandroid.VoidCallback
-import com.ly.wanandroid.ui.theme.ChatComposeTheme
+import com.ly.wanandroid.ui.theme.WanAndroidTheme
 import com.ly.wanandroid.ui.theme.compositedOnSurface
 import com.ly.wanandroid.ui.theme.elevatedSurface
 
@@ -466,7 +466,7 @@ fun EmojiTable(onTextAdded: ValueSetter<String>, modifier: Modifier = Modifier) 
 @Preview
 @Composable
 fun UserInputPre() {
-    ChatComposeTheme {
+    WanAndroidTheme {
         Surface {
             UserInput(onMessageSend = {})
         }
@@ -476,7 +476,7 @@ fun UserInputPre() {
 @Preview
 @Composable
 fun EmojiSelectorPre() {
-    ChatComposeTheme {
+    WanAndroidTheme {
         Surface {
             val requester by remember {
                 mutableStateOf(FocusRequester())
@@ -489,7 +489,7 @@ fun EmojiSelectorPre() {
 @Preview
 @Composable
 fun ExtendedSelectorInnerButtonPre() {
-    ChatComposeTheme {
+    WanAndroidTheme {
         Surface {
             ExtendedSelectorInnerButton(text = "Extended", onClick = {}, selected = true)
         }
@@ -499,7 +499,7 @@ fun ExtendedSelectorInnerButtonPre() {
 @Preview
 @Composable
 fun EmojiTablePre() {
-    ChatComposeTheme {
+    WanAndroidTheme {
         Surface {
             EmojiTable(onTextAdded = {})
         }

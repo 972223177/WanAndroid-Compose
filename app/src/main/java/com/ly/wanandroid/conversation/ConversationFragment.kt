@@ -19,7 +19,7 @@ import com.google.accompanist.insets.navigationBarsPadding
 import com.ly.wanandroid.MainViewModel
 import com.ly.wanandroid.R
 import com.ly.wanandroid.data.exampleUiState
-import com.ly.wanandroid.ui.theme.ChatComposeTheme
+import com.ly.wanandroid.ui.theme.WanAndroidTheme
 
 class ConversationFragment : Fragment() {
     private val mViewModel by activityViewModels<MainViewModel>()
@@ -39,7 +39,7 @@ class ConversationFragment : Fragment() {
                 LocalBackPressedDispatcher provides requireActivity().onBackPressedDispatcher,
                 LocalWindowInsets provides windowInsets
             ) {
-                ChatComposeTheme {
+                WanAndroidTheme {
                     ConversationContent(
                         uiState = exampleUiState,
                         navigateToProfile = { user ->
@@ -47,7 +47,7 @@ class ConversationFragment : Fragment() {
                             findNavController().navigate(R.id.nav_profile, bundle)
                         },
                         onNavIconPressed = {
-                            mViewModel.openDrawer()
+
                         },
                         modifier = Modifier.navigationBarsPadding(bottom = false),
                     )

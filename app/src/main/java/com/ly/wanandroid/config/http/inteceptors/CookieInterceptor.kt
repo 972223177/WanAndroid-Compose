@@ -1,6 +1,6 @@
-package com.ly.wanandroid.config.inteceptors
+package com.ly.wanandroid.config.http.inteceptors
 
-import com.ly.wanandroid.config.HttpConstant
+import com.ly.wanandroid.config.http.HttpConstant
 import okhttp3.Interceptor
 import okhttp3.Response
 

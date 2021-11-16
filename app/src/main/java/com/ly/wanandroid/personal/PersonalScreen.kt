@@ -1,7 +1,6 @@
 package com.ly.wanandroid.personal
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -22,7 +21,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ly.wanandroid.R
 import com.ly.wanandroid.VoidCallback
-import com.ly.wanandroid.ui.theme.ChatComposeTheme
+import com.ly.wanandroid.ui.theme.WanAndroidTheme
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -104,7 +103,7 @@ fun PersonalToolbar(
 @Preview
 @Composable
 fun PersonalToolbarPre() {
-    ChatComposeTheme {
+    WanAndroidTheme {
         val scrollState = rememberScrollState()
         Box(modifier = Modifier.fillMaxSize()) {
             BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
@@ -143,7 +142,7 @@ fun PersonalToolbarPre() {
 @Preview
 @Composable
 fun LargeAvatarPre() {
-    ChatComposeTheme {
+    WanAndroidTheme {
         val scrollState = rememberScrollState()
         PersonalLargeAvatar(scrollState = scrollState, containerHeight = 340.dp)
     }

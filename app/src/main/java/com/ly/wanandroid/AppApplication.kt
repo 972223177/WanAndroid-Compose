@@ -1,6 +1,7 @@
 package com.ly.wanandroid
 
 import android.app.Application
+import com.ly.wanandroid.config.setting.Setting
 import com.ly.wanandroid.utils.syncInitTask
 import com.ly.wanandroid.utils.InitTaskRunner
 import com.ly.wanandroid.utils.SpUtils
@@ -17,6 +18,7 @@ class AppApplication : Application() {
             .add(syncInitTask("SpUtils") {
                 SpUtils.init(it)
             }).run()
+        Setting.init()
     }
 
     override fun onTerminate() {

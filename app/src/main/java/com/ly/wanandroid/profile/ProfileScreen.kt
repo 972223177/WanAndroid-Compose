@@ -27,7 +27,7 @@ import com.ly.wanandroid.components.CAppBar
 import com.ly.wanandroid.components.baselineHeight
 import com.ly.wanandroid.data.ProfileScreenState
 import com.ly.wanandroid.data.meProfile
-import com.ly.wanandroid.ui.theme.ChatComposeTheme
+import com.ly.wanandroid.ui.theme.WanAndroidTheme
 
 @Composable
 fun ProfileScreen(userData: ProfileScreenState, onNavIconPressed: VoidCallback = {}) {
@@ -219,7 +219,7 @@ fun ProfileFab(
 @Preview(widthDp = 340, name = "340 width -me")
 @Composable
 fun ProfileScreenPre340() {
-    ChatComposeTheme {
+    WanAndroidTheme {
         ProfileScreen(userData = meProfile)
     }
 }
@@ -227,7 +227,7 @@ fun ProfileScreenPre340() {
 @Preview
 @Composable
 fun ProfileTabPre() {
-    ChatComposeTheme {
+    WanAndroidTheme {
         Surface {
             ProfileFab(extended = true, userIsMe = false)
         }

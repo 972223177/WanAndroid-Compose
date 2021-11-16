@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ly.wanandroid.ComposableCallback
 import com.ly.wanandroid.ValueGetter
-import com.ly.wanandroid.ui.theme.ChatComposeTheme
+import com.ly.wanandroid.ui.theme.WanAndroidTheme
 import kotlin.math.roundToInt
 
 @Composable
@@ -120,7 +120,7 @@ private const val transitionDuration = 200
 @Preview
 @Composable
 fun AnimFabContentPre() {
-    ChatComposeTheme {
+    WanAndroidTheme {
         Surface {
             Scaffold {
                 Box(Modifier.fillMaxSize()) {

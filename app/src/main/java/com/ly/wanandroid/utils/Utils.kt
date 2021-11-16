@@ -48,6 +48,9 @@ object Utils {
 val appContext: Context
     get() = Utils.getAppContext()
 
+val packageName: String
+    get() = appContext.packageName
+
 private const val JOB_KEY = "com.ly.appScope.JOB_KEY"
 
 private val mCoroutineMap = mutableMapOf<String, CoroutineScope>()

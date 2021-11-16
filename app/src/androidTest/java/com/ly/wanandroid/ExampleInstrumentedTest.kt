@@ -1,12 +1,13 @@
 package com.ly.wanandroid
 
-import androidx.test.platform.app.InstrumentationRegistry
+import android.os.CountDownTimer
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
+import com.ly.wanandroid.utils.Base64Utils
+import com.ly.wanandroid.utils.logD
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.junit.Assert.*
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -17,8 +18,39 @@ import org.junit.Assert.*
 class ExampleInstrumentedTest {
     @Test
     fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.ly.wanandroid", appContext.packageName)
+        var lastMillis = System.currentTimeMillis()
+        val job = countdownK(10 * 1000L, 1000L, onFinish = {
+            val currentMillis = System.currentTimeMillis()
+            println("${currentMillis - lastMillis}->onFinish")
+        }) {
+            val currentMillis = System.currentTimeMillis()
+            println("${currentMillis - lastMillis}->$it")
+            lastMillis = currentMillis
+        }
+
+//        launch {
+//            delay(2000L)
+//            job.cancel()
+//        }
+    }
+
+    inline fun countdownK(
+        totalMillis: Long,
+        intervalMillis: Long,
+        crossinline onFinish: (() -> Unit) = {},
+        crossinline onTick: (Long) -> Unit
+    ): CountDownTimer {
+        return object : CountDownTimer(totalMillis, intervalMillis) {
+            override fun onTick(millisUntilFinished: Long) {
+                onTick(millisUntilFinished)
+            }
+
+            override fun onFinish() {
+                onFinish()
+            }
+
+        }.also {
+            it.start()
+        }
     }
 }

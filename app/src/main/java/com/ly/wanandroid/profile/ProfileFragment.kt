@@ -16,7 +16,7 @@ import androidx.fragment.app.viewModels
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.ViewWindowInsetObserver
 import com.ly.wanandroid.MainViewModel
-import com.ly.wanandroid.ui.theme.ChatComposeTheme
+import com.ly.wanandroid.ui.theme.WanAndroidTheme
 
 class ProfileFragment : Fragment() {
 
@@ -39,7 +39,7 @@ class ProfileFragment : Fragment() {
         setContent {
             val userData by mViewModel.userData.observeAsState()
             CompositionLocalProvider(LocalWindowInsets provides windowInset) {
-                ChatComposeTheme {
+                WanAndroidTheme {
                     if (userData == null) {
                         ProfileError()
                     }else{
