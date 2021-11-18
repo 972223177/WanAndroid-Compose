@@ -2,10 +2,9 @@ package com.ly.wanandroid
 
 import android.app.Application
 import com.ly.wanandroid.config.setting.Setting
-import com.ly.wanandroid.utils.syncInitTask
-import com.ly.wanandroid.utils.InitTaskRunner
-import com.ly.wanandroid.utils.SpUtils
-import com.ly.wanandroid.utils.Utils
+import com.ly.wanandroid.utils.*
+import com.tencent.smtt.export.external.TbsCoreSettings
+import com.tencent.smtt.sdk.QbSdk
 
 class AppApplication : Application() {
 
@@ -17,6 +16,25 @@ class AppApplication : Application() {
             })
             .add(syncInitTask("SpUtils") {
                 SpUtils.init(it)
+            }).add(asyncInitTask("x5Web") {
+                QbSdk.initTbsSettings(
+                    mapOf(
+                        TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER to true,
+                        TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE to true
+                    )
+                )
+                QbSdk.disableSensitiveApi()
+                QbSdk.setDownloadWithoutWifi(false)
+                QbSdk.initX5Environment(it, object : QbSdk.PreInitCallback {
+                    override fun onCoreInitFinished() {
+                        logD(InitTaskRunner.TAG, "TBS init finished")
+                    }
+
+                    override fun onViewInitFinished(p0: Boolean) {
+                        logD(InitTaskRunner.TAG, "TBS init successful:$p0")
+                    }
+
+                })
             }).run()
         Setting.init()
     }

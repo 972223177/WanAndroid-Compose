@@ -11,14 +11,16 @@ import androidx.compose.material.icons.outlined.AccountTree
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.QuestionAnswer
-import androidx.compose.material.icons.rounded.AccountTree
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material.icons.rounded.QuestionAnswer
+import androidx.compose.material.icons.rounded.*
+import androidx.compose.material.icons.sharp.AccountTree
+import androidx.compose.material.icons.sharp.Home
+import androidx.compose.material.icons.sharp.Message
+import androidx.compose.material.icons.sharp.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -31,23 +33,24 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ly.wanandroid.config.setting.Setting
+import com.ly.wanandroid.page.home.HomePage
 import com.ly.wanandroid.ui.theme.WanAndroidTheme
 import kotlinx.coroutines.launch
 
-@ExperimentalPagerApi
 class MainActivity : AppCompatActivity() {
     private val mViewModel by viewModels<MainViewModel>()
     private val titles = listOf("首页", "问答", "体系", "我的")
     private val icons =
         listOf(
-            Icons.Rounded.Home,
-            Icons.Rounded.QuestionAnswer,
-            Icons.Rounded.AccountTree,
-            Icons.Rounded.Person
+            Icons.Sharp.Home,
+            Icons.Sharp.Message,
+            Icons.Sharp.AccountTree,
+            Icons.Sharp.Person
         )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             val isNightMode by Setting.isNightModeFlow.collectAsState()
@@ -62,64 +65,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @Composable
-    private fun HomePage() {
-        val homeNavController = rememberNavController()
-        val pageState = rememberPagerState()
-        Scaffold(
-            bottomBar = {
-                BottomNav(pageState)
-            },
-        ) {
-            HorizontalPager(
-                count = titles.size,
-                state = pageState,
-                modifier = Modifier.padding(it)
-            ) { page ->
-                Screen(route = titles[page], index = page)
-            }
-        }
-    }
-
-    @Composable
-    private fun BottomNav(pagerState: PagerState) {
-        val scope = rememberCoroutineScope()
-        BottomNavigation(
-            modifier = Modifier.navigationBarsPadding(),
-            backgroundColor = MaterialTheme.colors.surface
-        ) {
-            icons.forEachIndexed { index, imageVector ->
-                val route = titles[index]
-                BottomNavigationItem(selected = pagerState.currentPage == index, icon = {
-                    Icon(imageVector = imageVector, contentDescription = imageVector.name)
-                }, label = {
-                    Text(text = route)
-                }, onClick = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(index)
-                    }
-                })
-            }
-        }
-    }
-
-    @Composable
-    private fun Screen(route: String, index: Int) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            var counter by remember {
-                mutableStateOf(0)
-            }
-            Text(text = "$route $counter", modifier = Modifier.align(Alignment.Center))
-            Button(onClick = {
-                counter += 1
-            }, modifier = Modifier.align(Alignment.BottomCenter)) {
-                Text(text = "add")
-            }
-        }
-    }
 
     override fun onSupportNavigateUp(): Boolean {
         return findNavController().navigateUp() || super.onSupportNavigateUp()

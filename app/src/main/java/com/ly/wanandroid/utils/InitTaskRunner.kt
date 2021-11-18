@@ -132,7 +132,7 @@ class InitTaskRunner(
     }
 
     companion object {
-        private const val TAG = "InitTaskRunner"
+        const val TAG = "InitTaskRunner"
     }
 }
 

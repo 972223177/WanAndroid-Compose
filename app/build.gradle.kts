@@ -62,9 +62,11 @@ dependencies {
 
     implementation(Libs.AndroidX.Activity.activityCompose)
     implementation(Libs.AndroidX.coreKtx)
+    implementation(Libs.AndroidX.splashScreen)
     implementation(Libs.AndroidX.appcompat)
     implementation(Libs.coil)
-    for(lib in Libs.Accompanist.libs){
+    implementation(Libs.x5Web)
+    for (lib in Libs.Accompanist.libs) {
         implementation(lib)
     }
 

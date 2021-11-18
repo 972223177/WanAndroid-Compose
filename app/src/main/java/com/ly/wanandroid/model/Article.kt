@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Article(
     @SerialName("alreadyInHomePage")
-    val alreadyInHomePage: Boolean,
+    val alreadyInHomePage: Boolean = false,
     @SerialName("apkLink")
     val apkLink: String,
     @SerialName("audit")

@@ -1,8 +1,10 @@
+@file:OptIn(ExperimentalPagerApi::class)
 package com.ly.wanandroid.widgets
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -17,7 +19,7 @@ import java.util.*
 /**
  * 不能使用PageState的currentPage和pageCount
  */
-@ExperimentalPagerApi
+
 @Composable
 fun Banner(
     modifier: Modifier = Modifier,
@@ -31,17 +33,13 @@ fun Banner(
 ) {
     val scope = rememberCoroutineScope()
     if (itemCount > 0) {
-        val nextPage = remember {
-            mutableStateOf(initialPage)
-        }
         DisposableEffect(key1 = itemCount, effect = {
 
             val timer = Timer()
             val timerTask = object : TimerTask() {
                 override fun run() {
                     scope.launch {
-                        nextPage.value = (pagerState.currentPage + 1) % itemCount
-                        pagerState.animateScrollToPage((pagerState.currentPage + 1) % pagerState.pageCount)
+                        pagerState.animateScrollToPage((pagerState.targetPage + 1) % pagerState.pageCount)
                     }
                 }
             }
@@ -61,7 +59,7 @@ fun Banner(
                 val realIndex = page % itemCount
                 onItemChanged(realIndex)
             }
-            indicator(pagerState.currentPage % itemCount)
+            indicator(pagerState.targetPage % itemCount)
 
         }
     } else {

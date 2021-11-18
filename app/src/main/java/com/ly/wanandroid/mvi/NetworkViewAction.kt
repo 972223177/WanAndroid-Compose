@@ -8,44 +8,39 @@ interface IViewAction
 
 object NoneViewAction : IViewAction
 
-/**
- * 创建密封类时，实现这个接口
- * 消费view的事件
- */
-interface IViewEvent
 
-object NoneViewEvent : IViewEvent
+sealed class ListViewStatus<out T : Any> {
+    object None : ListViewStatus<Nothing>()
 
-sealed class ListViewStatus {
-    object None : ListViewStatus()
+    object Refreshing : ListViewStatus<Nothing>()
 
-    object Refreshing : ListViewStatus()
-
-    data class Refreshed<T>(
+    data class Refreshed<out T : Any>(
         val success: Boolean,
         val hasMore: Boolean,
-        val data: List<T> = emptyList()
-    ) : ListViewStatus()
+        val data: T? = null,
+    ) : ListViewStatus<T>()
 
-    object Loading : ListViewStatus()
+    object Loading : ListViewStatus<Nothing>()
 
-    data class Loaded<T>(
+    data class Loaded<out T : Any>(
         val success: Boolean,
         val hasMore: Boolean,
-        val data: List<T> = emptyList()
-    ) : ListViewStatus()
+        val data: T? = null
+    ) : ListViewStatus<T>()
 
-    data class Empty(val hint: String) : ListViewStatus()
+    data class Empty(val hint: String) : ListViewStatus<Nothing>()
 }
 
-sealed class PageStatus {
-    object None : PageStatus()
+sealed class PageStatus<out T : Any> {
+    object None : PageStatus<Nothing>()
 
-    object Loading : PageStatus()
+    object Loading : PageStatus<Nothing>()
 
-    data class Success<T>(val data: T) : PageStatus()
+    data class Success<T : Any>(val data: T) : PageStatus<T>()
 
-    data class Error(val throwable: Throwable) : PageStatus()
+    data class Error(val msg: String) : PageStatus<Nothing>()
+
+    object Empty : PageStatus<Nothing>()
 
 }
 

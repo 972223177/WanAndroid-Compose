@@ -3,126 +3,85 @@ package com.ly.wanandroid.mvi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.ly.wanandroid.utils.toast
+import com.ly.wanandroid.config.http.Response
+import com.ly.wanandroid.config.http.handleRequestError
+import com.ly.wanandroid.config.http.throwError
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
-//todo multi type request
-abstract class MviViewModel<A : IViewAction, E : IViewEvent> : ViewModel() {
-    protected val _pageState = MutableLiveData<PageStatus>(PageStatus.None)
+abstract class MviViewModel<A : IViewAction, PageData : Any> : ViewModel() {
+    protected val _pageState = MutableLiveData<PageStatus<PageData>>(PageStatus.None)
 
-    val pageState: LiveData<PageStatus> = _pageState
+    val pageState: LiveData<PageStatus<PageData>> = _pageState
 
     protected val _commonEvent = SingleLiveEvent<CommonEvent>()
 
+    protected val _msgEvent = MutableStateFlow("")
+    val msgEvent: StateFlow<String> = _msgEvent
+
     val commonEvent: LiveData<CommonEvent> = _commonEvent
-
-    protected val _viewEvent = MutableLiveData<E>()
-
-    val viewEvent: LiveData<E> = _viewEvent
 
     abstract fun dispatch(viewAction: A)
 
     /**
-     * pageRequest{
-     *    val result = request()
-     *    emit(result)
+     * pageRequest(handler = {
+     *
+     * }){
+     *    val response = request()
+     *    response
      * }
-     * @param showErrorToast show toast when throw throwable
      */
-    private fun <T> pageRequest(
+    protected inline fun <T> request(
+        crossinline block: suspend () -> Response<T>
+    ): Flow<T?> = flow {
+        val result = block().throwError()
+        emit(result.data)
+    }
+
+    protected fun Flow<PageData?>.toPage(
         showErrorToast: Boolean = true,
-        block: suspend FlowCollector<T>.() -> Unit
-    ) {
-        viewModelScope.launch {
-            flow(block)
-                .onStart {
-                    _pageState.value = PageStatus.Loading
-                }.onEach {
-                    _pageState.value = PageStatus.Success(it)
-                }.catch { error ->
-                    if (showErrorToast) {
-                        toast(error.message ?: "")
-                    }
-                    _pageState.value = PageStatus.Error(error)
-                }.collect()
+        handleError: (FlowCollector<PageData>.(code: Int, msg: String) -> Unit)? = null,
+    ): Flow<PageData?> =
+        onStart {
+            _pageState.value = PageStatus.Loading
+        }.onEach {
+            _pageState.value = if (it == null) {
+                PageStatus.Empty
+            } else {
+                PageStatus.Success(it)
+            }
+        }.handleRequestError { code, msg ->
+            if (handleError != null) {
+                handleError(code, msg)
+            }
+            if (showErrorToast) {
+                _msgEvent.value = msg
+            }
+            _pageState.value = PageStatus.Error(msg)
         }
-    }
 
-    /**
-     * partRequest(block = {
-     *      emit(result)
-     *  }){
-     *     _viewEvent.value = ViewEvent(it)
-     *  }
-     */
-    private fun <T> partRequest(
+    protected fun <T> Flow<T?>.toPart(
+        showErrorToast: Boolean = true,
         showLoading: Boolean = true,
-        showErrorToast: Boolean = false,
-        block: suspend FlowCollector<T>.() -> Unit,
-        success: suspend (T) -> Unit
-    ) {
-        viewModelScope.launch {
-            flow(block)
-                .onStart {
-                    if (showLoading) {
-                        _commonEvent.setEvent(CommonEvent.ShowLoading)
-                    }
-                }.onEach(success)
-                .catch { error ->
-                    if (showErrorToast) {
-                        toast(error.message ?: "")
-                    }
-                }
-                .onCompletion {
-                    if (showLoading) {
-                        _commonEvent.setEvent(CommonEvent.DismissLoading)
-                    }
-                }.collect()
+        handleError: (FlowCollector<T>.(code: Int, msg: String) -> Unit)? = null,
+        success: suspend (T?) -> Unit,
+    ): Flow<T?> = onStart {
+        if (showLoading) {
+            _commonEvent.setValue(CommonEvent.ShowLoading)
+        }
+    }.onEach {
+        success(it)
+    }.handleRequestError { code, msg ->
+        if (handleError != null) {
+            handleError(code, msg)
+        }
+        if (showErrorToast) {
+            _msgEvent.value = msg
+        }
+    }.onCompletion {
+        if (showLoading) {
+            _commonEvent.setValue(CommonEvent.DismissLoading)
         }
     }
 
 }
 
-abstract class MviListViewModel<A : IViewAction, E : IViewEvent> : MviViewModel<A, E>() {
-    protected val _listViewState = MutableLiveData<ListViewStatus>(ListViewStatus.None)
-
-    val listViewState: LiveData<ListViewStatus> = _listViewState
-
-    /**
-     * fetchList(refresh = true){
-     *      val fetchResult = request()
-     *      val hasMore = fetchResult.hasMore
-     *      val list = fetchResult.list
-     *      emit(hasMore,list)
-     * }
-     * emit Pair(hasMore,List<T>)
-     */
-    private fun <T> fetchList(
-        refresh: Boolean = true,
-        showErrorToast: Boolean = false,
-        block: suspend FlowCollector<Pair<Boolean, List<T>>>.() -> Unit
-    ) {
-        viewModelScope.launch {
-            flow(block)
-                .onStart {
-                    _listViewState.value =
-                        if (refresh) ListViewStatus.Refreshing else ListViewStatus.Loading
-                }.onEach {
-                    _listViewState.value = if (refresh)
-                        ListViewStatus.Refreshed(true, it.first, it.second)
-                    else
-                        ListViewStatus.Loaded(true, it.first, it.second)
-                }.catch { error ->
-                    if (showErrorToast) {
-                        toast(error.message ?: "")
-                    }
-                    _listViewState.value = if (refresh)
-                        ListViewStatus.Refreshed<T>(false, hasMore = false)
-                    else
-                        ListViewStatus.Loaded<T>(true, hasMore = false)
-                }
-        }
-    }
-}

@@ -1,4 +1,7 @@
 package com.ly.wanandroid.config.http
 
-class ApiException(val code: Int = ErrorStatus.API_ERROR, throwable: Throwable) :
-    RuntimeException(throwable)
+class ApiException(
+    msg: String,
+    val code: Int = ErrorStatus.API_ERROR,
+) :
+    RuntimeException(msg)

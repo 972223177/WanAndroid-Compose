@@ -43,4 +43,7 @@ inline fun <reified T> createService(): T = retrofit.create(T::class.java)
 
 
 @Serializable
-data class Response<T>(val data: T?, val errorMsg: String = "", val errorCode: Int = -1)
+data class Response<T>(val data: T?, val errorMsg: String = "", val errorCode: Int = -1) {
+    val success: Boolean
+        get() = errorCode == 0
+}

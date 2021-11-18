@@ -30,6 +30,8 @@ object Libs {
 
     const val mmkv = "com.tencent:mmkv-static:1.2.11"
 
+    const val x5Web = "com.tencent.tbs.tbssdk:sdk:43993"
+
     object Accompanist {
         const val version = "0.20.0"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
@@ -62,7 +64,8 @@ object Libs {
 
     object AndroidX {
         const val appcompat = "androidx.appcompat:appcompat:1.3.0"
-        const val coreKtx = "androidx.core:core-ktx:1.6.0"
+        const val coreKtx = "androidx.core:core-ktx:1.7.0"
+        const val splashScreen = "androidx.core:core-splashscreen:1.0.0-alpha02"
 
         object Activity {
             const val activityCompose = "androidx.activity:activity-compose:1.3.1"

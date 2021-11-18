@@ -16,6 +16,8 @@ typealias AsyncValueGetter<T> = suspend () -> T
 
 typealias AsyncValueSetter<T> = suspend (T) -> Unit
 
+typealias AsyncValueSetter2<T, R> = suspend (T, R) -> Unit
+
 typealias AsyncValueCallback<T, R> = suspend (T) -> R
 
 typealias ComposableCallback = @Composable () -> Unit
