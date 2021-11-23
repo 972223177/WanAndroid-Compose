@@ -6,72 +6,78 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Article(
-    @SerialName("alreadyInHomePage")
-    val alreadyInHomePage: Boolean = false,
     @SerialName("apkLink")
-    val apkLink: String,
+    val apkLink: String = "",
     @SerialName("audit")
-    val audit: Int,
+    val audit: Int = 0,
     @SerialName("author")
-    val author: String,
+    val author: String = "",
     @SerialName("canEdit")
-    val canEdit: Boolean,
+    val canEdit: Boolean = false,
     @SerialName("chapterId")
-    val chapterId: Int,
+    val chapterId: Int = 0,
     @SerialName("chapterName")
-    val chapterName: String,
+    val chapterName: String = "",
     @SerialName("collect")
-    val collect: Boolean,
+    val collect: Boolean = false,
     @SerialName("courseId")
-    val courseId: Int,
+    val courseId: Int = 0,
     @SerialName("desc")
-    val desc: String,
+    val desc: String = "",
     @SerialName("descMd")
-    val descMd: String,
+    val descMd: String = "",
     @SerialName("envelopePic")
-    val envelopePic: String,
+    val envelopePic: String = "",
     @SerialName("fresh")
-    val fresh: Boolean,
+    val fresh: Boolean = false,
     @SerialName("host")
-    val host: String,
+    val host: String = "",
     @SerialName("id")
-    val id: Int,
+    val id: Int = 0,
     @SerialName("link")
-    val link: String,
+    val link: String = "",
     @SerialName("niceDate")
-    val niceDate: String,
+    val niceDate: String = "",
     @SerialName("niceShareDate")
-    val niceShareDate: String,
+    val niceShareDate: String = "",
     @SerialName("origin")
-    val origin: String,
+    val origin: String = "",
     @SerialName("prefix")
-    val prefix: String,
+    val prefix: String = "",
     @SerialName("projectLink")
-    val projectLink: String,
+    val projectLink: String = "",
     @SerialName("publishTime")
-    val publishTime: Long,
+    val publishTime: Long = 0,
     @SerialName("realSuperChapterId")
-    val realSuperChapterId: Int,
+    val realSuperChapterId: Int = 0,
     @SerialName("selfVisible")
-    val selfVisible: Int,
+    val selfVisible: Int = 0,
     @SerialName("shareDate")
-    val shareDate: Long?,
+    val shareDate: Long = 0,
     @SerialName("shareUser")
-    val shareUser: String,
+    val shareUser: String = "",
     @SerialName("superChapterId")
-    val superChapterId: Int,
+    val superChapterId: Int = 0,
     @SerialName("superChapterName")
-    val superChapterName: String,
-//    @SerialName("tags")
-//    val tags: List<Any>,
+    val superChapterName: String = "",
+    @SerialName("tags")
+    val tags: List<Tag> = listOf(),
     @SerialName("title")
-    val title: String,
+    val title: String = "",
     @SerialName("type")
-    val type: Int,
+    val type: Int = 0,
     @SerialName("userId")
-    val userId: Int,
+    val userId: Int = 0,
     @SerialName("visible")
-    val visible: Int,
+    val visible: Int = 0,
     @SerialName("zan")
-    val zan: Int
+    val zan: Int = 0
+)
+
+@Serializable
+data class Tag(
+    @SerialName("name")
+    val name: String = "",
+    @SerialName("url")
+    val url: String = ""
 )

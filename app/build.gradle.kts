@@ -70,6 +70,10 @@ dependencies {
         implementation(lib)
     }
 
+    for (lib in Libs.AndroidX.Paging.libs) {
+        implementation(lib)
+    }
+
     implementation(Libs.material)
     for (lib in Libs.AndroidX.Compose.libs) {
         implementation(lib)

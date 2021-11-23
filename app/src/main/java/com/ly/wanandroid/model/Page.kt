@@ -7,17 +7,17 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Page<T>(
     @SerialName("curPage")
-    val curPage: Int,
+    val curPage: Int = 0,
     @SerialName("datas")
-    val datas: List<T>,
+    val datas: List<T> = listOf(),
     @SerialName("offset")
-    val offset: Int,
+    val offset: Int = 0,
     @SerialName("over")
-    val over: Boolean,
+    val over: Boolean = false,
     @SerialName("pageCount")
-    val pageCount: Int,
+    val pageCount: Int = 0,
     @SerialName("size")
-    val size: Int,
+    val size: Int = 0,
     @SerialName("total")
-    val total: Int
+    val total: Int = 0
 )

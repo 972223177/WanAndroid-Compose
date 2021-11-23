@@ -7,19 +7,19 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Banner(
     @SerialName("desc")
-    val desc: String,
+    val desc: String = "",
     @SerialName("id")
-    val id: Int,
+    val id: Int = 0,
     @SerialName("imagePath")
-    val imagePath: String,
+    val imagePath: String = "",
     @SerialName("isVisible")
-    val isVisible: Int,
+    val isVisible: Int = 0,
     @SerialName("order")
-    val order: Int,
+    val order: Int = 0,
     @SerialName("title")
-    val title: String,
+    val title: String = "",
     @SerialName("type")
-    val type: Int,
+    val type: Int = 0,
     @SerialName("url")
-    val url: String
+    val url: String = ""
 )

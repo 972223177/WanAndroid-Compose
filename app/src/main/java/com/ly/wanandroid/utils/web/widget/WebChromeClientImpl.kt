@@ -45,10 +45,10 @@ class WebViewClientImpl : WebViewClient() {
         reqUri: Uri,
         reqHeaders: Map<String, String>? = null,
         reqMethod: String? = null
-    ): WebResourceResponse {
+    ): WebResourceResponse? {
         val url = reqUri.toString()
         log("shouldInterceptRequest:url =$url,headers:$reqHeaders,method:$reqMethod")
-
+        return null
     }
 
     private fun log(content: String) {

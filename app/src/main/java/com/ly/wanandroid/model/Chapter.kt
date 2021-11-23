@@ -5,19 +5,21 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class InfoTree(
+data class Chapter(
     @SerialName("children")
-    val children: List<InfoTree>,
+    val children: List<Chapter> = listOf(),
     @SerialName("courseId")
-    val courseId: Int,
+    val courseId: Int = 0,
     @SerialName("id")
-    val id: Int,
+    val id: Int = 0,
     @SerialName("name")
-    val name: String,
+    val name: String = "",
     @SerialName("order")
-    val order: Int,
+    val order: Int = 0,
     @SerialName("parentChapterId")
-    val parentChapterId: Int,
+    val parentChapterId: Int = 0,
+    @SerialName("userControlSetTop")
+    val userControlSetTop: Boolean = false,
     @SerialName("visible")
-    val visible: Int
+    val visible: Int = 0
 )

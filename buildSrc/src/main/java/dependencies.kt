@@ -128,6 +128,24 @@ object Libs {
             const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:$version"
             val libs = listOf(livedata, viewmodel, viewModelCompose)
         }
+
+        //        dependencies {
+//            val paging_version = "2.1.2"
+//
+//            implementation("androidx.paging:paging-runtime:$paging_version") // For Kotlin use paging-runtime-ktx
+//
+//            // alternatively - without Android dependencies for testing
+//            testImplementation("androidx.paging:paging-common:$paging_version") // For Kotlin use paging-common-ktx
+//
+//            // optional - RxJava support
+//            implementation("androidx.paging:paging-rxjava2:$paging_version") // For Kotlin use paging-rxjava2-ktx
+//        }
+        object Paging {
+            private const val version = "3.0.1"
+            val runtime = "androidx.paging:paging-runtime:$version"
+            val ompose ="androidx.paging:paging-compose:1.0.0-alpha14"
+            val libs = listOf(runtime,ompose)
+        }
     }
 
     object Http {

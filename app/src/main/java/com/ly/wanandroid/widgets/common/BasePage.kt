@@ -77,6 +77,7 @@ fun <T : Any> BaseScreen(
                 content(status.data)
             }
             PageStatus.Empty -> emptyHolder()
+            else -> {}
         }
         SnackbarHost(hostState = snackHostState, modifier = Modifier.align(Alignment.Center)) {
             Card(
