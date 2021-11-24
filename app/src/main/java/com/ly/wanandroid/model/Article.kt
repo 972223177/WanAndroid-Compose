@@ -71,7 +71,9 @@ data class Article(
     @SerialName("visible")
     val visible: Int = 0,
     @SerialName("zan")
-    val zan: Int = 0
+    val zan: Int = 0,
+    @SerialName("top")
+    val top: Boolean = false
 )
 
 @Serializable

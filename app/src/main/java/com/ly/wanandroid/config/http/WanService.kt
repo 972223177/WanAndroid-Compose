@@ -24,5 +24,5 @@ interface WanService {
     suspend fun getBanner(): Response<List<Banner>>
 
     @GET("article/top/json")
-    suspend fun getTopArticles():Response<Page<Article>>
+    suspend fun getTopArticles():Response<List<Article>>
 }

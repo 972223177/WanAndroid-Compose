@@ -1,21 +1,42 @@
 package com.ly.wanandroid.page.home.index
 
 import androidx.lifecycle.viewModelScope
-import com.ly.wanandroid.config.http.Response
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.map
+import com.ly.wanandroid.config.http.throwError
 import com.ly.wanandroid.model.Article
 import com.ly.wanandroid.model.Banner
-import com.ly.wanandroid.model.Page
 import com.ly.wanandroid.mvi.IViewAction
+import com.ly.wanandroid.mvi.MviListViewModel
 import com.ly.wanandroid.mvi.MviViewModel
 import com.ly.wanandroid.page.home.HomeRepository
 import com.ly.wanandroid.page.home.model.IndexPageList
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.zip
+import com.ly.wanandroid.utils.logD
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class IndexViewModel : MviViewModel<IndexViewAction, IndexPageList>() {
+class IndexViewModel : MviViewModel<IndexViewAction, List<Banner>>() {
     private val mRepository = HomeRepository()
+
+    protected val mIsRefresh = MutableStateFlow(false)
+    val isRefresh: StateFlow<Boolean> = mIsRefresh
+
+    val articles = Pager(
+        PagingConfig(pageSize = 20)
+    ) {
+        IndexPagingSource()
+    }.flow.cachedIn(viewModelScope)
+        .map {
+            it.map { wrapper ->
+                mIsRefresh.value = wrapper.anchorPage == 1
+                wrapper.article
+            }
+        }
+
 
     override fun dispatch(viewAction: IndexViewAction) {
         when (viewAction) {
@@ -29,8 +50,6 @@ class IndexViewModel : MviViewModel<IndexViewAction, IndexPageList>() {
         viewModelScope.launch {
             request {
                 mRepository.getBanners()
-            }.zip(request { mRepository.getArticles(0) }) { banners, page ->
-                IndexPageList(banners ?: emptyList(), page?.datas ?: emptyList())
             }.toPage().collect()
         }
     }

@@ -2,6 +2,7 @@ package com.ly.wanandroid.config.http
 
 import com.ly.wanandroid.config.http.inteceptors.CookieInterceptor
 import com.ly.wanandroid.config.http.inteceptors.HeaderInterceptor
+import com.ly.wanandroid.utils.logD
 import kotlinx.serialization.Serializable
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -11,20 +12,9 @@ import java.util.concurrent.TimeUnit
 
 private val client by lazy {
     OkHttpClient.Builder()
-        .addInterceptor(HttpLoggingInterceptor())
+        .addInterceptor(HttpLoggingInterceptor { message -> logD(message) })
         .addInterceptor(CookieInterceptor())
         .addInterceptor(HeaderInterceptor())
-        .addInterceptor {
-            val request = it.request()
-            println(
-                "************${request.headers}************\n" +
-                        "* method:${request.method}\n" +
-                        "* url:${request.url}\n" +
-                        "* requestBody:${request.body}\n" +
-                        "********************************************\n"
-            )
-            return@addInterceptor it.proceed(request)
-        }
         .connectTimeout(HttpConstant.DEFAULT_TIMEOUT, TimeUnit.SECONDS)
         .readTimeout(HttpConstant.DEFAULT_TIMEOUT, TimeUnit.SECONDS)
         .writeTimeout(HttpConstant.DEFAULT_TIMEOUT, TimeUnit.SECONDS)

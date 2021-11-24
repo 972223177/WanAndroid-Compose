@@ -13,4 +13,5 @@ class HomeRepository {
     suspend fun getBanners(): Response<List<Banner>> = wanService.getBanner()
 
     suspend fun getArticles(page: Int): Response<Page<Article>> = wanService.getArticles(page)
+
 }

@@ -3,6 +3,11 @@ package com.ly.wanandroid.utils
 import android.util.Log
 import com.ly.wanandroid.BuildConfig
 
+private const val COMMON_TAG = "WanAndroid"
+
+fun logD(content: String) {
+    logD(COMMON_TAG, content)
+}
 
 fun logD(tag: String, content: String) {
     if (BuildConfig.DEBUG) {

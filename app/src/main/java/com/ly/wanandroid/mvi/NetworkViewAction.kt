@@ -9,28 +9,6 @@ interface IViewAction
 object NoneViewAction : IViewAction
 
 
-sealed class ListViewStatus<out T : Any> {
-    object None : ListViewStatus<Nothing>()
-
-    object Refreshing : ListViewStatus<Nothing>()
-
-    data class Refreshed<out T : Any>(
-        val success: Boolean,
-        val hasMore: Boolean,
-        val data: T? = null,
-    ) : ListViewStatus<T>()
-
-    object Loading : ListViewStatus<Nothing>()
-
-    data class Loaded<out T : Any>(
-        val success: Boolean,
-        val hasMore: Boolean,
-        val data: T? = null
-    ) : ListViewStatus<T>()
-
-    data class Empty(val hint: String) : ListViewStatus<Nothing>()
-}
-
 sealed class PageStatus<out T : Any> {
     object None : PageStatus<Nothing>()
 
@@ -50,5 +28,16 @@ sealed class CommonEvent {
     object ShowLoading : CommonEvent()
 
     object DismissLoading : CommonEvent()
+
+}
+
+sealed class ListViewState<out T : Any> {
+    object Init : ListViewState<Nothing>()
+    data class Fetched<T : Any>(
+        val refresh: Boolean,
+        val success: Boolean,
+        val hasMore: Boolean,
+        val data: T? = null
+    ) : ListViewState<T>()
 
 }

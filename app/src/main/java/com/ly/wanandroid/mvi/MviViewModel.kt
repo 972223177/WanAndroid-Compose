@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.ly.wanandroid.config.http.Response
 import com.ly.wanandroid.config.http.handleRequestError
 import com.ly.wanandroid.config.http.throwError
+import com.ly.wanandroid.utils.logD
 import kotlinx.coroutines.flow.*
 
 abstract class MviViewModel<A : IViewAction, PageData : Any> : ViewModel() {
@@ -23,11 +24,8 @@ abstract class MviViewModel<A : IViewAction, PageData : Any> : ViewModel() {
     abstract fun dispatch(viewAction: A)
 
     /**
-     * pageRequest(handler = {
-     *
-     * }){
-     *    val response = request()
-     *    response
+     * request{
+     *     repository.getData()
      * }
      */
     protected inline fun <T> request(
@@ -59,11 +57,11 @@ abstract class MviViewModel<A : IViewAction, PageData : Any> : ViewModel() {
             _pageState.value = PageStatus.Error(msg)
         }
 
-    protected fun <T> Flow<T?>.toPart(
+    protected inline fun <T> Flow<T?>.toPart(
         showErrorToast: Boolean = true,
         showLoading: Boolean = true,
-        handleError: (FlowCollector<T>.(code: Int, msg: String) -> Unit)? = null,
-        success: suspend (T?) -> Unit,
+        noinline handleError: (FlowCollector<T>.(code: Int, msg: String) -> Unit)? = null,
+        crossinline success: suspend (T?) -> Unit,
     ): Flow<T?> = onStart {
         if (showLoading) {
             _commonEvent.setValue(CommonEvent.ShowLoading)
@@ -85,3 +83,43 @@ abstract class MviViewModel<A : IViewAction, PageData : Any> : ViewModel() {
 
 }
 
+abstract class MviListViewModel<A : IViewAction, PageData : Any, ListViewData : Any> :
+    MviViewModel<A, PageData>() {
+    private val mListViewState = MutableStateFlow<ListViewState<ListViewData>>(ListViewState.Init)
+    val listViewState: StateFlow<ListViewState<ListViewData>> = mListViewState
+    protected val mIsRefresh = MutableStateFlow(false)
+    val isRefresh: StateFlow<Boolean> = mIsRefresh
+
+    protected var mPage = 1
+
+    /**
+     *  fetchList(refresh = true){ page->
+     *      request{
+     *        val result = repository.getList(page)
+     *        result.hasMore to result.data
+     *      }
+     *  }
+     */
+    protected suspend fun fetchList(
+        refresh: Boolean,
+        fetch: suspend (page: Int) -> Flow<Pair<Boolean, ListViewData>>
+    ) {
+        mPage = if (refresh) 1 else mPage + 1
+        if (refresh){
+            mIsRefresh.value = true
+        }
+        fetch(mPage).onEach {
+            mListViewState.value = ListViewState.Fetched(refresh, true, it.first, it.second)
+        }.handleRequestError { code, msg ->
+            logD("fetchListError(refresh:$refresh) -> code:$code -> msg:$msg")
+            mListViewState.value = ListViewState.Fetched(
+                refresh = refresh,
+                success = false,
+                hasMore = false,
+                data = null
+            )
+        }.onCompletion {
+            mIsRefresh.value = false
+        }.collect()
+    }
+}

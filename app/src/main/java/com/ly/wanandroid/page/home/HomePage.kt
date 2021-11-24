@@ -5,6 +5,7 @@ package com.ly.wanandroid.page.home
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.AccountTree
@@ -14,11 +15,14 @@ import androidx.compose.material.icons.sharp.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
+import com.ly.wanandroid.R
 import com.ly.wanandroid.page.home.index.IndexScreen
 import com.ly.wanandroid.page.home.knowledge.KnowledgeScreen
 import com.ly.wanandroid.page.home.mine.MineScreen
@@ -67,13 +71,21 @@ private fun BottomNav(pagerState: PagerState) {
         backgroundColor = MaterialTheme.colors.surface
     ) {
         val currentPage = pagerState.targetPage
-        icons.forEachIndexed { index, imageVector ->
-            val route = titles[index]
-
+        titles.forEachIndexed { index, title ->
+            val iconId = when (index) {
+                0 -> R.drawable.ic_bottom_bar_home
+                1 -> R.drawable.ic_bottom_bar_ques
+                2 -> R.drawable.ic_bottom_bar_navi
+                else -> R.drawable.ic_bottom_bar_mine
+            }
             BottomNavigationItem(selected = currentPage == index, icon = {
-                Icon(imageVector = imageVector, contentDescription = imageVector.name)
+                Icon(
+                    painter = painterResource(id = iconId),
+                    modifier = Modifier.size(25.dp),
+                    contentDescription = title
+                )
             }, label = {
-                Text(text = route)
+                Text(text = title)
             }, onClick = {
                 scope.launch {
                     pagerState.animateScrollToPage(index)

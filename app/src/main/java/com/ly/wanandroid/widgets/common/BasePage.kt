@@ -21,6 +21,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
+val UPDATE_TAG = Any()
+
 @Composable
 fun <T : Any> BaseScreen(
     pageStatus: State<PageStatus<T>?>,
@@ -41,7 +43,6 @@ fun <T : Any> BaseScreen(
     content: ComposableCallback1<T>
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        val scope = rememberCoroutineScope()
         val snackHostState = remember {
             SnackbarHostState()
         }
@@ -56,19 +57,14 @@ fun <T : Any> BaseScreen(
             else -> {}
         }
 
-        DisposableEffect(key1 = true, effect = {
-            scope.launch {
-                msgEvent.collect {
-                    logD("BasePage", it)
-                    if (it.isNotEmpty()) {
-                        snackHostState.showSnackbar(it)
-                    }
+        LaunchedEffect(key1 = UPDATE_TAG) {
+            msgEvent.collect {
+                logD("BasePage", it)
+                if (it.isNotEmpty()) {
+                    snackHostState.showSnackbar(it)
                 }
             }
-            onDispose {
-
-            }
-        })
+        }
         when (val status = pageStatus.value) {
             is PageStatus.Error -> errorHolder()
             PageStatus.Loading -> loadingHolder()

@@ -1,5 +1,6 @@
 package com.ly.wanandroid.ui.theme
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.material.Colors
 import androidx.compose.material.LocalElevationOverlay
 import androidx.compose.runtime.Composable
@@ -56,6 +57,9 @@ val WhiteA30 = Color(0x4dffffff)
 val WhiteA20 = Color(0x33ffffff)
 val WhiteA05 = Color(0x11ffffff)
 
+val Colors.main: Color
+    get() = if (isLight) Blue4282F4 else Blue73A3F5
+
 val Colors.textMain: Color
     get() = if (isLight) Blue4282F4 else Blue73A3F5
 
@@ -73,7 +77,6 @@ val Colors.textSurface: Color
 
 val Colors.textAccent: Color
     get() = if (isLight) OrangeF86734 else OrangeF78C65
-
 
 
 /**
