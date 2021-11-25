@@ -1,11 +1,8 @@
 package com.ly.wanandroid.page.home.index
 
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.cachedIn
+import androidx.paging.*
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.map
 import com.ly.wanandroid.config.http.throwError
 import com.ly.wanandroid.model.Article
 import com.ly.wanandroid.model.Banner
@@ -22,9 +19,6 @@ import kotlinx.coroutines.launch
 class IndexViewModel : MviViewModel<IndexViewAction, List<Banner>>() {
     private val mRepository = HomeRepository()
 
-    protected val mIsRefresh = MutableStateFlow(false)
-    val isRefresh: StateFlow<Boolean> = mIsRefresh
-
     val articles = Pager(
         PagingConfig(pageSize = 20)
     ) {
@@ -32,7 +26,6 @@ class IndexViewModel : MviViewModel<IndexViewAction, List<Banner>>() {
     }.flow.cachedIn(viewModelScope)
         .map {
             it.map { wrapper ->
-                mIsRefresh.value = wrapper.anchorPage == 1
                 wrapper.article
             }
         }
@@ -42,15 +35,23 @@ class IndexViewModel : MviViewModel<IndexViewAction, List<Banner>>() {
         when (viewAction) {
             IndexViewAction.Init -> init()
             IndexViewAction.LoadMore -> {}
-            IndexViewAction.Refresh -> {}
+            IndexViewAction.Refresh -> {
+
+            }
         }
     }
 
+    private var mInitialed = false
     private fun init() {
+        if (mInitialed) return
         viewModelScope.launch {
             request {
                 mRepository.getBanners()
-            }.toPage().collect()
+            }.toPage(
+                success = {
+                    mInitialed = true
+                }
+            ).collect()
         }
     }
 

@@ -13,8 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.rememberImagePainter
@@ -31,17 +36,12 @@ import com.ly.wanandroid.widgets.common.BaseScreen
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 
-private var initialed = false
-
 @Composable
 fun IndexScreen() {
     val indexViewModel = viewModel<IndexViewModel>()
 
     LaunchedEffect(key1 = false) {
-        if (!initialed) {
-            indexViewModel.dispatch(IndexViewAction.Init)
-            initialed = true
-        }
+        indexViewModel.dispatch(IndexViewAction.Init)
     }
     BaseScreen(
         pageStatus = indexViewModel.pageState.observeAsState(),
@@ -54,8 +54,10 @@ fun IndexScreen() {
 
 @Composable
 private fun IndexList(initData: List<Banner>, viewModel: IndexViewModel) {
-    val inRefresh by viewModel.isRefresh.collectAsState()
-    val refreshState = rememberSwipeRefreshState(isRefreshing = inRefresh)
+    val articles = viewModel.articles.collectAsLazyPagingItems()
+    val refreshState =
+        rememberSwipeRefreshState(isRefreshing = articles.loadState.refresh is LoadState.Loading)
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -63,29 +65,25 @@ private fun IndexList(initData: List<Banner>, viewModel: IndexViewModel) {
     ) {
         SwipeRefresh(state = refreshState,
             onRefresh = {
-                viewModel.dispatch(IndexViewAction.Refresh)
+                articles.refresh()
+                refreshState.isRefreshing = true
             }) {
-            List(initialData = initData, viewModel)
-        }
-    }
-}
 
-@Composable
-private fun List(initialData: List<Banner>, viewModel: IndexViewModel) {
+            LazyColumn {
+                item {
+                    IndexBanner(initData)
+                }
+                items(articles) { item ->
+                    if (item != null) {
+                        ItemArticle(article = item)
+                    }
+                }
 
-    val articles = viewModel.articles.collectAsLazyPagingItems()
-    LazyColumn {
-        item {
-            IndexBanner(initialData)
-        }
-        items(articles) { item ->
-            if (item != null) {
-                ItemArticle(article = item)
             }
         }
-
     }
 }
+
 
 @Composable
 private fun IndexBanner(banners: List<Banner>) {

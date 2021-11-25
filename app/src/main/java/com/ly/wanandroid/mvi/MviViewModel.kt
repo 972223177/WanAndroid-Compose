@@ -35,13 +35,16 @@ abstract class MviViewModel<A : IViewAction, PageData : Any> : ViewModel() {
         emit(result.data)
     }
 
+
     protected fun Flow<PageData?>.toPage(
         showErrorToast: Boolean = true,
+        success: ((PageData?) -> Unit)? = null,
         handleError: (FlowCollector<PageData>.(code: Int, msg: String) -> Unit)? = null,
     ): Flow<PageData?> =
         onStart {
             _pageState.value = PageStatus.Loading
         }.onEach {
+            success?.invoke(it)
             _pageState.value = if (it == null) {
                 PageStatus.Empty
             } else {
@@ -105,7 +108,7 @@ abstract class MviListViewModel<A : IViewAction, PageData : Any, ListViewData : 
         fetch: suspend (page: Int) -> Flow<Pair<Boolean, ListViewData>>
     ) {
         mPage = if (refresh) 1 else mPage + 1
-        if (refresh){
+        if (refresh) {
             mIsRefresh.value = true
         }
         fetch(mPage).onEach {
