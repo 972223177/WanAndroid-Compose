@@ -2,8 +2,6 @@
 
 package com.ly.wanandroid.page.home
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
@@ -12,11 +10,12 @@ import androidx.compose.material.icons.sharp.AccountTree
 import androidx.compose.material.icons.sharp.Home
 import androidx.compose.material.icons.sharp.Message
 import androidx.compose.material.icons.sharp.Person
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -31,14 +30,6 @@ import kotlinx.coroutines.launch
 
 
 private val titles = listOf("首页", "问答", "体系", "我的")
-private val icons =
-    listOf(
-        Icons.Sharp.Home,
-        Icons.Sharp.Message,
-        Icons.Sharp.AccountTree,
-        Icons.Sharp.Person
-    )
-
 
 @Composable
 fun HomePage() {
@@ -91,24 +82,6 @@ private fun BottomNav(pagerState: PagerState) {
                     pagerState.animateScrollToPage(index)
                 }
             })
-        }
-    }
-}
-
-@Composable
-private fun Screen(route: String, index: Int) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        var counter by remember {
-            mutableStateOf(0)
-        }
-        Text(text = "$route $counter", modifier = Modifier.align(Alignment.Center))
-        Button(onClick = {
-            counter += 1
-        }, modifier = Modifier.align(Alignment.BottomCenter)) {
-            Text(text = "add")
         }
     }
 }

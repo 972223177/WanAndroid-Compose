@@ -1,6 +1,7 @@
 package com.ly.wanandroid.config.http
 
 import com.ly.wanandroid.utils.logD
+import com.ly.wanandroid.utils.toast
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +20,13 @@ private const val TAG = "HttpError"
 
 fun <T> Response<T>.throwError(): Response<T> {
     if (!success) {
-        throw  ApiException(errorMsg, errorCode)
+        if (errorCode == ErrorStatus.UN_LOGIN) {
+            toast(errorMsg)
+
+        } else {
+            throw  ApiException(errorMsg, errorCode)
+        }
+
     }
     return this
 }
@@ -72,4 +79,6 @@ object ErrorStatus {
     const val NETWORK_ERROR = 1004
 
     const val API_ERROR = 1005
+
+    const val UN_LOGIN = -1001
 }

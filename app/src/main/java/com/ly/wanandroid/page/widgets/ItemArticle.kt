@@ -18,21 +18,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
 import coil.compose.rememberImagePainter
+import com.ly.wanandroid.LocalNavController
+import com.ly.wanandroid.R
 import com.ly.wanandroid.ValueSetter
 import com.ly.wanandroid.model.Article
 import com.ly.wanandroid.model.Tag
-import com.ly.wanandroid.ui.theme.*
-import com.ly.wanandroid.R
 import com.ly.wanandroid.page.utils.toAnnotatedString
+import com.ly.wanandroid.route.WebViewRouteArg
+import com.ly.wanandroid.ui.NavRoute
+import com.ly.wanandroid.ui.goWebView
+import com.ly.wanandroid.ui.navTo
+import com.ly.wanandroid.ui.navWithRouteArg
+import com.ly.wanandroid.ui.theme.*
 import com.ly.wanandroid.utils.logD
-import java.lang.StringBuilder
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 
 @Composable
@@ -42,12 +48,13 @@ fun ItemArticle(
     collect: ValueSetter<Article> = {},
     uncollect: ValueSetter<Article> = {}
 ) {
+    val navController = LocalNavController.current
     logD("article$article")
     Box(modifier = modifier
         .fillMaxWidth()
         .wrapContentHeight()
         .clickable {
-
+            navController.goWebView(article.link)
         }
         .padding(16.dp)
     ) {
@@ -202,12 +209,12 @@ private fun CollectView(article: Article) {
     var isChecked by remember {
         mutableStateOf(article.collect)
     }
-    val tint = if (isChecked){
+    val tint = if (isChecked) {
         Color.Cyan
-    }else{
-        if (MaterialTheme.colors.isLight){
+    } else {
+        if (MaterialTheme.colors.isLight) {
             Color.Black
-        }else{
+        } else {
             Color.White
         }
     }

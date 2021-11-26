@@ -1,9 +1,7 @@
 package com.ly.wanandroid
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import androidx.navigation.NavHostController
+import com.ly.wanandroid.ui.NavRoute
 
-class MainViewModel : ViewModel() {
-
-}
+class MainViewModel : ViewModel()
