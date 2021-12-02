@@ -20,13 +20,8 @@ import com.ly.wanandroid.config.setting.Setting
 import com.ly.wanandroid.page.home.HomePage
 import com.ly.wanandroid.page.web.WebPage
 import com.ly.wanandroid.route.WebViewRouteArg
-import com.ly.wanandroid.ui.NavRoute
+import com.ly.wanandroid.route.NavRoute
 import com.ly.wanandroid.ui.theme.WanAndroidTheme
-import com.ly.wanandroid.ui.toRouteArg
-import kotlinx.coroutines.flow.collect
-import java.net.URLDecoder
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
 class MainActivity : AppCompatActivity() {
     private val mViewModel by viewModels<MainViewModel>()
@@ -48,16 +43,18 @@ class MainActivity : AppCompatActivity() {
                                 HomePage()
                             }
                         }
-                        composable(NavRoute.WEB_VIEW + "/{url}", arguments = listOf(
-                            navArgument("url") { type = NavType.StringType }
-                        )) {
+                        composable(
+                            route = NavRoute.WEB_VIEW
+                        ) {
                             CompositionLocalProvider(LocalNavController provides navController) {
                                 val arg =
-                                    WebViewRouteArg.parseArg(it.arguments?.getString("url") ?: "")
-                                WebPage(
-                                    url = arg.url,
-                                    arg.showTitle
-                                )
+                                    navController.previousBackStackEntry?.arguments?.getParcelable("webArg") as? WebViewRouteArg
+                                if (arg != null) {
+                                    WebPage(
+                                        url = arg.url,
+                                        arg.showTitle
+                                    )
+                                }
                             }
                         }
                     }

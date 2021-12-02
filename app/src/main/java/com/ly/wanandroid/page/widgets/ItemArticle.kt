@@ -30,15 +30,9 @@ import com.ly.wanandroid.ValueSetter
 import com.ly.wanandroid.model.Article
 import com.ly.wanandroid.model.Tag
 import com.ly.wanandroid.page.utils.toAnnotatedString
-import com.ly.wanandroid.route.WebViewRouteArg
-import com.ly.wanandroid.ui.NavRoute
-import com.ly.wanandroid.ui.goWebView
-import com.ly.wanandroid.ui.navTo
-import com.ly.wanandroid.ui.navWithRouteArg
+import com.ly.wanandroid.route.goWebView
 import com.ly.wanandroid.ui.theme.*
 import com.ly.wanandroid.utils.logD
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
 
 @Composable

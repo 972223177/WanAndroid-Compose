@@ -24,11 +24,6 @@ class IndexViewModel : MviViewModel<IndexViewAction, List<Banner>>() {
     ) {
         IndexPagingSource()
     }.flow.cachedIn(viewModelScope)
-        .map {
-            it.map { wrapper ->
-                wrapper.article
-            }
-        }
 
 
     override fun dispatch(viewAction: IndexViewAction) {

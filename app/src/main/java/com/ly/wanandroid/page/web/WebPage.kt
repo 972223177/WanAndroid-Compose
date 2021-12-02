@@ -13,7 +13,7 @@ fun WebPage(url: String, showTitle: Boolean = false) {
     Surface {
         Box(modifier = Modifier.fillMaxHeight()) {
             AndroidView(factory = {
-                return@AndroidView WebInstance.getInstance(it).create().apply {
+                return@AndroidView WebInstance.getInstance(it).obtain().apply {
                     loadUrl(url)
                 }
             })
