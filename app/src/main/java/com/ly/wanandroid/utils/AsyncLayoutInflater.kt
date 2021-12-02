@@ -31,7 +31,7 @@ class AsyncLayoutInflater(context: Context) {
             this.parent = parent
         }.enqueue().let {
             if (it.view == null) {
-                it.view = mInflater.inflate(it.resId, it.parent, false)
+                it.view = it.inflater?.mInflater?.inflate(it.resId, it.parent, false)
                 Log.d(TAG, "retry inflater in main")
             }
             Log.d(
