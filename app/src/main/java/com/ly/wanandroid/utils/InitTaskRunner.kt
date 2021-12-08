@@ -62,7 +62,7 @@ class InitTaskRunner(
 
     private fun runSync(tasks: MutableList<InitTask>) {
         tasks.sortedBy { it.level }
-        mCoroutineScope.launch(Dispatchers.Main.immediate) {
+        mCoroutineScope.launch(Dispatchers.Main.immediate, start = CoroutineStart.UNDISPATCHED) {
             tasks.forEach {
                 val success = try {
                     it.init(application)

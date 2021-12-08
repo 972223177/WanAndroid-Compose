@@ -19,9 +19,13 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ly.wanandroid.config.setting.Setting
 import com.ly.wanandroid.page.home.HomePage
 import com.ly.wanandroid.page.web.WebPage
-import com.ly.wanandroid.route.WebViewRouteArg
+import com.ly.wanandroid.route.NavArgKey
+import com.ly.wanandroid.route.WebRouteArg
 import com.ly.wanandroid.route.NavRoute
+import com.ly.wanandroid.route.WebRouteArgType
 import com.ly.wanandroid.ui.theme.WanAndroidTheme
+import com.ly.wanandroid.utils.logD
+import kotlinx.coroutines.flow.collect
 
 class MainActivity : AppCompatActivity() {
     private val mViewModel by viewModels<MainViewModel>()
@@ -37,6 +41,11 @@ class MainActivity : AppCompatActivity() {
             systemUiController.setStatusBarColor(Color.Transparent, !isNightMode)
             WanAndroidTheme(darkTheme = isNightMode) {
                 ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
+                    LaunchedEffect(key1 = Unit) {
+                        navController.currentBackStackEntryFlow.collect {
+                            logD("currentBackStackEntry:$it")
+                        }
+                    }
                     NavHost(navController = navController, startDestination = NavRoute.HOME) {
                         composable(NavRoute.HOME) {
                             CompositionLocalProvider(LocalNavController provides navController) {
@@ -44,11 +53,13 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                         composable(
-                            route = NavRoute.WEB_VIEW
+                            route = NavRoute.WEB_VIEW + "/{${NavArgKey.WEB}}",
+                            arguments = listOf(navArgument(NavArgKey.WEB) {
+                                type = WebRouteArgType()
+                            })
                         ) {
                             CompositionLocalProvider(LocalNavController provides navController) {
-                                val arg =
-                                    navController.previousBackStackEntry?.arguments?.getParcelable("webArg") as? WebViewRouteArg
+                                val arg = it.arguments?.getParcelable<WebRouteArg>(NavArgKey.WEB)
                                 if (arg != null) {
                                     WebPage(
                                         url = arg.url,

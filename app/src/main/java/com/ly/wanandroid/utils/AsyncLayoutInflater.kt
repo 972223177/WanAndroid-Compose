@@ -32,11 +32,11 @@ class AsyncLayoutInflater(context: Context) {
         }.enqueue().let {
             if (it.view == null) {
                 it.view = it.inflater?.mInflater?.inflate(it.resId, it.parent, false)
-                Log.d(TAG, "retry inflater in main")
+                Log.d(TAG, "retry inflating on the UI thread")
             }
             Log.d(
                 TAG,
-                "invoke in main thread ,current thread name:${Thread.currentThread().name}"
+                "inflate finished ,current thread name:${Thread.currentThread().name}"
             )
             val view = it.view!!
             releaseRequest(it)
@@ -50,7 +50,7 @@ class AsyncLayoutInflater(context: Context) {
                 view = inflater?.mInflater?.inflate(resId, parent, false)
                 Log.d(
                     TAG,
-                    "inflate in io thread ,current thread name:${Thread.currentThread().name}"
+                    "inflate in thread ,current thread name:${Thread.currentThread().name}"
                 )
             } catch (e: RuntimeException) {
                 Log.w(

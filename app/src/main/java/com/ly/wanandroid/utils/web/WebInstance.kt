@@ -81,13 +81,18 @@ class WebInstance private constructor(private val application: Application) {
             view.overScrollMode = View.OVER_SCROLL_NEVER
             with(settings) {
                 javaScriptEnabled = true
-                javaScriptCanOpenWindowsAutomatically = false
+                //设置自适应屏幕
+                useWideViewPort = true // 将图片调整到合适的大小
+                loadWithOverviewMode = true//缩放至屏幕大小
+                setVerticalScrollbarOverlay(false)
+                setHorizontalScrollbarOverlay(false)
+                javaScriptCanOpenWindowsAutomatically = false//是否允许通过js打开新窗口
+                loadsImagesAutomatically = true //是否自动加载图片
+                defaultTextEncodingName = "UTF-8"//编码格式
                 allowFileAccess = true
                 layoutAlgorithm = WebSettings.LayoutAlgorithm.NARROW_COLUMNS
-                setSupportZoom(true)
-                builtInZoomControls = false
-                useWideViewPort = true
-                loadWithOverviewMode = true
+                builtInZoomControls = false //是否禁止缩放
+                displayZoomControls = false //是否隐藏原生的缩放控件
                 setAppCacheEnabled(true)
                 domStorageEnabled = true
                 setGeolocationEnabled(true)

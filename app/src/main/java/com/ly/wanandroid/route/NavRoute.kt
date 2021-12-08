@@ -4,7 +4,9 @@ import android.net.Uri
 import android.os.Parcelable
 import androidx.navigation.NavHostController
 import com.ly.wanandroid.config.http.globalJson
+import com.ly.wanandroid.utils.Base64Utils
 import com.ly.wanandroid.utils.logD
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 
 object NavRoute {
@@ -16,26 +18,8 @@ object NavRoute {
 
 }
 
-interface RouteArg : Parcelable
-
-inline fun <reified T : RouteArg> T.toJson(): String = globalJson.encodeToString(this)
-
-fun NavHostController.navTo(
-    destinationName: String,
-    argName: String,
-    arg: Parcelable,
-    backStackRouteName: String? = null,
-    isLaunchSingleTop: Boolean = true,
-    needToRestoreState: Boolean = true
-) {
-    currentBackStackEntry?.arguments?.putParcelable(argName, arg)
-    navigate(destinationName){
-        if (backStackRouteName != null) {
-            popUpTo(backStackRouteName) { saveState = true }
-        }
-        launchSingleTop = isLaunchSingleTop
-        restoreState = needToRestoreState
-    }
+object NavArgKey {
+    const val WEB = "webArg"
 }
 
 fun NavHostController.navTo(
@@ -47,7 +31,6 @@ fun NavHostController.navTo(
 ) {
     val routeArg = if (arg != null) {
         when (arg) {
-            is RouteArg -> String.format("/%s", Uri.encode(arg.toJson()))
             is String, is Int, is Float, is Double, is Boolean, is Long -> String.format("/%s", arg)
             else -> throw RuntimeException("unSupport type")
         }
@@ -66,5 +49,5 @@ fun NavHostController.navTo(
 
 
 fun NavHostController.goWebView(url: String, showTitle: Boolean = false) {
-    navTo(NavRoute.WEB_VIEW,"webArg" ,WebViewRouteArg(url, showTitle))
+    navTo(NavRoute.WEB_VIEW, Uri.encode(globalJson.encodeToString(WebRouteArg(url, showTitle))))
 }
