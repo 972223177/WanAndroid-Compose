@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import com.ly.wanandroid.ValueSetter
 import com.ly.wanandroid.ui.theme.main
@@ -22,34 +23,51 @@ import com.tencent.smtt.sdk.WebViewClient
 @ExperimentalAnimationApi
 @Composable
 fun WebPage(url: String, showTitle: Boolean = false) {
-    Surface {
-        var progress by remember {
-            mutableStateOf(0f)
-        }
+    val context = LocalContext.current
+    val webInstance = remember {
+        WebInstance.getInstance(context)
+    }
+    var webView by remember {
+        mutableStateOf<WebView?>(null)
+    }
+    var progress by remember {
+        mutableStateOf(0f)
+    }
 
-        Scaffold(topBar = {
-            TopAppBar {
-
+    DisposableEffect(key1 = Unit, effect = {
+        webView = webInstance.obtain()
+        onDispose {
+            webView?.let {
+                webInstance.destroy(it)
             }
-        }) {
-            Box(modifier = Modifier.padding(it)) {
-                AndroidView(factory = { context ->
-                    return@AndroidView WebInstance.getInstance(context).obtain().apply {
+        }
+    })
+
+    Scaffold(topBar = {
+        TopAppBar {
+
+        }
+    }) {
+        Box(modifier = Modifier.padding(it)) {
+            if (webView != null) {
+                AndroidView(factory = {
+                    return@AndroidView webView!!.apply {
                         initWebView { newProgress ->
                             progress = newProgress
                         }
                         loadUrl(url)
                     }
                 })
-                AnimatedVisibility(visible = progress < 0.99f) {
-                    LinearProgressIndicator(
-                        progress = progress,
-                        modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colors.main
-                    )
-                }
+            }
+            AnimatedVisibility(visible = progress < 0.99f) {
+                LinearProgressIndicator(
+                    progress = progress,
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colors.main
+                )
             }
         }
+
     }
 }
 

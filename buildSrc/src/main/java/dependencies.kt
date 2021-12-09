@@ -1,26 +1,6 @@
-/*
- * Copyright 2020 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-object Versions {
-    const val ktlint = "0.42.1"
-}
-
 object Libs {
     const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.3"
-    const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
+
 
     const val junit = "junit:junit:4.13"
 
@@ -108,6 +88,7 @@ object Libs {
             private const val version = "1.4.0"
             const val core = "androidx.test:core:$version"
             const val rules = "androidx.test:rules:$version"
+            const val benchmark = "androidx.benchmark:benchmark-junit4:1.0.0"
 
             object Ext {
                 private const val version = "1.1.2"
@@ -116,7 +97,7 @@ object Libs {
 
             const val espressoCore = "androidx.test.espresso:espresso-core:3.4.0"
 
-            val androidTests = listOf(core, rules, espressoCore)
+            val androidTests = listOf(core, rules, espressoCore, benchmark)
         }
 
         object Lifecycle {
@@ -129,22 +110,11 @@ object Libs {
             val libs = listOf(livedata, viewmodel, viewModelCompose)
         }
 
-        //        dependencies {
-//            val paging_version = "2.1.2"
-//
-//            implementation("androidx.paging:paging-runtime:$paging_version") // For Kotlin use paging-runtime-ktx
-//
-//            // alternatively - without Android dependencies for testing
-//            testImplementation("androidx.paging:paging-common:$paging_version") // For Kotlin use paging-common-ktx
-//
-//            // optional - RxJava support
-//            implementation("androidx.paging:paging-rxjava2:$paging_version") // For Kotlin use paging-rxjava2-ktx
-//        }
         object Paging {
             private const val version = "3.0.1"
             val runtime = "androidx.paging:paging-runtime:$version"
-            val ompose ="androidx.paging:paging-compose:1.0.0-alpha14"
-            val libs = listOf(runtime,ompose)
+            val ompose = "androidx.paging:paging-compose:1.0.0-alpha14"
+            val libs = listOf(runtime, ompose)
         }
     }
 

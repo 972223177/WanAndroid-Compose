@@ -4,12 +4,12 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -20,13 +20,14 @@ import com.ly.wanandroid.config.setting.Setting
 import com.ly.wanandroid.page.home.HomePage
 import com.ly.wanandroid.page.web.WebPage
 import com.ly.wanandroid.route.NavArgKey
-import com.ly.wanandroid.route.WebRouteArg
 import com.ly.wanandroid.route.NavRoute
+import com.ly.wanandroid.route.WebRouteArg
 import com.ly.wanandroid.route.WebRouteArgType
 import com.ly.wanandroid.ui.theme.WanAndroidTheme
 import com.ly.wanandroid.utils.logD
 import kotlinx.coroutines.flow.collect
 
+@ExperimentalAnimationApi
 class MainActivity : AppCompatActivity() {
     private val mViewModel by viewModels<MainViewModel>()
 
