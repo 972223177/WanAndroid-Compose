@@ -15,6 +15,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -23,6 +26,7 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.ly.wanandroid.R
 import com.ly.wanandroid.page.home.index.IndexScreen
+import com.ly.wanandroid.page.home.index.IndexViewModel
 import com.ly.wanandroid.page.home.knowledge.KnowledgeScreen
 import com.ly.wanandroid.page.home.mine.MineScreen
 import com.ly.wanandroid.page.home.question.QuestionScreen
@@ -45,7 +49,9 @@ fun HomePage() {
             modifier = Modifier.padding(it)
         ) { page ->
             when (page) {
-                0 -> IndexScreen()
+                0 -> {
+                    IndexScreen()
+                }
                 1 -> QuestionScreen()
                 2 -> KnowledgeScreen()
                 else -> MineScreen()

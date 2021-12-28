@@ -5,7 +5,9 @@ import com.ly.wanandroid.config.setting.Setting
 import com.ly.wanandroid.utils.*
 import com.tencent.smtt.export.external.TbsCoreSettings
 import com.tencent.smtt.sdk.QbSdk
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class AppApplication : Application() {
 
     override fun onCreate() {

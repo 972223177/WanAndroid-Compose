@@ -1,5 +1,5 @@
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.3"
+    private const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.3"
 
 
     const val junit = "junit:junit:4.13"
@@ -11,6 +11,14 @@ object Libs {
     const val mmkv = "com.tencent:mmkv-static:1.2.11"
 
     const val x5Web = "com.tencent.tbs.tbssdk:sdk:43993"
+
+    val plugins =
+        listOf(
+            androidGradlePlugin,
+            AndroidX.Hilt.plugin,
+            Kotlin.gradlePlugin,
+            Kotlin.serializationPlugin
+        )
 
     object Accompanist {
         const val version = "0.20.0"
@@ -82,6 +90,17 @@ object Libs {
             const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
             const val compose = "androidx.navigation:navigation-compose:$version"
             val libs = listOf(fragment, uiKtx, compose)
+        }
+
+        object Hilt {
+            private const val version = "2.38.1"
+            private const val composeVersion = "1.0.0-alpha03"
+            const val viewModel = "androidx.hilt:hilt-lifecycle-viewmodel:$composeVersion"
+            const val navigation = "androidx.hilt:hilt-navigation-compose:$composeVersion"
+            const val kaptDep2 = "androidx.hilt:hilt-compiler:$composeVersion"
+            const val plugin = "com.google.dagger:hilt-android-gradle-plugin:$version"
+            const val android = "com.google.dagger:hilt-android:$version"
+            const val kaptDep = "com.google.dagger:hilt-android-compiler:$version"
         }
 
         object Test {

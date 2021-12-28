@@ -3,6 +3,8 @@ plugins {
     id("kotlin-android")
     kotlin("plugin.serialization")
     id("kotlin-parcelize")
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -67,6 +69,11 @@ dependencies {
     implementation(Libs.AndroidX.appcompat)
     implementation(Libs.coil)
     implementation(Libs.x5Web)
+    implementation(Libs.AndroidX.Hilt.android)
+    implementation(Libs.AndroidX.Hilt.viewModel)
+    implementation(Libs.AndroidX.Hilt.navigation)
+    kapt(Libs.AndroidX.Hilt.kaptDep2)
+    kapt(Libs.AndroidX.Hilt.kaptDep)
     for (lib in Libs.Accompanist.libs) {
         implementation(lib)
     }

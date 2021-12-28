@@ -25,8 +25,10 @@ import com.ly.wanandroid.route.WebRouteArg
 import com.ly.wanandroid.route.WebRouteArgType
 import com.ly.wanandroid.ui.theme.WanAndroidTheme
 import com.ly.wanandroid.utils.logD
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
+@AndroidEntryPoint
 @ExperimentalAnimationApi
 class MainActivity : AppCompatActivity() {
     private val mViewModel by viewModels<MainViewModel>()
