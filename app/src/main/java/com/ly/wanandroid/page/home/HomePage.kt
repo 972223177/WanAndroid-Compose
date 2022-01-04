@@ -5,20 +5,11 @@ package com.ly.wanandroid.page.home
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.sharp.AccountTree
-import androidx.compose.material.icons.sharp.Home
-import androidx.compose.material.icons.sharp.Message
-import androidx.compose.material.icons.sharp.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -26,7 +17,6 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.ly.wanandroid.R
 import com.ly.wanandroid.page.home.index.IndexScreen
-import com.ly.wanandroid.page.home.index.IndexViewModel
 import com.ly.wanandroid.page.home.knowledge.KnowledgeScreen
 import com.ly.wanandroid.page.home.mine.MineScreen
 import com.ly.wanandroid.page.home.question.QuestionScreen
@@ -85,7 +75,7 @@ private fun BottomNav(pagerState: PagerState) {
                 Text(text = title)
             }, onClick = {
                 scope.launch {
-                    pagerState.animateScrollToPage(index)
+                    pagerState.scrollToPage(index)
                 }
             })
         }

@@ -42,11 +42,17 @@ fun <T : Any> BaseScreen(
     },
     content: ComposableCallback1<T>
 ) {
+    val currPageStatus = remember {
+        pageStatus
+    }
+    val curEvent = remember {
+        commonEvent
+    }
     Box(modifier = Modifier.fillMaxSize()) {
         val snackHostState = remember {
             SnackbarHostState()
         }
-        when (commonEvent.value) {
+        when (curEvent.value) {
             CommonEvent.DismissLoading -> {}
             CommonEvent.ShowLoading -> {
                 FunctionalityNotAvailablePopup {
@@ -56,7 +62,12 @@ fun <T : Any> BaseScreen(
             //toast不能在这里做
             else -> {}
         }
-
+        DisposableEffect(key1 = Unit, effect = {
+            logD("init")
+            onDispose {
+                logD("dispose")
+            }
+        })
         LaunchedEffect(key1 = UPDATE_TAG) {
             msgEvent.collect {
                 logD("BasePage", it)
@@ -65,12 +76,12 @@ fun <T : Any> BaseScreen(
                 }
             }
         }
-        when (val status = pageStatus.value) {
+        when (currPageStatus.value) {
             is PageStatus.Error -> errorHolder()
             PageStatus.Loading -> loadingHolder()
             PageStatus.None -> {}
             is PageStatus.Success -> {
-                content(status.data)
+                content((currPageStatus.value as PageStatus.Success).data)
             }
             PageStatus.Empty -> emptyHolder()
             else -> {}

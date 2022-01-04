@@ -1,10 +1,12 @@
 package com.ly.wanandroid.config.setting
 
+import com.ly.wanandroid.model.LoginData
 import com.ly.wanandroid.utils.SpUtils
 import com.ly.wanandroid.utils.isSystemNightModeOpened
 import com.ly.wanandroid.utils.preference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlin.math.log
 
 object Setting {
     private const val SAVE_ID = "Setting"
@@ -12,10 +14,10 @@ object Setting {
     /**
      * 是否是夜间模式
      */
-    var isNightMode by preference(false, saveId = SAVE_ID)
+    var isNightMode by preference(true, saveId = SAVE_ID)
         private set
-    private val _isNightModeFlow = MutableStateFlow(isNightMode)
-    val isNightModeFlow: StateFlow<Boolean> = _isNightModeFlow
+    private val mIsNightModeFlow = MutableStateFlow(isNightMode)
+    val isNightModeFlow: StateFlow<Boolean> = mIsNightModeFlow
 
     /**
      * 夜间模式跟随系统
@@ -23,16 +25,16 @@ object Setting {
     var isAutoNightMode by preference(false, saveId = SAVE_ID)
         private set
 
-    private val _isAutoNightModeFlow = MutableStateFlow(isAutoNightMode)
-    val isAutoNightModeFlow: StateFlow<Boolean> = _isAutoNightModeFlow
+    private val mIsAutoNightModeFlow = MutableStateFlow(isAutoNightMode)
+    val isAutoNightModeFlow: StateFlow<Boolean> = mIsAutoNightModeFlow
 
     /**
      * 是否显示置顶文章
      */
     var isShowTopArticle by preference(true, saveId = SAVE_ID)
         private set
-    private val _isShowTopArticleFlow = MutableStateFlow(isShowTopArticle)
-    val isShowTopArticleFlow: StateFlow<Boolean> = _isShowTopArticleFlow
+    private val mIsShowTopArticleFlow = MutableStateFlow(isShowTopArticle)
+    val isShowTopArticleFlow: StateFlow<Boolean> = mIsShowTopArticleFlow
 
 
     /**
@@ -40,13 +42,13 @@ object Setting {
      */
     var enableSaveBrowserRecord by preference(true, saveId = SAVE_ID)
         private set
-    private val _enableSaveBrowserRecordFlow = MutableStateFlow(enableSaveBrowserRecord)
-    val enableSaveBrowserRecordFlow: StateFlow<Boolean> = _enableSaveBrowserRecordFlow
+    private val mEnableSaveBrowserRecordFlow = MutableStateFlow(enableSaveBrowserRecord)
+    val enableSaveBrowserRecordFlow: StateFlow<Boolean> = mEnableSaveBrowserRecordFlow
 
     fun init() {
         if (isAutoNightMode) {
             isNightMode = isSystemNightModeOpened()
-            _isNightModeFlow.value = isNightMode
+            mIsNightModeFlow.value = isNightMode
         }
     }
 
@@ -58,27 +60,27 @@ object Setting {
     fun openNightMode(open: Boolean) {
         if (!isAutoNightMode) {
             isNightMode = open
-            _isNightModeFlow.value = isNightMode
+            mIsNightModeFlow.value = isNightMode
         }
     }
 
     fun openAutoNightMode(open: Boolean) {
         isAutoNightMode = open
-        _isAutoNightModeFlow.value = isAutoNightMode
+        mIsAutoNightModeFlow.value = isAutoNightMode
         if (isAutoNightMode) {
             isNightMode = isSystemNightModeOpened()
-            _isNightModeFlow.value = isNightMode
+            mIsNightModeFlow.value = isNightMode
         }
     }
 
     fun openShowTopArticle(open: Boolean) {
         isShowTopArticle = open
-        _isShowTopArticleFlow.value = isShowTopArticle
+        mIsShowTopArticleFlow.value = isShowTopArticle
     }
 
     fun enableSaveBrowserRecord(enable: Boolean) {
         enableSaveBrowserRecord = enable
-        _enableSaveBrowserRecordFlow.value = enableSaveBrowserRecord
+        mEnableSaveBrowserRecordFlow.value = enableSaveBrowserRecord
     }
-
+//gold feel
 }

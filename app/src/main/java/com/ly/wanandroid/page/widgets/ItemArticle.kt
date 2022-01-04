@@ -43,7 +43,6 @@ fun ItemArticle(
     uncollect: ValueSetter<Article> = {}
 ) {
     val navController = LocalNavController.current
-    logD("article$article")
     Box(modifier = modifier
         .fillMaxWidth()
         .wrapContentHeight()

@@ -33,4 +33,9 @@ data class LoginData(
     val type: Int = 0,
     @SerialName("username")
     val username: String = ""
-)
+) {
+
+    companion object {
+        val DEFAULT = LoginData()
+    }
+}
