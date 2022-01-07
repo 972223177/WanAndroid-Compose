@@ -6,7 +6,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 object User {
-    var loginData by preference(LoginData.DEFAULT)
+    const val CACHE_USER = "cacheUser"
+    var loginData by preference(LoginData.DEFAULT, key = CACHE_USER)
         private set
 
     private val mLoginDataFlow = MutableStateFlow(loginData)

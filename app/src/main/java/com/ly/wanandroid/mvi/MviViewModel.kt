@@ -8,11 +8,12 @@ import com.ly.wanandroid.config.http.handleRequestError
 import com.ly.wanandroid.config.http.throwError
 import com.ly.wanandroid.utils.logD
 import kotlinx.coroutines.flow.*
+import kotlin.math.min
 
-abstract class MviViewModel<A : IViewAction, PageData : Any> : ViewModel() {
-    protected val _pageState = MutableLiveData<PageStatus<PageData>>(PageStatus.None)
+abstract class MviViewModel<A : IViewAction> : ViewModel() {
+    protected val _pageState = MutableLiveData<PageStatus>(PageStatus.None)
 
-    val pageState: LiveData<PageStatus<PageData>> = _pageState
+    val pageState: LiveData<PageStatus> = _pageState
 
     protected val _commonEvent = SingleLiveEvent<CommonEvent>()
 
@@ -21,7 +22,16 @@ abstract class MviViewModel<A : IViewAction, PageData : Any> : ViewModel() {
 
     val commonEvent: LiveData<CommonEvent> = _commonEvent
 
+    protected var mInitialed = false
+
+
     abstract fun dispatch(viewAction: A)
+
+    protected inline fun init(block: () -> Unit) {
+        if (mInitialed) return
+        mInitialed = true
+        block()
+    }
 
     /**
      * request{
@@ -36,7 +46,7 @@ abstract class MviViewModel<A : IViewAction, PageData : Any> : ViewModel() {
     }
 
 
-    protected fun Flow<PageData?>.toPage(
+    protected fun <PageData> Flow<PageData?>.toPage(
         showErrorToast: Boolean = true,
         success: ((PageData?) -> Unit)? = null,
         handleError: (FlowCollector<PageData>.(code: Int, msg: String) -> Unit)? = null,
@@ -86,8 +96,8 @@ abstract class MviViewModel<A : IViewAction, PageData : Any> : ViewModel() {
 
 }
 
-abstract class MviListViewModel<A : IViewAction, PageData : Any, ListViewData : Any> :
-    MviViewModel<A, PageData>() {
+abstract class MviListViewModel<A : IViewAction, ListViewData : Any> :
+    MviViewModel<A>() {
     private val mListViewState = MutableStateFlow<ListViewState<ListViewData>>(ListViewState.Init)
     val listViewState: StateFlow<ListViewState<ListViewData>> = mListViewState
     protected val mIsRefresh = MutableStateFlow(false)

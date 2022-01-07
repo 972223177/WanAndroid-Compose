@@ -9,21 +9,20 @@ interface IViewAction
 object NoneViewAction : IViewAction
 
 
-sealed class PageStatus<out T : Any> {
-    object None : PageStatus<Nothing>()
+sealed class PageStatus {
+    object None : PageStatus()
 
-    object Loading : PageStatus<Nothing>()
+    object Loading : PageStatus()
 
-    data class Success<T : Any>(val data: T) : PageStatus<T>()
+    data class Success(val data: Any?) : PageStatus()
 
-    data class Error(val msg: String) : PageStatus<Nothing>()
+    data class Error(val msg: String) : PageStatus()
 
-    object Empty : PageStatus<Nothing>()
+    object Empty : PageStatus()
 
 }
 
 sealed class CommonEvent {
-    data class ShowToast(val msg: String) : CommonEvent()
 
     object ShowLoading : CommonEvent()
 

@@ -14,6 +14,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.ly.wanandroid.ValueSetter
 import com.ly.wanandroid.ui.theme.main
 import com.ly.wanandroid.utils.web.WebInstance
+import com.ly.wanandroid.widgets.WAppBar
+import com.ly.wanandroid.widgets.common.BasePage
 import com.tencent.smtt.export.external.interfaces.SslError
 import com.tencent.smtt.export.external.interfaces.SslErrorHandler
 import com.tencent.smtt.sdk.WebChromeClient
@@ -43,31 +45,31 @@ fun WebPage(url: String, showTitle: Boolean = false) {
         }
     })
 
-    Scaffold(topBar = {
-        TopAppBar {
-
-        }
-    }) {
-        Box(modifier = Modifier.padding(it)) {
-            if (webView != null) {
-                AndroidView(factory = {
-                    return@AndroidView webView!!.apply {
-                        initWebView { newProgress ->
-                            progress = newProgress
+    BasePage {
+        Scaffold(topBar = {
+            WAppBar()
+        }) {
+            Box(modifier = Modifier.padding(it)) {
+                if (webView != null) {
+                    AndroidView(factory = {
+                        return@AndroidView webView!!.apply {
+                            initWebView { newProgress ->
+                                progress = newProgress
+                            }
+                            loadUrl(url)
                         }
-                        loadUrl(url)
-                    }
-                })
+                    })
+                }
+                AnimatedVisibility(visible = progress < 0.99f) {
+                    LinearProgressIndicator(
+                        progress = progress,
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colors.main
+                    )
+                }
             }
-            AnimatedVisibility(visible = progress < 0.99f) {
-                LinearProgressIndicator(
-                    progress = progress,
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colors.main
-                )
-            }
-        }
 
+        }
     }
 }
 

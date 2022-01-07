@@ -62,7 +62,7 @@ dependencies {
     implementation(Libs.Http.retrofit)
     implementation(Libs.Http.logger)
     implementation(Libs.mmkv)
-
+    implementation(Libs.AndroidX.constraintCompose)
     implementation(Libs.AndroidX.Activity.activityCompose)
     implementation(Libs.AndroidX.coreKtx)
     implementation(Libs.AndroidX.splashScreen)

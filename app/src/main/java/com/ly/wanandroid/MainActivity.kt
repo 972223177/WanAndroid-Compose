@@ -17,6 +17,8 @@ import androidx.navigation.navArgument
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ly.wanandroid.config.setting.Setting
+import com.ly.wanandroid.config.setting.User
+import com.ly.wanandroid.model.LoginData
 import com.ly.wanandroid.page.home.HomePage
 import com.ly.wanandroid.page.web.WebPage
 import com.ly.wanandroid.route.NavArgKey
@@ -25,50 +27,45 @@ import com.ly.wanandroid.route.WebRouteArg
 import com.ly.wanandroid.route.WebRouteArgType
 import com.ly.wanandroid.ui.theme.WanAndroidTheme
 import com.ly.wanandroid.utils.logD
+import com.ly.wanandroid.utils.preference
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 @ExperimentalAnimationApi
 class MainActivity : AppCompatActivity() {
-    private val mViewModel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-            val isNightMode by Setting.isNightModeFlow.collectAsState()
-            val systemUiController = rememberSystemUiController()
             val navController = rememberNavController()
-            systemUiController.setStatusBarColor(Color.Transparent, !isNightMode)
-            WanAndroidTheme(darkTheme = isNightMode) {
-                ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
-                    LaunchedEffect(key1 = Unit) {
-                        navController.currentBackStackEntryFlow.collect {
-                            logD("currentBackStackEntry:$it")
+            ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
+                LaunchedEffect(key1 = Unit) {
+                    navController.currentBackStackEntryFlow.collect {
+                        logD("currentBackStackEntry:$it")
+                    }
+                }
+                NavHost(navController = navController, startDestination = NavRoute.HOME) {
+                    composable(NavRoute.HOME) {
+                        CompositionLocalProvider(LocalNavController provides navController) {
+                            HomePage()
                         }
                     }
-                    NavHost(navController = navController, startDestination = NavRoute.HOME) {
-                        composable(NavRoute.HOME) {
-                            CompositionLocalProvider(LocalNavController provides navController) {
-                                HomePage()
-                            }
-                        }
-                        composable(
-                            route = NavRoute.WEB_VIEW + "/{${NavArgKey.WEB}}",
-                            arguments = listOf(navArgument(NavArgKey.WEB) {
-                                type = WebRouteArgType()
-                            })
-                        ) {
-                            CompositionLocalProvider(LocalNavController provides navController) {
-                                val arg = it.arguments?.getParcelable<WebRouteArg>(NavArgKey.WEB)
-                                if (arg != null) {
-                                    WebPage(
-                                        url = arg.url,
-                                        arg.showTitle
-                                    )
-                                }
+                    composable(
+                        route = NavRoute.WEB_VIEW + "/{${NavArgKey.WEB}}",
+                        arguments = listOf(navArgument(NavArgKey.WEB) {
+                            type = WebRouteArgType()
+                        })
+                    ) {
+                        CompositionLocalProvider(LocalNavController provides navController) {
+                            val arg = it.arguments?.getParcelable<WebRouteArg>(NavArgKey.WEB)
+                            if (arg != null) {
+                                WebPage(
+                                    url = arg.url,
+                                    arg.showTitle
+                                )
                             }
                         }
                     }

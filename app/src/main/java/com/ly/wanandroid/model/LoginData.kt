@@ -1,10 +1,13 @@
 package com.ly.wanandroid.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
 import kotlinx.serialization.SerialName
 
 
+@Parcelize
 @Serializable
 data class LoginData(
     @SerialName("admin")
@@ -33,7 +36,7 @@ data class LoginData(
     val type: Int = 0,
     @SerialName("username")
     val username: String = ""
-) {
+) : Parcelable {
 
     companion object {
         val DEFAULT = LoginData()

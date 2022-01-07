@@ -1,12 +1,10 @@
 package com.ly.wanandroid.config.setting
 
-import com.ly.wanandroid.model.LoginData
 import com.ly.wanandroid.utils.SpUtils
 import com.ly.wanandroid.utils.isSystemNightModeOpened
 import com.ly.wanandroid.utils.preference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlin.math.log
 
 object Setting {
     private const val SAVE_ID = "Setting"
@@ -14,7 +12,7 @@ object Setting {
     /**
      * 是否是夜间模式
      */
-    var isNightMode by preference(true, saveId = SAVE_ID)
+    var isNightMode by preference(false, saveId = SAVE_ID)
         private set
     private val mIsNightModeFlow = MutableStateFlow(isNightMode)
     val isNightModeFlow: StateFlow<Boolean> = mIsNightModeFlow

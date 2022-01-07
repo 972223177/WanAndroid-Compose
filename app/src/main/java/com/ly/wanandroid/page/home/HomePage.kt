@@ -6,45 +6,51 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.rememberPagerState
 import com.ly.wanandroid.R
 import com.ly.wanandroid.page.home.index.IndexScreen
 import com.ly.wanandroid.page.home.knowledge.KnowledgeScreen
 import com.ly.wanandroid.page.home.mine.MineScreen
 import com.ly.wanandroid.page.home.question.QuestionScreen
+import com.ly.wanandroid.widgets.common.BasePage
 import kotlinx.coroutines.launch
 
 
 private val titles = listOf("首页", "问答", "体系", "我的")
 
 @Composable
-fun HomePage() {
-    val pageState = rememberPagerState()
-    Scaffold(
-        bottomBar = {
-            BottomNav(pageState)
-        },
-    ) {
-        HorizontalPager(
-            count = titles.size,
-            state = pageState,
-            modifier = Modifier.padding(it)
-        ) { page ->
-            when (page) {
-                0 -> {
-                    IndexScreen()
+fun HomePage(viewModel: HomeViewModel = hiltViewModel()) {
+    BasePage {
+        val pageState = remember {
+            viewModel.pagerState
+        }
+        Scaffold(
+            bottomBar = {
+                BottomNav(pageState)
+            },
+        ) {
+            HorizontalPager(
+                count = titles.size,
+                state = pageState,
+                modifier = Modifier.padding(it)
+            ) { page ->
+                when (page) {
+                    0 -> {
+                        IndexScreen()
+                    }
+                    1 -> QuestionScreen()
+                    2 -> KnowledgeScreen()
+                    else -> MineScreen()
                 }
-                1 -> QuestionScreen()
-                2 -> KnowledgeScreen()
-                else -> MineScreen()
             }
         }
     }

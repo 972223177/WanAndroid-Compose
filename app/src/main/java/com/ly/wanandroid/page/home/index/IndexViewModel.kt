@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.ly.wanandroid.model.Banner
 import com.ly.wanandroid.mvi.IViewAction
 import com.ly.wanandroid.mvi.MviViewModel
 import com.ly.wanandroid.page.home.HomeRepository
@@ -15,20 +14,22 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class IndexViewModel @Inject constructor() : MviViewModel<IndexViewAction, List<Banner>>() {
-    private val mRepository = HomeRepository()
+class IndexViewModel @Inject constructor(private val mRepository: HomeRepository) :
+    MviViewModel<IndexViewAction>() {
 
     val articles = Pager(
         PagingConfig(pageSize = 20)
     ) {
-        IndexPagingSource()
+        IndexPagingSource(mRepository)
     }.flow.cachedIn(viewModelScope)
 
     val listState = LazyListState()
 
     override fun dispatch(viewAction: IndexViewAction) {
         when (viewAction) {
-            IndexViewAction.Init -> init()
+            IndexViewAction.Init -> init {
+                getPageData()
+            }
             IndexViewAction.LoadMore -> {}
             IndexViewAction.Refresh -> {
 
@@ -36,17 +37,11 @@ class IndexViewModel @Inject constructor() : MviViewModel<IndexViewAction, List<
         }
     }
 
-    private var mInitialed = false
-    private fun init() {
-        if (mInitialed) return
+    private fun getPageData() {
         viewModelScope.launch {
             request {
                 mRepository.getBanners()
-            }.toPage(
-                success = {
-                    mInitialed = true
-                }
-            ).collect()
+            }.toPage().collect()
         }
     }
 

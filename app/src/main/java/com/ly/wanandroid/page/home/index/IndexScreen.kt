@@ -2,10 +2,14 @@ package com.ly.wanandroid.page.home.index
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,15 +18,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.rememberImagePainter
-import com.google.accompanist.insets.statusBarsPadding
+import com.ly.wanandroid.R
 import com.ly.wanandroid.model.Banner
 import com.ly.wanandroid.page.widgets.ItemArticle
+import com.ly.wanandroid.ui.theme.onMainOrSurface
 import com.ly.wanandroid.widgets.Banner
+import com.ly.wanandroid.widgets.WAppBar
 import com.ly.wanandroid.widgets.common.BaseScreen
 import com.ly.wanandroid.widgets.common.RefreshPagerList
 
@@ -31,12 +38,34 @@ fun IndexScreen(indexViewModel: IndexViewModel = hiltViewModel()) {
     LaunchedEffect(key1 = false) {
         indexViewModel.dispatch(IndexViewAction.Init)
     }
-    BaseScreen(
-        pageStatus = indexViewModel.pageState.observeAsState(),
-        commonEvent = indexViewModel.commonEvent.observeAsState(),
-        msgEvent = indexViewModel.msgEvent
-    ) {
-        IndexList(initData = it, viewModel = indexViewModel)
+    Column {
+        WAppBar(
+            title = "首页",
+            navigationIcon = {
+                IconButton(onClick = { }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_scan),
+                        contentDescription = "scan",
+                        tint = MaterialTheme.colors.onMainOrSurface
+                    )
+                }
+            },
+            actions = {
+                IconButton(onClick = { }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_search),
+                        contentDescription = "search",
+                        tint = MaterialTheme.colors.onMainOrSurface
+                    )
+                }
+            }
+        )
+        BaseScreen<List<Banner>>(
+            pageStatus = indexViewModel.pageState.observeAsState(),
+            commonEvent = indexViewModel.commonEvent.observeAsState(),
+        ) {
+            IndexList(initData = it, viewModel = indexViewModel)
+        }
     }
 }
 
@@ -47,19 +76,13 @@ private fun IndexList(initData: List<Banner>, viewModel: IndexViewModel) {
         viewModel.listState
     }
     val listState = if (articles.itemCount > 0) viewState else rememberLazyListState()
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-    ) {
-        RefreshPagerList(lazyPagingItems = articles, listState = listState) {
-            item {
-                IndexBanner(initData)
-            }
-            items(articles) { item ->
-                if (item != null) {
-                    ItemArticle(article = item)
-                }
+    RefreshPagerList(lazyPagingItems = articles, listState = listState) {
+        item {
+            IndexBanner(initData)
+        }
+        items(articles) { item ->
+            if (item != null) {
+                ItemArticle(article = item)
             }
         }
     }

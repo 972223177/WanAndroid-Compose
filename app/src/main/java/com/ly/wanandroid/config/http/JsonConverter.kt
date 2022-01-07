@@ -11,7 +11,8 @@ import retrofit2.Retrofit
 import java.lang.reflect.Type
 
 val globalJson = Json {
-    ignoreUnknownKeys =true
+    ignoreUnknownKeys = true
+    coerceInputValues = true
 }
 
 class JsonConverterFactory : Converter.Factory() {
@@ -38,7 +39,8 @@ class JsonConverterFactory : Converter.Factory() {
         retrofit: Retrofit
     ): Converter<*, RequestBody> {
         return Converter<Any, RequestBody> {
-            globalJson.encodeToString(Json.serializersModule.serializer(type), it).toRequestBody(mediaType)
+            globalJson.encodeToString(Json.serializersModule.serializer(type), it)
+                .toRequestBody(mediaType)
         }
     }
 
