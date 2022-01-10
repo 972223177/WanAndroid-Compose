@@ -1,9 +1,12 @@
-package com.ly.wanandroid.model
+package com.ly.wanandroid.domain
 
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Parcelize
 @Serializable
 data class Article(
     @SerialName("apkLink")
@@ -74,12 +77,13 @@ data class Article(
     val zan: Int = 0,
     @SerialName("top")
     val top: Boolean = false
-)
+) : Parcelable
 
+@Parcelize
 @Serializable
 data class Tag(
     @SerialName("name")
     val name: String = "",
     @SerialName("url")
     val url: String = ""
-)
+) : Parcelable

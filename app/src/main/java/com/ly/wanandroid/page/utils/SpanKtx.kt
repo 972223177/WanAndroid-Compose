@@ -2,7 +2,6 @@ package com.ly.wanandroid.page.utils
 
 import android.graphics.Typeface
 import android.text.Spanned
-import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan

@@ -1,9 +1,12 @@
-package com.ly.wanandroid.model
+package com.ly.wanandroid.domain
 
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Parcelize
 @Serializable
 data class Chapter(
     @SerialName("children")
@@ -22,4 +25,4 @@ data class Chapter(
     val userControlSetTop: Boolean = false,
     @SerialName("visible")
     val visible: Int = 0
-)
+) : Parcelable

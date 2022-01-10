@@ -4,7 +4,6 @@ import com.ly.wanandroid.config.http.Response
 import com.ly.wanandroid.config.http.handleException
 import com.ly.wanandroid.config.http.wanService
 import kotlinx.coroutines.CancellationException
-import java.lang.Exception
 
 abstract class MviRepository {
     protected val mWanService by lazy(LazyThreadSafetyMode.NONE) {

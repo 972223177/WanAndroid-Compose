@@ -2,7 +2,7 @@ package com.ly.wanandroid.page.home
 
 import com.ly.wanandroid.config.http.Response
 import com.ly.wanandroid.config.http.wanService
-import com.ly.wanandroid.model.*
+import com.ly.wanandroid.domain.*
 import javax.inject.Inject
 import javax.inject.Singleton
 

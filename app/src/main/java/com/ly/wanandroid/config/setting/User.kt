@@ -1,6 +1,6 @@
 package com.ly.wanandroid.config.setting
 
-import com.ly.wanandroid.model.LoginData
+import com.ly.wanandroid.domain.LoginData
 import com.ly.wanandroid.utils.preference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

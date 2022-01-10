@@ -10,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
@@ -20,9 +19,9 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.insets.statusBarsPadding
 import com.ly.wanandroid.ComposableCallback
 import com.ly.wanandroid.ComposableExtCallback
-import com.ly.wanandroid.R
 import com.ly.wanandroid.VoidCallback
 import com.ly.wanandroid.ui.theme.mainOrSurface
+import com.ly.wanandroid.ui.theme.onMainOrSurface
 
 val WAppBarHeight = 56.dp
 
@@ -82,7 +81,7 @@ fun CommonAppBar(
     titleColor: Color = Color.White,
     backPress: VoidCallback,
     backgroundColor: Color = MaterialTheme.colors.mainOrSurface,
-    actions: ComposableExtCallback<RowScope>,
+    actions: ComposableExtCallback<RowScope> = {},
 ) {
     WAppBar(
         title = title,
@@ -94,7 +93,7 @@ fun CommonAppBar(
                 Icon(
                     imageVector = Icons.Sharp.ArrowBack,
                     contentDescription = "back",
-                    tint = MaterialTheme.colors.mainOrSurface
+                    tint = MaterialTheme.colors.onMainOrSurface
                 )
             }
         })

@@ -2,7 +2,7 @@ package com.ly.wanandroid.page.home.mine
 
 import androidx.lifecycle.ViewModel
 import com.ly.wanandroid.config.setting.User
-import com.ly.wanandroid.model.LoginData
+import com.ly.wanandroid.domain.LoginData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject

@@ -9,7 +9,6 @@ import com.ly.wanandroid.mvi.IViewAction
 import com.ly.wanandroid.mvi.MviViewModel
 import com.ly.wanandroid.page.home.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,9 +26,6 @@ class IndexViewModel @Inject constructor(private val mRepository: HomeRepository
 
     override fun dispatch(viewAction: IndexViewAction) {
         when (viewAction) {
-            IndexViewAction.Init -> init {
-                getPageData()
-            }
             IndexViewAction.LoadMore -> {}
             IndexViewAction.Refresh -> {
 
@@ -37,18 +33,21 @@ class IndexViewModel @Inject constructor(private val mRepository: HomeRepository
         }
     }
 
+    override fun onFirstInit() {
+        getPageData()
+    }
+
     private fun getPageData() {
         viewModelScope.launch {
             request {
                 mRepository.getBanners()
-            }.toPage().collect()
+            }.toPage()
         }
     }
 
 }
 
 sealed class IndexViewAction : IViewAction {
-    object Init : IndexViewAction()
     object Refresh : IndexViewAction()
     object LoadMore : IndexViewAction()
 }

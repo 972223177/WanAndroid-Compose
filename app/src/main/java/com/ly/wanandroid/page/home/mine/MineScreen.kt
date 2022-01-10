@@ -31,7 +31,7 @@ import coil.compose.rememberImagePainter
 import com.ly.wanandroid.R
 import com.ly.wanandroid.config.setting.Setting
 import com.ly.wanandroid.config.setting.User
-import com.ly.wanandroid.model.LoginData
+import com.ly.wanandroid.domain.LoginData
 import com.ly.wanandroid.ui.theme.*
 import com.ly.wanandroid.widgets.WAppBar
 import com.ly.wanandroid.widgets.WAppBarHeight

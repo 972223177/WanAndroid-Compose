@@ -11,7 +11,7 @@ import kotlinx.serialization.decodeFromString
 
 @Parcelize
 @Serializable
-data class WebRouteArg(var url: String, val showTitle: Boolean = false) : Parcelable
+data class WebRouteArg(var url: String) : Parcelable
 
 class WebRouteArgType : NavType<WebRouteArg>(isNullableAllowed = false) {
     override fun get(bundle: Bundle, key: String): WebRouteArg? {

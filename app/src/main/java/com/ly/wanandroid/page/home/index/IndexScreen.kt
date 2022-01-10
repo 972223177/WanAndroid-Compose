@@ -3,17 +3,13 @@ package com.ly.wanandroid.page.home.index
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -25,7 +21,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.rememberImagePainter
 import com.ly.wanandroid.R
-import com.ly.wanandroid.model.Banner
+import com.ly.wanandroid.domain.Banner
 import com.ly.wanandroid.page.widgets.ItemArticle
 import com.ly.wanandroid.ui.theme.onMainOrSurface
 import com.ly.wanandroid.widgets.Banner
@@ -35,9 +31,6 @@ import com.ly.wanandroid.widgets.common.RefreshPagerList
 
 @Composable
 fun IndexScreen(indexViewModel: IndexViewModel = hiltViewModel()) {
-    LaunchedEffect(key1 = false) {
-        indexViewModel.dispatch(IndexViewAction.Init)
-    }
     Column {
         WAppBar(
             title = "首页",
@@ -61,8 +54,7 @@ fun IndexScreen(indexViewModel: IndexViewModel = hiltViewModel()) {
             }
         )
         BaseScreen<List<Banner>>(
-            pageStatus = indexViewModel.pageState.observeAsState(),
-            commonEvent = indexViewModel.commonEvent.observeAsState(),
+            indexViewModel
         ) {
             IndexList(initData = it, viewModel = indexViewModel)
         }

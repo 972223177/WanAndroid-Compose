@@ -22,13 +22,15 @@ class QuestionViewModel @Inject constructor(private val homeRepository: HomeRepo
     }.flow.cachedIn(viewModelScope)
 
     override fun dispatch(viewAction: QuestionViewAction) {
-        when (viewAction) {
-            QuestionViewAction.Init -> init {}
-        }
+
+    }
+
+    override fun onFirstInit() {
+
     }
 
 }
 
 sealed class QuestionViewAction : IViewAction {
-    object Init : QuestionViewAction()
+
 }

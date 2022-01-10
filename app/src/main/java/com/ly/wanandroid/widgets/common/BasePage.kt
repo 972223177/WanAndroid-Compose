@@ -7,36 +7,38 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.ly.wanandroid.ComposableCallback
-import com.ly.wanandroid.ComposableCallback1
-import com.ly.wanandroid.FunctionalityNotAvailablePopup
-import com.ly.wanandroid.VoidCallback
+import com.ly.wanandroid.*
 import com.ly.wanandroid.config.setting.Setting
 import com.ly.wanandroid.mvi.CommonEvent
+import com.ly.wanandroid.mvi.IViewAction
+import com.ly.wanandroid.mvi.MviViewModel
 import com.ly.wanandroid.mvi.PageStatus
 import com.ly.wanandroid.ui.theme.WanAndroidTheme
 import com.ly.wanandroid.utils.logD
 
 @Composable
-fun BasePage(block: ComposableCallback) {
+fun BasePage(navController: NavHostController, block: ComposableCallback) {
     val isNightMode by Setting.isNightModeFlow.collectAsState()
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(Color.Transparent, !isNightMode)
     WanAndroidTheme(darkTheme = isNightMode) {
-        block()
+        CompositionLocalProvider(LocalNavController provides navController) {
+            block()
+        }
     }
 }
 
 @Suppress("UNCHECKED_CAST")
 @Composable
 fun <T : Any> BaseScreen(
-    pageStatus: State<PageStatus?>,
-    commonEvent: State<CommonEvent?>,
+    viewModel: MviViewModel<out IViewAction>,
     retry: VoidCallback = {},
     emptyHolder: ComposableCallback = {
         EmptyView()
@@ -51,46 +53,39 @@ fun <T : Any> BaseScreen(
     },
     content: ComposableCallback1<T>
 ) {
-    val currPageStatus = remember {
-        pageStatus
-    }
-    val curEvent = remember {
-        commonEvent
-    }
-    val isNightModel by Setting.isNightModeFlow.collectAsState()
-    WanAndroidTheme(isNightModel) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            when (curEvent.value) {
-                CommonEvent.DismissLoading -> {}
-                CommonEvent.ShowLoading -> {
-                    FunctionalityNotAvailablePopup {
+    val currPageStatus = viewModel.pageState.observeAsState()
+    val curEvent = viewModel.commonEvent.observeAsState()
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (curEvent.value) {
+            CommonEvent.DismissLoading -> {}
+            CommonEvent.ShowLoading -> {
+                FunctionalityNotAvailablePopup {
 
-                    }
                 }
-                //toast不能在这里做
-                else -> {}
             }
-            DisposableEffect(key1 = Unit, effect = {
-                logD("init")
-                onDispose {
-                    logD("dispose")
-                }
-            })
-            when (currPageStatus.value) {
-                is PageStatus.Error -> errorHolder()
-                PageStatus.Loading -> loadingHolder()
-                PageStatus.None -> {}
-                is PageStatus.Success -> {
-                    val data = (currPageStatus.value as? PageStatus.Success)?.data as? T
-                    if (data == null) {
-                        errorHolder()
-                    } else {
-                        content(data)
-                    }
-                }
-                PageStatus.Empty -> emptyHolder()
-                else -> {}
+            //toast不能在这里做
+            else -> {}
+        }
+        DisposableEffect(key1 = Unit, effect = {
+            viewModel.initial()
+            onDispose {
+                logD("${viewModel::class.java.simpleName}:dispose")
             }
+        })
+        when (currPageStatus.value) {
+            is PageStatus.Error -> errorHolder()
+            PageStatus.Loading -> loadingHolder()
+            PageStatus.None -> {}
+            is PageStatus.Success -> {
+                val data = (currPageStatus.value as? PageStatus.Success)?.data as? T
+                if (data == null) {
+                    errorHolder()
+                } else {
+                    content(data)
+                }
+            }
+            PageStatus.Empty -> emptyHolder()
+            else -> {}
         }
     }
 

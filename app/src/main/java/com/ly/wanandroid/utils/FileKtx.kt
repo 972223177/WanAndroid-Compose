@@ -2,10 +2,9 @@
 
 import android.os.Environment
 import java.io.File
-import java.lang.Exception
 import java.math.BigDecimal
 
-/**
+ /**
  * sd卡是否可用
  */
 fun isSDCardAlive(): Boolean =

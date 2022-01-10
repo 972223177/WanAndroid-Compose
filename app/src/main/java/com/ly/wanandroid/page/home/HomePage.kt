@@ -21,7 +21,6 @@ import com.ly.wanandroid.page.home.index.IndexScreen
 import com.ly.wanandroid.page.home.knowledge.KnowledgeScreen
 import com.ly.wanandroid.page.home.mine.MineScreen
 import com.ly.wanandroid.page.home.question.QuestionScreen
-import com.ly.wanandroid.widgets.common.BasePage
 import kotlinx.coroutines.launch
 
 
@@ -29,28 +28,26 @@ private val titles = listOf("首页", "问答", "体系", "我的")
 
 @Composable
 fun HomePage(viewModel: HomeViewModel = hiltViewModel()) {
-    BasePage {
-        val pageState = remember {
-            viewModel.pagerState
-        }
-        Scaffold(
-            bottomBar = {
-                BottomNav(pageState)
-            },
-        ) {
-            HorizontalPager(
-                count = titles.size,
-                state = pageState,
-                modifier = Modifier.padding(it)
-            ) { page ->
-                when (page) {
-                    0 -> {
-                        IndexScreen()
-                    }
-                    1 -> QuestionScreen()
-                    2 -> KnowledgeScreen()
-                    else -> MineScreen()
+    val pageState = remember {
+        viewModel.pagerState
+    }
+    Scaffold(
+        bottomBar = {
+            BottomNav(pageState)
+        },
+    ) {
+        HorizontalPager(
+            count = titles.size,
+            state = pageState,
+            modifier = Modifier.padding(it)
+        ) { page ->
+            when (page) {
+                0 -> {
+                    IndexScreen()
                 }
+                1 -> QuestionScreen()
+                2 -> KnowledgeScreen()
+                else -> MineScreen()
             }
         }
     }

@@ -3,13 +3,11 @@ package com.ly.wanandroid.config.http
 import com.ly.wanandroid.utils.logD
 import com.ly.wanandroid.utils.toast
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.catch
 import kotlinx.serialization.SerializationException
 import retrofit2.HttpException
-import java.lang.IllegalArgumentException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -33,7 +31,6 @@ fun <T> Response<T>.throwError(): Response<T> {
 
 fun <T> Flow<T>.handleRequestError(result: FlowCollector<T>.(code: Int, msg: String) -> Unit): Flow<T> =
     catch { e ->
-        delay(1000L)
         if (e is CancellationException) throw e
         val info = handleException(e)
         result(info.first, info.second)

@@ -1,4 +1,4 @@
-package com.ly.wanandroid.model
+package com.ly.wanandroid.domain
 
 
 import kotlinx.serialization.SerialName

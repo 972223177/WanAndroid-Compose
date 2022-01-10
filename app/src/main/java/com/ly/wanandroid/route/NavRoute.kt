@@ -1,12 +1,9 @@
 package com.ly.wanandroid.route
 
 import android.net.Uri
-import android.os.Parcelable
 import androidx.navigation.NavHostController
 import com.ly.wanandroid.config.http.globalJson
-import com.ly.wanandroid.utils.Base64Utils
 import com.ly.wanandroid.utils.logD
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 
 object NavRoute {
@@ -48,6 +45,6 @@ fun NavHostController.navTo(
 }
 
 
-fun NavHostController.goWebView(url: String, showTitle: Boolean = false) {
-    navTo(NavRoute.WEB_VIEW, Uri.encode(globalJson.encodeToString(WebRouteArg(url, showTitle))))
+fun NavHostController.goWebView(url: String) {
+    navTo(NavRoute.WEB_VIEW, Uri.encode(globalJson.encodeToString(WebRouteArg(url))))
 }

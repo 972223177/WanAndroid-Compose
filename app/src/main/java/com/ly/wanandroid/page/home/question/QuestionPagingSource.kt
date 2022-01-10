@@ -3,7 +3,7 @@ package com.ly.wanandroid.page.home.question
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.ly.wanandroid.config.http.throwError
-import com.ly.wanandroid.model.Article
+import com.ly.wanandroid.domain.Article
 import com.ly.wanandroid.page.home.HomeRepository
 import javax.inject.Inject
 

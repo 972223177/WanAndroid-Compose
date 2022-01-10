@@ -3,7 +3,6 @@ package com.ly.wanandroid.utils
 import okhttp3.internal.and
 import java.io.File
 import java.io.FileInputStream
-import java.lang.StringBuilder
 import java.security.MessageDigest
 
 

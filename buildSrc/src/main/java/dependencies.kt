@@ -21,7 +21,7 @@ object Libs {
         )
 
     object Accompanist {
-        const val version = "0.20.0"
+        const val version = "0.22.0-rc"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val placeholder = "com.google.accompanist:accompanist-placeholder:$version"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
@@ -29,8 +29,9 @@ object Libs {
         const val refresh = "com.google.accompanist:accompanist-swiperefresh:$version"
         const val systemUiController =
             "com.google.accompanist:accompanist-systemuicontroller:$version"
+        const val flowlayout = "com.google.accompanist:accompanist-flowlayout:$version"
 
-        val libs = listOf(insets, placeholder, pager, permission, refresh, systemUiController)
+        val libs = listOf(insets, placeholder, pager, permission, refresh, systemUiController,flowlayout)
     }
 
 
@@ -44,7 +45,7 @@ object Libs {
     }
 
     object Coroutines {
-        private const val version = "1.5.2"
+        private const val version = "1.6.0"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -54,14 +55,15 @@ object Libs {
         const val appcompat = "androidx.appcompat:appcompat:1.3.0"
         const val coreKtx = "androidx.core:core-ktx:1.7.0"
         const val splashScreen = "androidx.core:core-splashscreen:1.0.0-alpha02"
-        const val constraintCompose = "androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02"
+        const val constraintCompose =
+            "androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02"
+
         object Activity {
             const val activityCompose = "androidx.activity:activity-compose:1.3.1"
         }
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.4"
+            const val version = "1.0.5"
 
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
@@ -144,10 +146,4 @@ object Libs {
     }
 
 
-}
-
-object Urls {
-    const val composeSnapshotRepo = "https://androidx.dev/snapshots/builds/" +
-            "${Libs.AndroidX.Compose.snapshot}/artifacts/repository/"
-    const val accompanistSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots"
 }

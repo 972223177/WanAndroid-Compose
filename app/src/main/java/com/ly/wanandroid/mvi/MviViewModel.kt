@@ -7,8 +7,8 @@ import com.ly.wanandroid.config.http.Response
 import com.ly.wanandroid.config.http.handleRequestError
 import com.ly.wanandroid.config.http.throwError
 import com.ly.wanandroid.utils.logD
+import com.ly.wanandroid.utils.toast
 import kotlinx.coroutines.flow.*
-import kotlin.math.min
 
 abstract class MviViewModel<A : IViewAction> : ViewModel() {
     protected val _pageState = MutableLiveData<PageStatus>(PageStatus.None)
@@ -17,20 +17,18 @@ abstract class MviViewModel<A : IViewAction> : ViewModel() {
 
     protected val _commonEvent = SingleLiveEvent<CommonEvent>()
 
-    protected val _msgEvent = MutableStateFlow("")
-    val msgEvent: StateFlow<String> = _msgEvent
-
     val commonEvent: LiveData<CommonEvent> = _commonEvent
 
     protected var mInitialed = false
 
-
     abstract fun dispatch(viewAction: A)
 
-    protected inline fun init(block: () -> Unit) {
+    abstract fun onFirstInit()
+
+    fun initial() {
         if (mInitialed) return
         mInitialed = true
-        block()
+        onFirstInit()
     }
 
     /**
@@ -46,11 +44,11 @@ abstract class MviViewModel<A : IViewAction> : ViewModel() {
     }
 
 
-    protected fun <PageData> Flow<PageData?>.toPage(
+    protected suspend fun <PageData> Flow<PageData?>.toPage(
         showErrorToast: Boolean = true,
         success: ((PageData?) -> Unit)? = null,
         handleError: (FlowCollector<PageData>.(code: Int, msg: String) -> Unit)? = null,
-    ): Flow<PageData?> =
+    ) =
         onStart {
             _pageState.value = PageStatus.Loading
         }.onEach {
@@ -65,17 +63,17 @@ abstract class MviViewModel<A : IViewAction> : ViewModel() {
                 handleError(code, msg)
             }
             if (showErrorToast) {
-                _msgEvent.value = msg
+                toast(msg)
             }
             _pageState.value = PageStatus.Error(msg)
-        }
+        }.collect()
 
-    protected inline fun <T> Flow<T?>.toPart(
+    protected suspend inline fun <T> Flow<T?>.toPart(
         showErrorToast: Boolean = true,
         showLoading: Boolean = true,
         noinline handleError: (FlowCollector<T>.(code: Int, msg: String) -> Unit)? = null,
         crossinline success: suspend (T?) -> Unit,
-    ): Flow<T?> = onStart {
+    ) = onStart {
         if (showLoading) {
             _commonEvent.setValue(CommonEvent.ShowLoading)
         }
@@ -86,12 +84,17 @@ abstract class MviViewModel<A : IViewAction> : ViewModel() {
             handleError(code, msg)
         }
         if (showErrorToast) {
-            _msgEvent.value = msg
+            toast(msg)
         }
     }.onCompletion {
         if (showLoading) {
             _commonEvent.setValue(CommonEvent.DismissLoading)
         }
+    }.collect()
+
+    override fun onCleared() {
+        super.onCleared()
+        logD("${this::class.java.simpleName}:clear")
     }
 
 }

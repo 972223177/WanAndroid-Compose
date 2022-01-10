@@ -1,6 +1,6 @@
 package com.ly.wanandroid.config.http
 
-import com.ly.wanandroid.model.*
+import com.ly.wanandroid.domain.*
 import retrofit2.http.GET
 import retrofit2.http.Path
 

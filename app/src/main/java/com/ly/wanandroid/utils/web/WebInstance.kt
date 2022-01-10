@@ -13,7 +13,6 @@ import com.tencent.smtt.export.external.interfaces.IX5WebSettings
 import com.tencent.smtt.sdk.CookieManager
 import com.tencent.smtt.sdk.WebSettings
 import com.tencent.smtt.sdk.WebView
-import java.lang.Exception
 
 class WebInstance private constructor(private val application: Application) {
 
