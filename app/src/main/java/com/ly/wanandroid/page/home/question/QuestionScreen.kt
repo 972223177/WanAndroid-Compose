@@ -10,9 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.ly.wanandroid.page.widgets.ItemArticle
-import com.ly.wanandroid.widgets.WAppBar
-import com.ly.wanandroid.widgets.common.RefreshPagerList
+import com.ly.wanandroid.components.ItemArticle
+import com.ly.wanandroid.base.widgets.WAppBar
+import com.ly.wanandroid.base.widgets.RefreshPagerList
 
 @Composable
 fun QuestionScreen(viewModel: QuestionViewModel = hiltViewModel()) {

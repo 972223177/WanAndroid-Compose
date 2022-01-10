@@ -1,7 +1,7 @@
 package com.ly.wanandroid.page.home.knowledge
 
-import com.ly.wanandroid.mvi.MviViewModel
-import com.ly.wanandroid.mvi.NoneViewAction
+import com.ly.wanandroid.base.mvi.MviViewModel
+import com.ly.wanandroid.base.mvi.NoneViewAction
 import com.ly.wanandroid.page.home.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

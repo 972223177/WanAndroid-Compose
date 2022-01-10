@@ -1,9 +1,9 @@
 package com.ly.wanandroid.page.home.knowledge
 
 import androidx.lifecycle.viewModelScope
-import com.ly.wanandroid.mvi.IViewAction
-import com.ly.wanandroid.mvi.MviViewModel
-import com.ly.wanandroid.mvi.NoneViewAction
+import com.ly.wanandroid.base.mvi.IViewAction
+import com.ly.wanandroid.base.mvi.MviViewModel
+import com.ly.wanandroid.base.mvi.NoneViewAction
 import com.ly.wanandroid.page.home.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

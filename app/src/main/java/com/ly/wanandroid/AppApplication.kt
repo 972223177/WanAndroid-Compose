@@ -1,8 +1,8 @@
 package com.ly.wanandroid
 
 import android.app.Application
+import com.ly.wanandroid.base.utils.*
 import com.ly.wanandroid.config.setting.Setting
-import com.ly.wanandroid.utils.*
 import com.tencent.smtt.export.external.TbsCoreSettings
 import com.tencent.smtt.sdk.QbSdk
 import dagger.hilt.android.HiltAndroidApp

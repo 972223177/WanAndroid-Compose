@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.ly.wanandroid.mvi.IViewAction
-import com.ly.wanandroid.mvi.MviViewModel
+import com.ly.wanandroid.base.mvi.IViewAction
+import com.ly.wanandroid.base.mvi.MviViewModel
 import com.ly.wanandroid.page.home.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

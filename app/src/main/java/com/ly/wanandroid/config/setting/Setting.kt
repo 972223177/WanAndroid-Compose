@@ -1,8 +1,8 @@
 package com.ly.wanandroid.config.setting
 
-import com.ly.wanandroid.utils.SpUtils
-import com.ly.wanandroid.utils.isSystemNightModeOpened
-import com.ly.wanandroid.utils.preference
+import com.ly.wanandroid.base.utils.SpUtils
+import com.ly.wanandroid.base.utils.isSystemNightModeOpened
+import com.ly.wanandroid.base.utils.preference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

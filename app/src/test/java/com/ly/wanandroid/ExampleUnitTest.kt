@@ -1,10 +1,8 @@
 package com.ly.wanandroid
 
-import com.ly.wanandroid.utils.launchAppScope
 import kotlinx.coroutines.*
 import org.junit.Test
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.random.Random
 
 /**
  * Example local unit test, which will execute on the development machine (host).

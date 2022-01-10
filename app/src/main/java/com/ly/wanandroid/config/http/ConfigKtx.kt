@@ -1,7 +1,7 @@
 package com.ly.wanandroid.config.http
 
-import com.ly.wanandroid.utils.logD
-import com.ly.wanandroid.utils.toast
+import com.ly.wanandroid.base.utils.logD
+import com.ly.wanandroid.base.utils.toast
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector

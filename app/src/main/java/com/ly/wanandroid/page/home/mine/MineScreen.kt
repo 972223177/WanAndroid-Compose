@@ -33,8 +33,8 @@ import com.ly.wanandroid.config.setting.Setting
 import com.ly.wanandroid.config.setting.User
 import com.ly.wanandroid.domain.LoginData
 import com.ly.wanandroid.ui.theme.*
-import com.ly.wanandroid.widgets.WAppBar
-import com.ly.wanandroid.widgets.WAppBarHeight
+import com.ly.wanandroid.base.widgets.WAppBar
+import com.ly.wanandroid.base.widgets.WAppBarHeight
 
 @Composable
 fun MineScreen(viewModel: MineViewModel = hiltViewModel()) {

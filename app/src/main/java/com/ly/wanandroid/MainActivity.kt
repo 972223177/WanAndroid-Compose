@@ -22,8 +22,8 @@ import com.ly.wanandroid.route.NavArgKey
 import com.ly.wanandroid.route.NavRoute
 import com.ly.wanandroid.route.WebRouteArg
 import com.ly.wanandroid.route.WebRouteArgType
-import com.ly.wanandroid.utils.logD
-import com.ly.wanandroid.widgets.common.BasePage
+import com.ly.wanandroid.base.utils.logD
+import com.ly.wanandroid.base.widgets.BasePage
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
                             type = WebRouteArgType()
                         })
                     ) {
-                        BasePage(navController = navController) {
+                        BasePage(navController = navController, true) {
                             val arg = it.arguments?.getParcelable<WebRouteArg>(NavArgKey.WEB)
                             if (arg != null) {
                                 WebPage(url = arg.url)

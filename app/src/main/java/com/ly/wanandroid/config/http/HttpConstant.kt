@@ -1,6 +1,6 @@
 package com.ly.wanandroid.config.http
 
-import com.ly.wanandroid.utils.preference
+import com.ly.wanandroid.base.utils.preference
 
 object HttpConstant {
     const val DEFAULT_TIMEOUT = 10L

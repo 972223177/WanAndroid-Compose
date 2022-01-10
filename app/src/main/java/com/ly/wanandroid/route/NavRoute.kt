@@ -3,7 +3,7 @@ package com.ly.wanandroid.route
 import android.net.Uri
 import androidx.navigation.NavHostController
 import com.ly.wanandroid.config.http.globalJson
-import com.ly.wanandroid.utils.logD
+import com.ly.wanandroid.base.utils.logD
 import kotlinx.serialization.encodeToString
 
 object NavRoute {
