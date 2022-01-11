@@ -5,49 +5,35 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.ly.wanandroid.base.mvi.IViewAction
 import com.ly.wanandroid.base.mvi.MviViewModel
-import com.ly.wanandroid.page.home.HomeRepository
+import com.ly.wanandroid.base.mvi.NoneViewAction
+import com.ly.wanandroid.usecase.HomeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class IndexViewModel @Inject constructor(private val mRepository: HomeRepository) :
-    MviViewModel<IndexViewAction>() {
+class IndexViewModel @Inject constructor(private val useCase: HomeUseCase) :
+    MviViewModel<NoneViewAction>() {
 
     val articles = Pager(
         PagingConfig(pageSize = 20)
     ) {
-        IndexPagingSource(mRepository)
+        IndexPagingSource(useCase)
     }.flow.cachedIn(viewModelScope)
 
     val listState = LazyListState()
 
-    override fun dispatch(viewAction: IndexViewAction) {
-        when (viewAction) {
-            IndexViewAction.LoadMore -> {}
-            IndexViewAction.Refresh -> {
+    override fun dispatch(viewAction: NoneViewAction) {
 
+    }
+
+    override fun onFirstInit() {
+        viewModelScope.launch {
+            pageRequest {
+                useCase.getBanners().data
             }
         }
     }
 
-    override fun onFirstInit() {
-        getPageData()
-    }
-
-    private fun getPageData() {
-        viewModelScope.launch {
-            request {
-                mRepository.getBanners()
-            }.toPage()
-        }
-    }
-
-}
-
-sealed class IndexViewAction : IViewAction {
-    object Refresh : IndexViewAction()
-    object LoadMore : IndexViewAction()
 }

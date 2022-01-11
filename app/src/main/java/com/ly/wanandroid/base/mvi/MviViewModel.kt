@@ -1,19 +1,18 @@
 package com.ly.wanandroid.base.mvi
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.ly.wanandroid.config.http.Response
-import com.ly.wanandroid.config.http.handleRequestError
-import com.ly.wanandroid.config.http.throwError
 import com.ly.wanandroid.base.utils.logD
 import com.ly.wanandroid.base.utils.toast
+import com.ly.wanandroid.config.http.HttpResult
+import com.ly.wanandroid.config.http.handleException
+import com.ly.wanandroid.config.http.handleRequestError
 import kotlinx.coroutines.flow.*
 
 abstract class MviViewModel<A : IViewAction> : ViewModel() {
-    protected val _pageState = MutableLiveData<PageStatus>(PageStatus.None)
+    protected val _pageState = MutableStateFlow<PageState>(PageState.None)
 
-    val pageState: LiveData<PageStatus> = _pageState
+    val pageState: StateFlow<PageState> = _pageState
 
     protected val _commonEvent = SingleLiveEvent<CommonEvent>()
 
@@ -36,10 +35,10 @@ abstract class MviViewModel<A : IViewAction> : ViewModel() {
      *     repository.getData()
      * }
      */
-    protected inline fun <T> request(
-        crossinline block: suspend () -> Response<T>
+    protected inline fun <T> wrapFlow(
+        crossinline block: suspend () -> HttpResult<T>
     ): Flow<T?> = flow {
-        val result = block().throwError()
+        val result = block()
         emit(result.data)
     }
 
@@ -50,13 +49,13 @@ abstract class MviViewModel<A : IViewAction> : ViewModel() {
         handleError: (FlowCollector<PageData>.(code: Int, msg: String) -> Unit)? = null,
     ) =
         onStart {
-            _pageState.value = PageStatus.Loading
+            _pageState.value = PageState.Loading
         }.onEach {
             success?.invoke(it)
             _pageState.value = if (it == null) {
-                PageStatus.Empty
+                PageState.Empty
             } else {
-                PageStatus.Success(it)
+                PageState.Success(it)
             }
         }.handleRequestError { code, msg ->
             if (handleError != null) {
@@ -65,7 +64,7 @@ abstract class MviViewModel<A : IViewAction> : ViewModel() {
             if (showErrorToast) {
                 toast(msg)
             }
-            _pageState.value = PageStatus.Error(msg)
+            _pageState.value = PageState.Error(msg)
         }.collect()
 
     protected suspend inline fun <T> Flow<T?>.toPart(
@@ -91,6 +90,48 @@ abstract class MviViewModel<A : IViewAction> : ViewModel() {
             _commonEvent.setValue(CommonEvent.DismissLoading)
         }
     }.collect()
+
+    protected inline fun <T> pageRequest(
+        handleError: (Int, String) -> String = { _, msg -> msg },
+        requestBlock: () -> T?
+    ) {
+        _pageState.value = PageState.Loading
+        try {
+            val result = requestBlock()
+            if (result == null) {
+                _pageState.value = PageState.Empty
+            } else {
+                _pageState.value = PageState.Success(result)
+            }
+        } catch (e: Exception) {
+            val (code, msg) = handleException(e)
+            _pageState.value = PageState.Error(handleError(code, msg))
+        }
+    }
+
+    protected inline fun partRequest(
+        showLoading: Boolean = true,
+        showErrorToast: Boolean = true,
+        handleError: (Int, String) -> Unit = { _, _ -> },
+        requestBlock: () -> Unit
+    ) {
+        if (showLoading) {
+            _commonEvent.setValue(CommonEvent.ShowLoading)
+        }
+        try {
+            requestBlock()
+        } catch (e: Exception) {
+            val (code, msg) = handleException(e)
+            handleError(code, msg)
+            if (showErrorToast) {
+                toast(msg)
+            }
+        } finally {
+            if (showLoading) {
+                _commonEvent.setValue(CommonEvent.DismissLoading)
+            }
+        }
+    }
 
     override fun onCleared() {
         super.onCleared()

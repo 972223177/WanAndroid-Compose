@@ -16,7 +16,7 @@ import java.text.ParseException
 
 private const val TAG = "HttpError"
 
-fun <T> Response<T>.throwError(): Response<T> {
+fun <T> HttpResult<T>.throwError(): HttpResult<T> {
     if (!success) {
         if (errorCode == ErrorStatus.UN_LOGIN) {
             toast(errorMsg)

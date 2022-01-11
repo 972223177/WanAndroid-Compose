@@ -15,7 +15,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,12 +25,16 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.ly.wanandroid.LocalNavController
 import com.ly.wanandroid.VoidCallback
+import com.ly.wanandroid.base.widgets.BaseScreen
+import com.ly.wanandroid.base.widgets.WAppBar
+import com.ly.wanandroid.components.TabItem
 import com.ly.wanandroid.domain.Chapter
 import com.ly.wanandroid.domain.Navi
+import com.ly.wanandroid.route.goChapter
 import com.ly.wanandroid.route.goWebView
-import com.ly.wanandroid.ui.theme.*
-import com.ly.wanandroid.base.widgets.WAppBar
-import com.ly.wanandroid.base.widgets.BaseScreen
+import com.ly.wanandroid.ui.theme.surface1Top
+import com.ly.wanandroid.ui.theme.textSecond
+import com.ly.wanandroid.ui.theme.textSurface
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -43,10 +46,10 @@ fun KnowledgeScreen(viewModel: KnowledgeViewModel = hiltViewModel()) {
             val pagerState = rememberPagerState()
             WAppBar(title = {
                 Row {
-                    KnowledgeTab(title = "体系", selected = pagerState.targetPage == 0) {
+                    TabItem(title = "体系", selected = pagerState.targetPage == 0) {
                         scope.launch { pagerState.animateScrollToPage(0) }
                     }
-                    KnowledgeTab(title = "导航", selected = pagerState.targetPage == 1) {
+                    TabItem(title = "导航", selected = pagerState.targetPage == 1) {
                         scope.launch { pagerState.animateScrollToPage(1) }
                     }
                 }
@@ -63,22 +66,10 @@ fun KnowledgeScreen(viewModel: KnowledgeViewModel = hiltViewModel()) {
 }
 
 @Composable
-private fun KnowledgeTab(title: String, selected: Boolean, clickable: VoidCallback) {
-    Text(
-        text = title,
-        fontSize = 15.sp,
-        fontWeight = FontWeight.W500,
-        color = if (selected) MaterialTheme.colors.onMainOrSurface else MaterialTheme.colors.onMainOrSurfaceAlpha,
-        modifier = Modifier
-            .clickable { clickable() }
-            .padding(horizontal = 8.dp, vertical = 5.dp)
-    )
-}
-
-@Composable
 private fun ChapterTabScreen() {
-    val viewModel: ChapterViewModel = hiltViewModel()
+    val viewModel: ChaptersListTabViewModel = hiltViewModel()
     BaseScreen<List<Chapter>>(viewModel = viewModel) {
+        val navController = LocalNavController.current
         LazyColumn(
             modifier = Modifier.padding(
                 top = 5.dp,
@@ -94,9 +85,9 @@ private fun ChapterTabScreen() {
                     crossAxisSpacing = 10.dp,
                     modifier = Modifier.padding(top = 5.dp)
                 ) {
-                    item.children.forEach {
-                        SubTitle(text = it.name) {
-
+                    item.children.forEachIndexed { index, chapter ->
+                        SubTitle(text = chapter.name) {
+                            navController.goChapter(index, item)
                         }
                     }
                 }
@@ -107,7 +98,7 @@ private fun ChapterTabScreen() {
 
 @Composable
 private fun NaviTabScreen() {
-    val viewModel: NaviViewModel = hiltViewModel()
+    val viewModel: NaviListTabViewModel = hiltViewModel()
     BaseScreen<List<Navi>>(viewModel = viewModel) {
         val navController = LocalNavController.current
         LazyColumn(

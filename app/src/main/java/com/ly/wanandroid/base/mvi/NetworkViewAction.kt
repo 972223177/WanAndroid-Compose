@@ -9,16 +9,16 @@ interface IViewAction
 object NoneViewAction : IViewAction
 
 
-sealed class PageStatus {
-    object None : PageStatus()
+sealed class PageState {
+    object None : PageState()
 
-    object Loading : PageStatus()
+    object Loading : PageState()
 
-    data class Success(val data: Any?) : PageStatus()
+    data class Success(val data: Any?) : PageState()
 
-    data class Error(val msg: String) : PageStatus()
+    data class Error(val msg: String) : PageState()
 
-    object Empty : PageStatus()
+    object Empty : PageState()
 
 }
 

@@ -15,13 +15,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ly.wanandroid.*
-import com.ly.wanandroid.config.setting.Setting
 import com.ly.wanandroid.base.mvi.CommonEvent
 import com.ly.wanandroid.base.mvi.IViewAction
 import com.ly.wanandroid.base.mvi.MviViewModel
-import com.ly.wanandroid.base.mvi.PageStatus
-import com.ly.wanandroid.ui.theme.WanAndroidTheme
+import com.ly.wanandroid.base.mvi.PageState
 import com.ly.wanandroid.base.utils.logD
+import com.ly.wanandroid.config.setting.Setting
+import com.ly.wanandroid.ui.theme.WanAndroidTheme
 
 @Composable
 fun BasePage(
@@ -57,7 +57,7 @@ fun <T : Any> BaseScreen(
     },
     content: ComposableCallback1<T>
 ) {
-    val currPageStatus = viewModel.pageState.observeAsState()
+    val currPageStatus = viewModel.pageState.collectAsState()
     val curEvent = viewModel.commonEvent.observeAsState()
     Box(modifier = Modifier.fillMaxSize()) {
         when (curEvent.value) {
@@ -67,8 +67,6 @@ fun <T : Any> BaseScreen(
 
                 }
             }
-            //toast不能在这里做
-            else -> {}
         }
         DisposableEffect(key1 = Unit, effect = {
             viewModel.initial()
@@ -77,19 +75,18 @@ fun <T : Any> BaseScreen(
             }
         })
         when (currPageStatus.value) {
-            is PageStatus.Error -> errorHolder()
-            PageStatus.Loading -> loadingHolder()
-            PageStatus.None -> {}
-            is PageStatus.Success -> {
-                val data = (currPageStatus.value as? PageStatus.Success)?.data as? T
+            is PageState.Error -> errorHolder()
+            PageState.Loading -> loadingHolder()
+            PageState.None -> {}
+            is PageState.Success -> {
+                val data = (currPageStatus.value as? PageState.Success)?.data as? T
                 if (data == null) {
                     errorHolder()
                 } else {
                     content(data)
                 }
             }
-            PageStatus.Empty -> emptyHolder()
-            else -> {}
+            PageState.Empty -> emptyHolder()
         }
     }
 

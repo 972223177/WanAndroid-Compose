@@ -21,13 +21,13 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.rememberImagePainter
 import com.ly.wanandroid.R
-import com.ly.wanandroid.domain.Banner
-import com.ly.wanandroid.components.ItemArticle
-import com.ly.wanandroid.ui.theme.onMainOrSurface
 import com.ly.wanandroid.base.widgets.Banner
-import com.ly.wanandroid.base.widgets.WAppBar
 import com.ly.wanandroid.base.widgets.BaseScreen
 import com.ly.wanandroid.base.widgets.RefreshPagerList
+import com.ly.wanandroid.base.widgets.WAppBar
+import com.ly.wanandroid.components.ItemArticle
+import com.ly.wanandroid.domain.Banner
+import com.ly.wanandroid.ui.theme.onMainOrSurface
 
 @Composable
 fun IndexScreen(indexViewModel: IndexViewModel = hiltViewModel()) {

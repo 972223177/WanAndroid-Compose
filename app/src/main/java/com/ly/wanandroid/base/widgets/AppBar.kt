@@ -36,14 +36,7 @@ fun WAppBar(
     BaseAppbar(
         navigationIcon = navigationIcon,
         title = {
-            Text(
-                text = title,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.W500,
-                color = titleColor,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            AppBarTitle(title = title, titleColor = titleColor)
         },
         actions = actions,
         modifier = Modifier
@@ -55,6 +48,18 @@ fun WAppBar(
     )
 
 
+}
+
+@Composable
+fun AppBarTitle(title: String, titleColor: Color = Color.White) {
+    Text(
+        text = title,
+        fontSize = 18.sp,
+        fontWeight = FontWeight.W500,
+        color = titleColor,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+    )
 }
 
 @Composable

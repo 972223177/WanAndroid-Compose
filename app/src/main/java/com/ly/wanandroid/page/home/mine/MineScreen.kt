@@ -28,13 +28,15 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
+import com.ly.wanandroid.LocalNavController
 import com.ly.wanandroid.R
+import com.ly.wanandroid.base.widgets.WAppBar
+import com.ly.wanandroid.base.widgets.WAppBarHeight
 import com.ly.wanandroid.config.setting.Setting
 import com.ly.wanandroid.config.setting.User
 import com.ly.wanandroid.domain.LoginData
+import com.ly.wanandroid.route.goSetting
 import com.ly.wanandroid.ui.theme.*
-import com.ly.wanandroid.base.widgets.WAppBar
-import com.ly.wanandroid.base.widgets.WAppBarHeight
 
 @Composable
 fun MineScreen(viewModel: MineViewModel = hiltViewModel()) {
@@ -52,6 +54,7 @@ fun MineScreen(viewModel: MineViewModel = hiltViewModel()) {
 @Composable
 private fun Body(viewModel: MineViewModel) {
     val user by viewModel.user.collectAsState()
+    val navController = LocalNavController.current
     LazyColumn {
         item {
             Head(user)
@@ -67,7 +70,7 @@ private fun Body(viewModel: MineViewModel) {
             MenuItem(icon = painterResource(id = R.drawable.ic_share), title = "我的分享")
         }
         item {
-            MenuItem(icon = painterResource(id = R.drawable.ic_collect), title = "我的分享")
+            MenuItem(icon = painterResource(id = R.drawable.ic_collect), title = "我的收藏")
         }
         item {
             MenuItem(icon = painterResource(id = R.drawable.ic_read_later), title = "我的书签")
@@ -79,7 +82,9 @@ private fun Body(viewModel: MineViewModel) {
             MenuItem(icon = painterResource(id = R.drawable.ic_github), title = "开源项目")
         }
         item {
-            MenuItem(icon = painterResource(id = R.drawable.ic_setting), title = "系统设置")
+            MenuItem(icon = painterResource(id = R.drawable.ic_setting), title = "系统设置") {
+                navController.goSetting()
+            }
         }
 
     }

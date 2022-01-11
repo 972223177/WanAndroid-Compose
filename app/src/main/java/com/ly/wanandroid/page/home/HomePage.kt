@@ -39,12 +39,13 @@ fun HomePage(viewModel: HomeViewModel = hiltViewModel()) {
         HorizontalPager(
             count = titles.size,
             state = pageState,
-            modifier = Modifier.padding(it)
+            modifier = Modifier.padding(it),
+            key = { page ->
+                titles[page]
+            }
         ) { page ->
             when (page) {
-                0 -> {
-                    IndexScreen()
-                }
+                0 ->  IndexScreen()
                 1 -> QuestionScreen()
                 2 -> KnowledgeScreen()
                 else -> MineScreen()

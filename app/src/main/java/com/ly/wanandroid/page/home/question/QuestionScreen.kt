@@ -10,9 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.ly.wanandroid.components.ItemArticle
-import com.ly.wanandroid.base.widgets.WAppBar
 import com.ly.wanandroid.base.widgets.RefreshPagerList
+import com.ly.wanandroid.base.widgets.WAppBar
+import com.ly.wanandroid.components.ItemArticle
 
 @Composable
 fun QuestionScreen(viewModel: QuestionViewModel = hiltViewModel()) {
@@ -31,7 +31,9 @@ private fun QuestionList(viewModel: QuestionViewModel) {
         viewModel.listState
     }
     val listState = if (questions.itemCount > 0) viewState else rememberLazyListState()
-    RefreshPagerList(lazyPagingItems = questions, listState = listState) {
+    RefreshPagerList(lazyPagingItems = questions, listState = listState, onRefresh = {
+        questions.refresh()
+    }) {
         items(questions) { item ->
             if (item != null) {
                 ItemArticle(article = item)

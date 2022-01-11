@@ -1,9 +1,11 @@
 package com.ly.wanandroid.route
 
 import android.net.Uri
+import android.os.Parcelable
 import androidx.navigation.NavHostController
-import com.ly.wanandroid.config.http.globalJson
 import com.ly.wanandroid.base.utils.logD
+import com.ly.wanandroid.config.http.globalJson
+import com.ly.wanandroid.domain.Chapter
 import kotlinx.serialization.encodeToString
 
 object NavRoute {
@@ -13,10 +15,13 @@ object NavRoute {
 
     const val WEB_VIEW = "webView"
 
+    const val CHAPTER = "chapter"
 }
 
 object NavArgKey {
     const val WEB = "webArg"
+
+    const val CHAPTER = "chapterArg"
 }
 
 fun NavHostController.navTo(
@@ -34,7 +39,7 @@ fun NavHostController.navTo(
     } else {
         ""
     }
-    logD("导航:$destinationName$routeArg")
+//    logD("导航:$destinationName$routeArg")
     navigate("$destinationName$routeArg") {
         if (backStackRouteName != null) {
             popUpTo(backStackRouteName) { saveState = true }
@@ -44,7 +49,16 @@ fun NavHostController.navTo(
     }
 }
 
+inline fun <reified T : Parcelable> T.toJson(): String = Uri.encode(globalJson.encodeToString(this))
 
 fun NavHostController.goWebView(url: String) {
-    navTo(NavRoute.WEB_VIEW, Uri.encode(globalJson.encodeToString(WebRouteArg(url))))
+    navTo(NavRoute.WEB_VIEW, WebRouteArg(url).toJson())
+}
+
+fun NavHostController.goChapter(initialIndex: Int, chapter: Chapter) {
+    navTo(NavRoute.CHAPTER, ChapterRouteArg(initialIndex, chapter).toJson())
+}
+
+fun NavHostController.goSetting() {
+    navTo(NavRoute.SETTING)
 }

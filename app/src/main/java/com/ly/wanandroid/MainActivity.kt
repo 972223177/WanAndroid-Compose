@@ -5,25 +5,26 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ProvidedValue
 import androidx.compose.runtime.compositionLocalOf
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.insets.ProvideWindowInsets
-import com.ly.wanandroid.page.home.HomePage
-import com.ly.wanandroid.page.web.WebPage
-import com.ly.wanandroid.route.NavArgKey
-import com.ly.wanandroid.route.NavRoute
-import com.ly.wanandroid.route.WebRouteArg
-import com.ly.wanandroid.route.WebRouteArgType
-import com.ly.wanandroid.base.utils.logD
 import com.ly.wanandroid.base.widgets.BasePage
+import com.ly.wanandroid.page.chapter.ChapterPage
+import com.ly.wanandroid.page.chapter.ChapterViewModel
+import com.ly.wanandroid.page.home.HomePage
+import com.ly.wanandroid.page.setting.SettingPage
+import com.ly.wanandroid.page.web.WebPage
+import com.ly.wanandroid.route.*
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,35 +38,71 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val navController = rememberNavController()
             ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
-                LaunchedEffect(key1 = Unit) {
-                    navController.currentBackStackEntryFlow.collect {
-                        logD("currentBackStackEntry:$it")
-                    }
-                }
                 NavHost(navController = navController, startDestination = NavRoute.HOME) {
-                    composable(NavRoute.HOME) {
-                        BasePage(navController = navController) {
-                            HomePage()
-                        }
+                    createPage(navController, NavRoute.HOME) {
+                        HomePage()
                     }
-                    composable(
-                        route = NavRoute.WEB_VIEW + "/{${NavArgKey.WEB}}",
-                        arguments = listOf(navArgument(NavArgKey.WEB) {
-                            type = WebRouteArgType()
-                        })
+                    createArgPage<WebRouteArg>(
+                        navController, NavRoute.WEB_VIEW, NavArgKey.WEB, WebRouteArgType()
                     ) {
-                        BasePage(navController = navController, true) {
-                            val arg = it.arguments?.getParcelable<WebRouteArg>(NavArgKey.WEB)
-                            if (arg != null) {
-                                WebPage(url = arg.url)
-                            }
-                        }
+                        WebPage(url = it?.url ?: "")
+                    }
+
+                    createArgPage<ChapterRouteArg>(
+                        navController, NavRoute.CHAPTER, NavArgKey.CHAPTER, ChapterRouteType()
+                    ) {
+                        val viewModel: ChapterViewModel = hiltViewModel()
+                        viewModel.setChapter(it)
+                        ChapterPage(viewModel)
+                    }
+                    createPage(navController, NavRoute.SETTING) {
+                        SettingPage()
                     }
                 }
             }
         }
     }
 }
+
+inline fun NavGraphBuilder.createPage(
+    navHostController: NavHostController,
+    route: String,
+    darkIcons: Boolean = false,
+    crossinline content: ComposableCallback
+) {
+    composable(route = route) {
+        BasePage(navController = navHostController, darkIcons = darkIcons) {
+            content()
+        }
+    }
+}
+
+inline fun <reified T> NavGraphBuilder.createArgPage(
+    navHostController: NavHostController,
+    route: String,
+    argKey: String,
+    routeType: NavType<*>,
+    darkIcons: Boolean = false,
+    crossinline content: ComposableCallback1<T?>
+) {
+    if (argKey.isEmpty()) throw IllegalArgumentException("argKey is empty")
+    composable(
+        route = route.appendArg(argKey),
+        arguments = listOf(
+            navArgument(
+                argKey
+            ) {
+                type = routeType
+            })
+    ) {
+        BasePage(navController = navHostController, darkIcons = darkIcons) {
+            val arg = it.arguments?.get(argKey) as? T
+            content(arg)
+        }
+    }
+}
+
+fun String.appendArg(name: String): String = "$this/{$name}"
 
 object LocalNavController {
     private val LocalNavController = compositionLocalOf<NavHostController?> {
