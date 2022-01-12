@@ -13,7 +13,7 @@ fun colorRes(@ColorRes id: Int): Int = ContextCompat.getColor(appContext, id)
 
 fun stringArrayRes(@ArrayRes id: Int): Array<String> = appContext.resources.getStringArray(id)
 
-fun dimensRes(@DimenRes id:Int):Float = appContext.resources.getDimension(id)
+fun dimensRes(@DimenRes id: Int): Float = appContext.resources.getDimension(id)
 
 
 

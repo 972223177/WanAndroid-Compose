@@ -6,7 +6,7 @@ import com.ly.wanandroid.config.http.throwError
 import com.ly.wanandroid.domain.Article
 import com.ly.wanandroid.usecase.HomeUseCase
 
-class QuestionPagingSource (private val useCase: HomeUseCase) :
+class QuestionPagingSource(private val useCase: HomeUseCase) :
     PagingSource<Int, Article>() {
     override fun getRefreshKey(state: PagingState<Int, Article>): Int? {
         return state.anchorPosition?.let {

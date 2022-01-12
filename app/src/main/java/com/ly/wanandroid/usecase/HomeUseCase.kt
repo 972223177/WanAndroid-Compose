@@ -21,12 +21,15 @@ class HomeUseCase @Inject constructor(
 
     suspend fun getArticlesWithTop(page: Int) = request {
         val totalArticles = mutableListOf<Article>()
-        if (page == 1) {
-            val topArticles = articleRepository.getTopArticles().throwError()
-            totalArticles.addAll(topArticles.data ?: emptyList())
-        }
         val articles = articleRepository.getArticles(page)
         totalArticles.addAll(articles.data?.datas ?: emptyList())
+        if (page == 0) {
+            val topResult = articleRepository.getTopArticles().throwError()
+            val topArticles = topResult.data?.toMutableList()?.map {
+                it.copy(top = true)
+            } ?: emptyList()
+            totalArticles.addAll(0, topArticles)
+        }
         val newPage = articles.data?.copy(datas = totalArticles)
         articles.copy(data = newPage)
     }

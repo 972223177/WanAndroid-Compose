@@ -1,5 +1,6 @@
 package com.ly.wanandroid.base.widgets
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -26,7 +27,7 @@ import com.ly.wanandroid.ui.theme.WanAndroidTheme
 @Composable
 fun BasePage(
     navController: NavHostController,
-    darkIcons:Boolean = false,
+    darkIcons: Boolean = false,
     block: ComposableCallback
 ) {
     val isNightMode by Setting.isNightModeFlow.collectAsState()
@@ -94,7 +95,14 @@ fun <T : Any> BaseScreen(
 
 @Composable
 fun ErrorView(retry: VoidCallback) {
-
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text(text = "error", modifier = Modifier
+            .clickable {
+                retry()
+            }
+            .padding(10.dp)
+            .align(Alignment.Center))
+    }
 }
 
 @Composable

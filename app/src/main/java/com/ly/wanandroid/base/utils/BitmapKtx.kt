@@ -258,6 +258,6 @@ fun Bitmap.roundCorners(
     )
     canvas.clipPath(path)
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-    canvas.drawBitmap(this,0f,0f,paint)
+    canvas.drawBitmap(this, 0f, 0f, paint)
     return destBp
 }

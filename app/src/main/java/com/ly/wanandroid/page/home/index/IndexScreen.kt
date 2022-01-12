@@ -2,6 +2,7 @@ package com.ly.wanandroid.page.home.index
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -10,6 +11,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -26,6 +29,7 @@ import com.ly.wanandroid.base.widgets.BaseScreen
 import com.ly.wanandroid.base.widgets.RefreshPagerList
 import com.ly.wanandroid.base.widgets.WAppBar
 import com.ly.wanandroid.components.ItemArticle
+import com.ly.wanandroid.config.setting.Setting
 import com.ly.wanandroid.domain.Banner
 import com.ly.wanandroid.ui.theme.onMainOrSurface
 
@@ -68,9 +72,18 @@ private fun IndexList(initData: List<Banner>, viewModel: IndexViewModel) {
         viewModel.listState
     }
     val listState = if (articles.itemCount > 0) viewState else rememberLazyListState()
-    RefreshPagerList(lazyPagingItems = articles, listState = listState) {
+    RefreshPagerList(
+        lazyPagingItems = articles,
+        listState = listState,
+        refreshState = viewModel.refreshState
+    ) {
         item {
-            IndexBanner(initData)
+            Box {
+                val showBanner by Setting.enableShowBannerFlow.collectAsState()
+                if (showBanner) {
+                    IndexBanner(initData)
+                }
+            }
         }
         items(articles) { item ->
             if (item != null) {

@@ -243,6 +243,12 @@ val Colors.hearOuter: Color
 val Colors.heartCenter: Color
     get() = OrangeF78C65
 
+val Colors.switcherThumbChecked: Color
+    get() = Blue4282F4
+
+val Colors.switcherTrackChecked: Color
+    get() = Blue4282F4A60
+
 
 /**
  * 返回完全不透明的颜色，由画布背景色和alpha值合成。适用于不需要半透明背景色的情况

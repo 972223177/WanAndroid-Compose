@@ -16,18 +16,18 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ly.wanandroid.VoidCallback
 
 @Composable
 fun <T : Any> RefreshPagerList(
     lazyPagingItems: LazyPagingItems<T>,
-    isRefresh: Boolean = false,
-    onRefresh: VoidCallback = {},
     listState: LazyListState = rememberLazyListState(),
+    refreshState: SwipeRefreshState = rememberSwipeRefreshState(isRefreshing = false),
     itemContent: LazyListScope.() -> Unit
 ) {
-    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isRefresh)
+    refreshState.isRefreshing = lazyPagingItems.loadState.refresh is LoadState.Loading
     val err = lazyPagingItems.loadState.refresh is LoadState.Error
     if (err) {
         ErrorView {
@@ -35,19 +35,16 @@ fun <T : Any> RefreshPagerList(
         }
         return
     }
-    SwipeRefresh(state = swipeRefreshState, onRefresh = {
-        onRefresh()
+    SwipeRefresh(state = refreshState, onRefresh = {
         lazyPagingItems.refresh()
     }) {
-        swipeRefreshState.isRefreshing =
-            (lazyPagingItems.loadState.refresh is LoadState.Loading || isRefresh)
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             state = listState
         ) {
             itemContent()
-            if (!swipeRefreshState.isRefreshing) {
+            if (!refreshState.isRefreshing) {
                 item {
                     lazyPagingItems.apply {
                         when (loadState.append) {

@@ -45,7 +45,7 @@ fun HomePage(viewModel: HomeViewModel = hiltViewModel()) {
             }
         ) { page ->
             when (page) {
-                0 ->  IndexScreen()
+                0 -> IndexScreen()
                 1 -> QuestionScreen()
                 2 -> KnowledgeScreen()
                 else -> MineScreen()

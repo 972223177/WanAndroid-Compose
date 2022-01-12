@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.ly.wanandroid.base.mvi.MviViewModel
 import com.ly.wanandroid.base.mvi.NoneViewAction
 import com.ly.wanandroid.usecase.HomeUseCase
@@ -23,6 +24,8 @@ class IndexViewModel @Inject constructor(private val useCase: HomeUseCase) :
     }.flow.cachedIn(viewModelScope)
 
     val listState = LazyListState()
+
+    val refreshState = SwipeRefreshState(false)
 
     override fun dispatch(viewAction: NoneViewAction) {
 

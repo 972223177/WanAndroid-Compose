@@ -13,7 +13,7 @@ fun FunctionalityNotAvailablePopup(onDismiss: VoidCallback) {
             text = "Functionality not available \uD83D\uDE48",
             style = MaterialTheme.typography.body2
         )
-    },confirmButton = {
+    }, confirmButton = {
         TextButton(onClick = onDismiss) {
             Text(text = "CLOSE")
         }

@@ -1,10 +1,10 @@
- package com.ly.wanandroid.base.utils
+package com.ly.wanandroid.base.utils
 
 import android.os.Environment
 import java.io.File
 import java.math.BigDecimal
 
- /**
+/**
  * sd卡是否可用
  */
 fun isSDCardAlive(): Boolean =

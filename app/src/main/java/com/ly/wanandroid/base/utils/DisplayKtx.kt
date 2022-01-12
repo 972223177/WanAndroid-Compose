@@ -10,7 +10,7 @@ fun dp2px(dpValue: Float): Int {
     return (dpValue * scale + 0.5f).toInt()
 }
 
-fun dp2pxf(dpValue: Float):Float{
+fun dp2pxf(dpValue: Float): Float {
     val scale = getDensity()
     return dpValue * scale + 0.5f
 }

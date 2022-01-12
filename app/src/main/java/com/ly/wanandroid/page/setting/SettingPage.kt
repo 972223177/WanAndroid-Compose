@@ -1,35 +1,88 @@
 package com.ly.wanandroid.page.setting
 
+import android.content.Context
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Switch
-import androidx.compose.material.SwitchColors
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ly.wanandroid.LocalNavController
+import com.ly.wanandroid.R
 import com.ly.wanandroid.ValueSetter
+import com.ly.wanandroid.VoidCallback
+import com.ly.wanandroid.base.utils.formatSize
+import com.ly.wanandroid.base.utils.getSize
+import com.ly.wanandroid.base.utils.getVersionName
+import com.ly.wanandroid.base.utils.tryDelete
 import com.ly.wanandroid.base.widgets.CommonAppBar
 import com.ly.wanandroid.config.setting.Setting
 import com.ly.wanandroid.ui.theme.*
 
 @Composable
 fun SettingPage() {
-    Column {
+    Scaffold(topBar = {
         val navController = LocalNavController.current
         CommonAppBar(backPress = { navController.popBackStack() }, title = "设置")
-        SettingItem(title = "跟随系统暗色模式", checked = Setting.isAutoNightMode, onCheckedChanged = {
-            Setting.openAutoNightMode(it)
-        })
+    }) {
+        Column {
+            val autoNightMode by Setting.isAutoNightModeFlow.collectAsState()
+            SettingItem(title = "跟随系统暗色模式", checked = autoNightMode, onCheckedChanged = {
+                Setting.openAutoNightMode(it)
+            })
+            val nightMode by Setting.isNightModeFlow.collectAsState()
+            SettingItem(title = "暗色模式", checked = nightMode, onCheckedChanged = {
+                Setting.openNightMode(it)
+            })
+            val showTop by Setting.isShowTopArticleFlow.collectAsState()
+            SettingItem(
+                title = "显示置顶",
+                subTitle = "开启后首页显示置顶文章",
+                checked = showTop,
+                onCheckedChanged = {
+                    Setting.openShowTopArticle(it)
+                })
+            val showBanner by Setting.enableShowBannerFlow.collectAsState()
+            SettingItem(
+                title = "显示轮播",
+                subTitle = "开启后首页顶部显示轮播图",
+                checked = showBanner,
+                onCheckedChanged = {
+                    Setting.openShowBanner(it)
+                })
+            val saveRecord by Setting.enableSaveBrowserRecordFlow.collectAsState()
+            SettingItem(
+                title = "保存浏览记录",
+                subTitle = "开启后保存文章浏览记录",
+                checked = saveRecord,
+                onCheckedChanged = {
+                    Setting.enableSaveBrowserRecord(it)
+                }
+            )
+            val context = LocalContext.current
+            var cacheSize by remember {
+                mutableStateOf(context.getCacheSize())
+            }
+            SettingItem(title = "清除缓存", subTitle = cacheSize) {
+                context.cacheDir.tryDelete()
+                cacheSize = context.getCacheSize()
+                Setting.refresh()
+            }
+
+            SettingItem(title = "当前版本", subTitle = getVersionName()) {
+
+            }
+
+        }
     }
+}
+
+private fun Context.getCacheSize(): String {
+    return cacheDir.getSize().formatSize()
 }
 
 @Composable
@@ -56,9 +109,46 @@ private fun SettingItem(
                 Text(text = subTitle, fontSize = 12.sp, color = MaterialTheme.colors.textThird)
             }
         }
-        Switch(checked = isChecked, onCheckedChange = {
+        Switch(checked = isChecked, colors = SwitchDefaults.colors(
+            checkedThumbColor = MaterialTheme.colors.switcherThumbChecked,
+            checkedTrackColor = MaterialTheme.colors.switcherTrackChecked
+        ), onCheckedChange = {
             isChecked = it
             onCheckedChanged(it)
         })
+    }
+}
+
+@Composable
+private fun SettingItem(
+    title: String,
+    subTitle: String = "",
+    clickable: VoidCallback
+) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .clickable {
+            clickable()
+        }
+        .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(text = title, fontSize = 15.sp, color = MaterialTheme.colors.textSurface)
+        Row(modifier = Modifier.sizeIn()) {
+            if (subTitle.isNotEmpty()) {
+                Text(
+                    text = subTitle,
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colors.textThird,
+                    modifier = Modifier.padding(top = 3.dp)
+                )
+            }
+            Icon(
+                painter = painterResource(id = R.drawable.ic_enter),
+                contentDescription = "arrowRight",
+                tint = MaterialTheme.colors.iconSecond
+            )
+        }
     }
 }

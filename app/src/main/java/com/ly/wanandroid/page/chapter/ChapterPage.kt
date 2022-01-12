@@ -93,9 +93,7 @@ fun ChapterPage(viewModel: ChapterViewModel) {
 @Composable
 private fun KnowledgeList(items: LazyPagingItems<Article>, listState: LazyListState) {
     logD("knowledgeList ${listState.hashCode()}")
-    RefreshPagerList(lazyPagingItems = items, listState = listState, onRefresh = {
-        items.refresh()
-    }) {
+    RefreshPagerList(lazyPagingItems = items, listState = listState) {
         items(items) { item ->
             if (item != null) {
                 ItemArticle(article = item)

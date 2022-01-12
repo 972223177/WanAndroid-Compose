@@ -3,7 +3,6 @@ package com.ly.wanandroid.route
 import android.net.Uri
 import android.os.Parcelable
 import androidx.navigation.NavHostController
-import com.ly.wanandroid.base.utils.logD
 import com.ly.wanandroid.config.http.globalJson
 import com.ly.wanandroid.domain.Chapter
 import kotlinx.serialization.encodeToString
@@ -16,6 +15,10 @@ object NavRoute {
     const val WEB_VIEW = "webView"
 
     const val CHAPTER = "chapter"
+
+    const val LOGIN = "login"
+
+    const val RECORD = "record"
 }
 
 object NavArgKey {
@@ -61,4 +64,12 @@ fun NavHostController.goChapter(initialIndex: Int, chapter: Chapter) {
 
 fun NavHostController.goSetting() {
     navTo(NavRoute.SETTING)
+}
+
+fun NavHostController.goLogin() {
+    navTo(NavRoute.LOGIN)
+}
+
+fun NavHostController.goRecord() {
+    navTo(NavRoute.RECORD)
 }

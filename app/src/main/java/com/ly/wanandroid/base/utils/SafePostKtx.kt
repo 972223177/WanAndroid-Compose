@@ -17,7 +17,10 @@ import kotlinx.coroutines.*
  * @param postWhen post事件的具体时机
  * @param block 你的runnable的具体实现
  */
-inline fun LifecycleOwner.safePost(postWhen: Lifecycle.State? = null, crossinline block: () -> Unit) {
+inline fun LifecycleOwner.safePost(
+    postWhen: Lifecycle.State? = null,
+    crossinline block: () -> Unit
+) {
     postWhen.runBlock(this, 0L, block)
 }
 
@@ -32,7 +35,11 @@ inline fun LifecycleOwner.safePostDelay(
     postWhen.runBlock(this, millis, block)
 }
 
-inline fun Lifecycle.State?.runBlock(lifecycleOwner: LifecycleOwner, millis: Long, crossinline block: () -> Unit) {
+inline fun Lifecycle.State?.runBlock(
+    lifecycleOwner: LifecycleOwner,
+    millis: Long,
+    crossinline block: () -> Unit
+) {
     with(lifecycleOwner) {
         when (this@runBlock) {
             Lifecycle.State.DESTROYED -> {
@@ -42,8 +49,18 @@ inline fun Lifecycle.State?.runBlock(lifecycleOwner: LifecycleOwner, millis: Lon
             Lifecycle.State.CREATED -> lifecycleScope.launchWhenCreated {
                 launchOnMain(millis, block)
             }
-            Lifecycle.State.STARTED -> lifecycleScope.launchWhenStarted { launchOnMain(millis, block) }
-            Lifecycle.State.RESUMED -> lifecycleScope.launchWhenResumed { launchOnMain(millis, block) }
+            Lifecycle.State.STARTED -> lifecycleScope.launchWhenStarted {
+                launchOnMain(
+                    millis,
+                    block
+                )
+            }
+            Lifecycle.State.RESUMED -> lifecycleScope.launchWhenResumed {
+                launchOnMain(
+                    millis,
+                    block
+                )
+            }
             else -> lifecycleScope.launch { launchOnMain(millis, block) }
         }
     }

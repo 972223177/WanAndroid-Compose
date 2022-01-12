@@ -1,6 +1,5 @@
 package com.ly.wanandroid.config.setting
 
-import com.ly.wanandroid.base.utils.SpUtils
 import com.ly.wanandroid.base.utils.isSystemNightModeOpened
 import com.ly.wanandroid.base.utils.preference
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,6 +42,14 @@ object Setting {
     private val mEnableSaveBrowserRecordFlow = MutableStateFlow(enableSaveBrowserRecord)
     val enableSaveBrowserRecordFlow: StateFlow<Boolean> = mEnableSaveBrowserRecordFlow
 
+    /**
+     * 首页是否显示头部Banner
+     */
+    var enableShowBanner by preference(true, saveId = SAVE_ID)
+        private set
+    private val mEnableShowBannerFlow = MutableStateFlow(enableShowBanner)
+    val enableShowBannerFlow: StateFlow<Boolean> = mEnableShowBannerFlow
+
     fun init() {
         if (isAutoNightMode) {
             isNightMode = isSystemNightModeOpened()
@@ -50,10 +57,10 @@ object Setting {
         }
     }
 
-    fun clearBrowserRecord() {
-        SpUtils.remove("enableSaveBrowserRecord", SAVE_ID)
+    fun openShowBanner(show: Boolean) {
+        enableShowBanner = show
+        mEnableShowBannerFlow.value = show
     }
-
 
     fun openNightMode(open: Boolean) {
         if (!isAutoNightMode) {
@@ -80,5 +87,12 @@ object Setting {
         enableSaveBrowserRecord = enable
         mEnableSaveBrowserRecordFlow.value = enableSaveBrowserRecord
     }
-//gold feel
+
+    fun refresh() {
+        mEnableShowBannerFlow.value = enableShowBanner
+        mEnableSaveBrowserRecordFlow.value = enableSaveBrowserRecord
+        mIsAutoNightModeFlow.value = isAutoNightMode
+        mIsNightModeFlow.value = isNightMode
+        mIsShowTopArticleFlow.value = isShowTopArticle
+    }
 }

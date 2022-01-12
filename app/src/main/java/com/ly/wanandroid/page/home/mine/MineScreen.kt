@@ -35,7 +35,9 @@ import com.ly.wanandroid.base.widgets.WAppBarHeight
 import com.ly.wanandroid.config.setting.Setting
 import com.ly.wanandroid.config.setting.User
 import com.ly.wanandroid.domain.LoginData
+import com.ly.wanandroid.route.goRecord
 import com.ly.wanandroid.route.goSetting
+import com.ly.wanandroid.route.goWebView
 import com.ly.wanandroid.ui.theme.*
 
 @Composable
@@ -76,10 +78,14 @@ private fun Body(viewModel: MineViewModel) {
             MenuItem(icon = painterResource(id = R.drawable.ic_read_later), title = "我的书签")
         }
         item {
-            MenuItem(icon = painterResource(id = R.drawable.ic_read_record), title = "阅读历史")
+            MenuItem(icon = painterResource(id = R.drawable.ic_read_record), title = "阅读历史") {
+                navController.goRecord()
+            }
         }
         item {
-            MenuItem(icon = painterResource(id = R.drawable.ic_github), title = "开源项目")
+            MenuItem(icon = painterResource(id = R.drawable.ic_github), title = "开源项目") {
+                navController.goWebView("https://github.com/972223177")
+            }
         }
         item {
             MenuItem(icon = painterResource(id = R.drawable.ic_setting), title = "系统设置") {
@@ -114,7 +120,7 @@ private fun AppBarMine(viewModel: MineViewModel) {
                     tint = MaterialTheme.colors.onMainOrSurface
                 )
             }
-            val count = 1 //todo
+            val count = 0
             androidx.compose.animation.AnimatedVisibility(
                 visible = count > 0,
                 modifier = Modifier

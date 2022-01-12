@@ -1,5 +1,6 @@
 package com.ly.wanandroid.route
 
+import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.navigation.NavType
@@ -19,7 +20,7 @@ class ChapterRouteType : NavType<ChapterRouteArg>(isNullableAllowed = false) {
     }
 
     override fun parseValue(value: String): ChapterRouteArg {
-        return globalJson.decodeFromString(value)
+        return globalJson.decodeFromString(Uri.decode(value))
     }
 
     override fun put(bundle: Bundle, key: String, value: ChapterRouteArg) {

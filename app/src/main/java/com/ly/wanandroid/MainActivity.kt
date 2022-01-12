@@ -22,6 +22,7 @@ import com.ly.wanandroid.base.widgets.BasePage
 import com.ly.wanandroid.page.chapter.ChapterPage
 import com.ly.wanandroid.page.chapter.ChapterViewModel
 import com.ly.wanandroid.page.home.HomePage
+import com.ly.wanandroid.page.record.RecordPage
 import com.ly.wanandroid.page.setting.SettingPage
 import com.ly.wanandroid.page.web.WebPage
 import com.ly.wanandroid.route.*
@@ -43,7 +44,11 @@ class MainActivity : AppCompatActivity() {
                         HomePage()
                     }
                     createArgPage<WebRouteArg>(
-                        navController, NavRoute.WEB_VIEW, NavArgKey.WEB, WebRouteArgType()
+                        navController,
+                        NavRoute.WEB_VIEW,
+                        NavArgKey.WEB,
+                        WebRouteArgType(),
+                        darkIcons = true
                     ) {
                         WebPage(url = it?.url ?: "")
                     }
@@ -57,6 +62,9 @@ class MainActivity : AppCompatActivity() {
                     }
                     createPage(navController, NavRoute.SETTING) {
                         SettingPage()
+                    }
+                    createPage(navController, NavRoute.RECORD) {
+                        RecordPage()
                     }
                 }
             }

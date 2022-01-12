@@ -31,9 +31,7 @@ private fun QuestionList(viewModel: QuestionViewModel) {
         viewModel.listState
     }
     val listState = if (questions.itemCount > 0) viewState else rememberLazyListState()
-    RefreshPagerList(lazyPagingItems = questions, listState = listState, onRefresh = {
-        questions.refresh()
-    }) {
+    RefreshPagerList(lazyPagingItems = questions, listState = listState) {
         items(questions) { item ->
             if (item != null) {
                 ItemArticle(article = item)
