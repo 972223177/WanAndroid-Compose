@@ -11,15 +11,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ly.wanandroid.LocalNavController
+import com.ly.wanandroid.*
 import com.ly.wanandroid.R
-import com.ly.wanandroid.ValueSetter
-import com.ly.wanandroid.VoidCallback
 import com.ly.wanandroid.base.utils.formatSize
 import com.ly.wanandroid.base.utils.getSize
 import com.ly.wanandroid.base.utils.getVersionName
 import com.ly.wanandroid.base.utils.tryDelete
 import com.ly.wanandroid.base.widgets.CommonAppBar
+import com.ly.wanandroid.components.ConfirmDialog
+import com.ly.wanandroid.components.rememberConfirmState
 import com.ly.wanandroid.config.setting.Setting
 import com.ly.wanandroid.ui.theme.*
 
@@ -67,12 +67,20 @@ fun SettingPage() {
             var cacheSize by remember {
                 mutableStateOf(context.getCacheSize())
             }
-            SettingItem(title = "清除缓存", subTitle = cacheSize) {
+            val confirmState = rememberConfirmState()
+            ConfirmDialog(
+                state = confirmState,
+                content = "是否要清理缓存",
+                negativeText = "取消",
+                positiveText = "确定"
+            ) {
                 context.cacheDir.tryDelete()
                 cacheSize = context.getCacheSize()
                 Setting.refresh()
             }
-
+            SettingItem(title = "清除缓存", subTitle = cacheSize) {
+                confirmState.showing = true
+            }
             SettingItem(title = "当前版本", subTitle = getVersionName()) {
 
             }
@@ -80,6 +88,7 @@ fun SettingPage() {
         }
     }
 }
+
 
 private fun Context.getCacheSize(): String {
     return cacheDir.getSize().formatSize()
