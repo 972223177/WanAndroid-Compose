@@ -22,6 +22,7 @@ import com.ly.wanandroid.base.widgets.BasePage
 import com.ly.wanandroid.page.chapter.ChapterPage
 import com.ly.wanandroid.page.chapter.ChapterViewModel
 import com.ly.wanandroid.page.home.HomePage
+import com.ly.wanandroid.page.login.LoginPage
 import com.ly.wanandroid.page.record.RecordPage
 import com.ly.wanandroid.page.setting.SettingPage
 import com.ly.wanandroid.page.web.WebPage
@@ -65,6 +66,9 @@ class MainActivity : AppCompatActivity() {
                     }
                     createPage(navController, NavRoute.RECORD) {
                         RecordPage()
+                    }
+                    createPage(navController, NavRoute.LOGIN) {
+                        LoginPage()
                     }
                 }
             }

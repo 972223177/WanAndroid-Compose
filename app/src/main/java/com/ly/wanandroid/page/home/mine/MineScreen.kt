@@ -69,7 +69,11 @@ private fun Body(viewModel: MineViewModel) {
             )
         }
         item {
-            MenuItem(icon = painterResource(id = R.drawable.ic_share), title = "我的分享")
+            MenuItem(icon = painterResource(id = R.drawable.ic_share), title = "我的分享") {
+                User.checkLogin(navController) {
+
+                }
+            }
         }
         item {
             MenuItem(icon = painterResource(id = R.drawable.ic_collect), title = "我的收藏")
