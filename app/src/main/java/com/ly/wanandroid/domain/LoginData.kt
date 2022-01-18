@@ -1,6 +1,7 @@
 package com.ly.wanandroid.domain
 
 import android.os.Parcelable
+import com.ly.wanandroid.config.setting.User
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -36,6 +37,12 @@ data class LoginData(
     @SerialName("username")
     val username: String = ""
 ) : Parcelable {
+
+    fun isLogin(): Boolean {
+        if (this == DEFAULT) return false
+        if (id <= 0) return false
+        return true
+    }
 
     companion object {
         val DEFAULT = LoginData()

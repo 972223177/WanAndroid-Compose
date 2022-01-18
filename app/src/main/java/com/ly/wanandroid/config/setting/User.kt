@@ -32,11 +32,7 @@ object User {
         mLoginDataFlow.value = LoginData.DEFAULT
     }
 
-    fun isLogin(): Boolean {
-        if (loginData == LoginData.DEFAULT) return false
-        if (loginData.id <= 0) return false
-        return true
-    }
+    fun isLogin(): Boolean = loginData.isLogin()
 
     inline fun checkLogin(navController: NavHostController, block: () -> Unit) {
         if (isLogin()) {

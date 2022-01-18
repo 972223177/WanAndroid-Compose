@@ -30,8 +30,13 @@ object Libs {
         const val systemUiController =
             "com.google.accompanist:accompanist-systemuicontroller:$version"
         const val flowlayout = "com.google.accompanist:accompanist-flowlayout:$version"
+        const val navigationAnim =
+            "com.google.accompanist:accompanist-navigation-animation:$version"
 
-        val libs = listOf(insets, placeholder, pager, permission, refresh, systemUiController,flowlayout)
+        val libs = listOf(
+            insets, placeholder, pager, permission, refresh, systemUiController, flowlayout,
+            navigationAnim
+        )
     }
 
 

@@ -66,7 +66,9 @@ private fun Body(viewModel: MineViewModel) {
                 icon = painterResource(id = R.drawable.ic_coin),
                 title = "我的积分",
                 subTitle = if (user.coinCount > 0) "${user.coinCount}" else ""
-            )
+            ) {
+                User.checkLogin(navController) {}
+            }
         }
         item {
             MenuItem(icon = painterResource(id = R.drawable.ic_share), title = "我的分享") {
@@ -76,7 +78,9 @@ private fun Body(viewModel: MineViewModel) {
             }
         }
         item {
-            MenuItem(icon = painterResource(id = R.drawable.ic_collect), title = "我的收藏")
+            MenuItem(icon = painterResource(id = R.drawable.ic_collect), title = "我的收藏") {
+                User.checkLogin(navController) {}
+            }
         }
         item {
             MenuItem(icon = painterResource(id = R.drawable.ic_read_later), title = "我的书签")
@@ -114,9 +118,9 @@ private fun AppBarMine(viewModel: MineViewModel) {
             )
         }
         Box {
-
+            val navController = LocalNavController.current
             IconButton(onClick = {
-
+                User.checkLogin(navController) {}
             }) {
                 Icon(
                     painter = painterResource(R.drawable.ic_notification),
@@ -158,7 +162,7 @@ private fun Head(user: LoginData) {
             .background(MaterialTheme.colors.mainOrSurface),
         constraintSet = headContentConstraintSet
     ) {
-
+        val navController = LocalNavController.current
         val avatarPainter = rememberImagePainter(data = user.icon)
         Image(
             painter = avatarPainter,
@@ -166,15 +170,19 @@ private fun Head(user: LoginData) {
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .layoutId(ConstraintId.IvAvatar)
+                .clickable { User.checkLogin(navController) {} }
                 .size(80.dp)
                 .background(color = MaterialTheme.colors.surface1Mask, shape = CircleShape)
         )
         Text(
-            text = if (User.isLogin()) user.username else "去登陆",
+            text = if (user.isLogin()) user.username else "去登陆",
             fontSize = 22.sp,
             color = MaterialTheme.colors.onMainOrSurface,
-
-            modifier = Modifier.layoutId(ConstraintId.TvName)
+            modifier = Modifier
+                .layoutId(ConstraintId.TvName)
+                .clickable {
+                    User.checkLogin(navController) {}
+                }
         )
         Text(
             text = user.email,

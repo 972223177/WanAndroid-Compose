@@ -3,21 +3,20 @@ package com.ly.wanandroid
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidedValue
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import androidx.navigation.*
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.ly.wanandroid.base.widgets.BasePage
 import com.ly.wanandroid.page.chapter.ChapterPage
 import com.ly.wanandroid.page.chapter.ChapterViewModel
@@ -33,14 +32,37 @@ import dagger.hilt.android.AndroidEntryPoint
 @ExperimentalAnimationApi
 class MainActivity : AppCompatActivity() {
 
+    @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-            val navController = rememberNavController()
+            val navController = rememberAnimatedNavController()
             ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
-                NavHost(navController = navController, startDestination = NavRoute.HOME) {
+                AnimatedNavHost(
+                    navController = navController,
+                    startDestination = NavRoute.HOME,
+                    enterTransition = {
+                        slideInHorizontally {
+                            it
+                        }
+                    },
+                    exitTransition = {
+                        slideOutHorizontally {
+                            -it
+                        }
+                    },
+                    popEnterTransition = {
+                        slideInHorizontally {
+                            -it
+                        }
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally {
+                            it
+                        }
+                    }) {
                     createPage(navController, NavRoute.HOME) {
                         HomePage()
                     }
@@ -76,25 +98,49 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 inline fun NavGraphBuilder.createPage(
     navHostController: NavHostController,
     route: String,
     darkIcons: Boolean = false,
+    noinline enterTransition: (AnimatedContentScope<NavBackStackEntry>.() -> EnterTransition?)? = null,
+    noinline exitTransition: (AnimatedContentScope<NavBackStackEntry>.() -> ExitTransition?)? = null,
+    noinline popEnterTransition: (
+    AnimatedContentScope<NavBackStackEntry>.() -> EnterTransition?
+    )? = enterTransition,
+    noinline popExitTransition: (
+    AnimatedContentScope<NavBackStackEntry>.() -> ExitTransition?
+    )? = exitTransition,
     crossinline content: ComposableCallback
 ) {
-    composable(route = route) {
+    composable(
+        route = route,
+        enterTransition = enterTransition,
+        exitTransition = exitTransition,
+        popExitTransition = popExitTransition,
+        popEnterTransition = popEnterTransition
+    ) {
         BasePage(navController = navHostController, darkIcons = darkIcons) {
             content()
         }
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 inline fun <reified T> NavGraphBuilder.createArgPage(
     navHostController: NavHostController,
     route: String,
     argKey: String,
     routeType: NavType<*>,
     darkIcons: Boolean = false,
+    noinline enterTransition: (AnimatedContentScope<NavBackStackEntry>.() -> EnterTransition?)? = null,
+    noinline exitTransition: (AnimatedContentScope<NavBackStackEntry>.() -> ExitTransition?)? = null,
+    noinline popEnterTransition: (
+    AnimatedContentScope<NavBackStackEntry>.() -> EnterTransition?
+    )? = enterTransition,
+    noinline popExitTransition: (
+    AnimatedContentScope<NavBackStackEntry>.() -> ExitTransition?
+    )? = exitTransition,
     crossinline content: ComposableCallback1<T?>
 ) {
     if (argKey.isEmpty()) throw IllegalArgumentException("argKey is empty")
@@ -105,7 +151,11 @@ inline fun <reified T> NavGraphBuilder.createArgPage(
                 argKey
             ) {
                 type = routeType
-            })
+            }),
+        enterTransition = enterTransition,
+        exitTransition = exitTransition,
+        popExitTransition = popExitTransition,
+        popEnterTransition = popEnterTransition
     ) {
         BasePage(navController = navHostController, darkIcons = darkIcons) {
             val arg = it.arguments?.get(argKey) as? T

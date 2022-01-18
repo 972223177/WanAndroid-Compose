@@ -27,6 +27,7 @@ val WAppBarHeight = 56.dp
 
 @Composable
 fun WAppBar(
+    modifier: Modifier = Modifier,
     title: String = "",
     titleColor: Color = Color.White,
     backgroundColor: Color = MaterialTheme.colors.mainOrSurface,
@@ -39,7 +40,7 @@ fun WAppBar(
             AppBarTitle(title = title, titleColor = titleColor)
         },
         actions = actions,
-        modifier = Modifier
+        modifier = modifier
             .background(backgroundColor)
             .statusBarsPadding()
             .fillMaxWidth()
@@ -64,6 +65,7 @@ fun AppBarTitle(title: String, titleColor: Color = Color.White) {
 
 @Composable
 fun WAppBar(
+    modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colors.mainOrSurface,
     title: ComposableCallback = {},
     navigationIcon: ComposableCallback = {},
@@ -71,7 +73,7 @@ fun WAppBar(
 ) {
     BaseAppbar(
         navigationIcon = navigationIcon, title = title, actions = actions,
-        modifier = Modifier
+        modifier = modifier
             .background(backgroundColor)
             .statusBarsPadding()
             .fillMaxWidth()

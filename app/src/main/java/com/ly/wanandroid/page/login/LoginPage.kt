@@ -1,55 +1,166 @@
 package com.ly.wanandroid.page.login
 
-import androidx.compose.animation.*
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.sharp.Close
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
-import com.google.accompanist.insets.statusBarsPadding
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.ly.wanandroid.LocalNavController
 import com.ly.wanandroid.R
-import com.ly.wanandroid.ui.theme.Blue4282F4
+import com.ly.wanandroid.base.widgets.WAppBar
+import com.ly.wanandroid.base.widgets.WAppBarHeight
 import com.ly.wanandroid.ui.theme.mainOrSurface
+import com.ly.wanandroid.ui.theme.onMainOrSurface
 
-enum class LogoAnimState {
+private object ConstraintIds {
+    const val Header = "header"
+    const val Logo = "AnimLogo"
+    const val Title = "WelcomeText"
+    const val CloseBtn = "CloseBtn"
+    const val Bg = "MainBg"
+    const val Vp = "viewPager"
+}
+
+private enum class EyeState {
     Open, Close
 }
 
+private val headerConstraints by lazy(LazyThreadSafetyMode.NONE) {
+    ConstraintSet {
+        val bg = createRefFor(ConstraintIds.Bg)
+        val logo = createRefFor(ConstraintIds.Logo)
+        val closeBtn = createRefFor(ConstraintIds.CloseBtn)
+        val title = createRefFor(ConstraintIds.Title)
+        val vp = createRefFor(ConstraintIds.Vp)
+        constrain(closeBtn) {
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+        }
+        constrain(bg) {
+            top.linkTo(closeBtn.bottom)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+        }
+        constrain(vp) {
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+            top.linkTo(bg.bottom, margin = (-58).dp)
 
+        }
+        constrain(logo) {
+            top.linkTo(closeBtn.bottom)
+            centerHorizontallyTo(parent)
+        }
+        constrain(title) {
+            top.linkTo(logo.bottom)
+            centerHorizontallyTo(parent)
+        }
+    }
+}
+
+
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun LoginPage() {
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .height(300.dp)
-            .background(MaterialTheme.colors.mainOrSurface)
-            .statusBarsPadding()
-            .drawBehind {
-                val rect = Rect(0f, 100f, size.width, size.height)
-                val path = Path().also {
-                    it.addArc(rect, 160f, 220f)
-                }
-                drawIntoCanvas {
-                    it.clipPath(path)
-                }
-            }) {
-        AnimLogo(modifier = Modifier.align(Alignment.TopCenter))
+    Scaffold {
+        ConstraintLayout(
+            constraintSet = headerConstraints,
+            modifier = Modifier.layoutId(ConstraintIds.Header)
+        ) {
+//            HorizontalPager(
+//                count = 2,
+//                modifier = Modifier
+//                    .layoutId(ConstraintIds.Vp)
+//                    .fillMaxWidth()
+//                    .height(300.dp)
+//                    .background(Color.Red)
+//            ) {
+//
+//            }
+            HeaderBg(modifier = Modifier.layoutId(ConstraintIds.Bg))
+            CloseBtn(modifier = Modifier.layoutId(ConstraintIds.CloseBtn))
+            AnimLogo(modifier = Modifier.layoutId(ConstraintIds.Logo))
+            Title(modifier = Modifier.layoutId(ConstraintIds.Title))
+
+        }
     }
 
+}
+
+@Composable
+private fun CloseBtn(modifier: Modifier = Modifier) {
+    WAppBar(modifier = modifier, navigationIcon = {
+        val navController = LocalNavController.current
+        IconButton(onClick = {
+            navController.popBackStack()
+        }) {
+            Icon(
+                imageVector = Icons.Sharp.Close,
+                contentDescription = "close",
+                tint = MaterialTheme.colors.onMainOrSurface
+            )
+        }
+    })
+}
+
+@Composable
+private fun HeaderBg(modifier: Modifier = Modifier) {
+    Box(
+        modifier
+            .fillMaxWidth()
+            .height(260.dp - WAppBarHeight)
+            .background(MaterialTheme.colors.mainOrSurface, shape = object : Shape {
+                override fun createOutline(
+                    size: Size,
+                    layoutDirection: LayoutDirection,
+                    density: Density
+                ): Outline {
+                    val path = Path().also {
+                        it.moveTo(0f, 0f)
+                        it.lineTo(0f, size.height)
+                        it.quadraticBezierTo(
+                            size.width / 2f,
+                            size.height - 300f,
+                            size.width,
+                            size.height
+                        )
+                        it.lineTo(size.width, 0f)
+                        it.lineTo(0f, 0f)
+                    }
+                    return Outline.Generic(path)
+                }
+
+            })
+    )
+}
+
+@Composable
+private fun Title(modifier: Modifier = Modifier) {
+    Text(
+        text = "欢迎使用",
+        fontSize = 22.sp,
+        color = MaterialTheme.colors.onMainOrSurface,
+        modifier = modifier
+    )
 }
 
 @Composable
@@ -68,13 +179,13 @@ private fun AnimLogo(modifier: Modifier = Modifier) {
             it.value
         },
         animationSpec = infiniteRepeatable(
-            animation = tween(500, easing = FastOutSlowInEasing),
+            animation = tween(200, easing = FastOutSlowInEasing, delayMillis = 1500),
             repeatMode = RepeatMode.Reverse
         )
     )
 
 
-    Layout(modifier = modifier, content = {
+    Layout(modifier = modifier.size(100.dp), content = {
         Logo()
         Eye()
         Eye()
@@ -120,25 +231,5 @@ private fun Eye() {
 @Preview
 @Composable
 fun LogoPre() {
-    Surface {
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .height(300.dp)
-            .statusBarsPadding()
-            .drawBehind {
-                val paint = Paint().also {
-                    it.color = Blue4282F4
-                }
-                val bgRect = Rect(0f, 0f, size.width, size.height)
-                val ovalRect = Rect(0f, size.height, size.width, size.height)
-                val path = Path().also {
-                    it.addArc(ovalRect, 160f, 220f)
-                }
-                drawIntoCanvas {
-
-                    it.clipPath(path)
-                    it.drawRect(bgRect, paint)
-                }
-            })
-    }
+    LoginPage()
 }
