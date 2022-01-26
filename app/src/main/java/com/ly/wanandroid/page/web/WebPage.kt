@@ -2,6 +2,7 @@ package com.ly.wanandroid.page.web
 
 import android.graphics.Bitmap
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -46,7 +47,7 @@ fun WebPage(url: String) {
     var progress by remember {
         mutableStateOf(0f)
     }
-
+    val animProgress by animateFloatAsState(targetValue = progress)
     DisposableEffect(key1 = Unit, effect = {
         webView = webInstance.obtain()
         onDispose {
@@ -99,8 +100,8 @@ fun WebPage(url: String) {
                         }
                         val circleRect = Rect(center, size.width / 2)
                         drawIntoCanvas {
-                            it.drawArc(circleRect, 0f, progress * 360f, false, paint.apply {
-                                color = if (progress == 1f) Color.Transparent else Blue4282F4
+                            it.drawArc(circleRect, 0f, animProgress * 360f, false, paint.apply {
+                                color = if (animProgress == 1f) Color.Transparent else Blue4282F4
                             })
                         }
                     }

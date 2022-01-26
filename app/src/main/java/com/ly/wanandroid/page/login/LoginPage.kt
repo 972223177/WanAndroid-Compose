@@ -169,20 +169,26 @@ private fun AnimLogo(modifier: Modifier = Modifier) {
     var eyeHeight by remember {
         mutableStateOf(0f)
     }
-    val infiniteTransition = rememberInfiniteTransition()
-    val offsetY by infiniteTransition.animateValue(
-        initialValue = 0f,
-        targetValue = eyeHeight,
-        typeConverter = TwoWayConverter({
-            AnimationVector(it)
-        }) {
-            it.value
-        },
-        animationSpec = infiniteRepeatable(
+    val offsetY by animateFloatAsState(
+        targetValue = eyeHeight, animationSpec = infiniteRepeatable(
             animation = tween(200, easing = FastOutSlowInEasing, delayMillis = 1500),
             repeatMode = RepeatMode.Reverse
         )
     )
+//    val infiniteTransition = rememberInfiniteTransition()
+//    val offsetY by infiniteTransition.animateValue(
+//        initialValue = 0f,
+//        targetValue = eyeHeight,
+//        typeConverter = TwoWayConverter({
+//            AnimationVector(it)
+//        }) {
+//            it.value
+//        },
+//        animationSpec = infiniteRepeatable(
+//            animation = tween(200, easing = FastOutSlowInEasing, delayMillis = 1500),
+//            repeatMode = RepeatMode.Reverse
+//        )
+//    )
 
 
     Layout(modifier = modifier.size(100.dp), content = {

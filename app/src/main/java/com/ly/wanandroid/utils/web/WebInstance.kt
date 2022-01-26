@@ -95,6 +95,7 @@ class WebInstance private constructor(private val application: Application) {
                 setAppCacheEnabled(true)
                 domStorageEnabled = true
                 setGeolocationEnabled(true)
+                mixedContentMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
                 setAppCacheMaxSize(Long.MAX_VALUE)
                 pluginState = WebSettings.PluginState.ON_DEMAND
                 cacheMode = WebSettings.LOAD_DEFAULT
