@@ -31,9 +31,9 @@ import com.ly.wanandroid.domain.Chapter
 import com.ly.wanandroid.domain.Navi
 import com.ly.wanandroid.route.goChapter
 import com.ly.wanandroid.route.goWebView
-import com.ly.wanandroid.ui.theme.surface1Top
-import com.ly.wanandroid.ui.theme.textSecond
-import com.ly.wanandroid.ui.theme.textSurface
+import com.ly.wanandroid.theme.surface1Top
+import com.ly.wanandroid.theme.textSecond
+import com.ly.wanandroid.theme.textSurface
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)

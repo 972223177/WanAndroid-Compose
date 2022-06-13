@@ -10,8 +10,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ly.wanandroid.VoidCallback
-import com.ly.wanandroid.ui.theme.onMainOrSurface
-import com.ly.wanandroid.ui.theme.onMainOrSurfaceAlpha
+import com.ly.wanandroid.theme.onMainOrSurface
+import com.ly.wanandroid.theme.onMainOrSurfaceAlpha
 
 @Composable
 fun TabItem(title: String, selected: Boolean, clickable: VoidCallback) {

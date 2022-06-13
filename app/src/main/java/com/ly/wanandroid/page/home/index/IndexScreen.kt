@@ -31,7 +31,7 @@ import com.ly.wanandroid.base.widgets.WAppBar
 import com.ly.wanandroid.components.ItemArticle
 import com.ly.wanandroid.config.setting.Setting
 import com.ly.wanandroid.domain.Banner
-import com.ly.wanandroid.ui.theme.onMainOrSurface
+import com.ly.wanandroid.theme.onMainOrSurface
 
 @Composable
 fun IndexScreen(indexViewModel: IndexViewModel = hiltViewModel()) {

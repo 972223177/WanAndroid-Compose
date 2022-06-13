@@ -20,8 +20,8 @@ import com.google.accompanist.insets.statusBarsPadding
 import com.ly.wanandroid.ComposableCallback
 import com.ly.wanandroid.ComposableExtCallback
 import com.ly.wanandroid.VoidCallback
-import com.ly.wanandroid.ui.theme.mainOrSurface
-import com.ly.wanandroid.ui.theme.onMainOrSurface
+import com.ly.wanandroid.theme.mainOrSurface
+import com.ly.wanandroid.theme.onMainOrSurface
 
 val WAppBarHeight = 56.dp
 

@@ -23,9 +23,9 @@ import com.ly.wanandroid.base.widgets.CommonAppBar
 import com.ly.wanandroid.config.RecordManager
 import com.ly.wanandroid.config.readArticle
 import com.ly.wanandroid.domain.RecordModel
-import com.ly.wanandroid.ui.theme.onMainOrSurface
-import com.ly.wanandroid.ui.theme.textSecond
-import com.ly.wanandroid.ui.theme.textSurface
+import com.ly.wanandroid.theme.onMainOrSurface
+import com.ly.wanandroid.theme.textSecond
+import com.ly.wanandroid.theme.textSurface
 
 @Composable
 fun RecordPage() {

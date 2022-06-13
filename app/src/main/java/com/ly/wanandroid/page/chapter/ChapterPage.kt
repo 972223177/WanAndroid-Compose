@@ -32,7 +32,7 @@ import com.ly.wanandroid.components.ItemArticle
 import com.ly.wanandroid.components.TabItem
 import com.ly.wanandroid.domain.Article
 import com.ly.wanandroid.route.ChapterRouteArg
-import com.ly.wanandroid.ui.theme.mainOrSurface
+import com.ly.wanandroid.theme.mainOrSurface
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

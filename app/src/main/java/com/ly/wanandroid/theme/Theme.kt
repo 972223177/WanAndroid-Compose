@@ -5,6 +5,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import com.ly.wanandroid.theme.Blue4282F4
+import com.ly.wanandroid.theme.Blue73A3F5
 
 @Composable
 fun WanAndroidTheme(

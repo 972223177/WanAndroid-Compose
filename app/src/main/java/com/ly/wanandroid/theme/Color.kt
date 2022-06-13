@@ -1,4 +1,4 @@
-package com.ly.wanandroid.ui.theme
+package com.ly.wanandroid.theme
 
 import androidx.compose.material.Colors
 import androidx.compose.material.LocalElevationOverlay

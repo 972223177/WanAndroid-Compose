@@ -21,7 +21,7 @@ import com.ly.wanandroid.base.widgets.CommonAppBar
 import com.ly.wanandroid.components.ConfirmDialog
 import com.ly.wanandroid.components.rememberConfirmState
 import com.ly.wanandroid.config.setting.Setting
-import com.ly.wanandroid.ui.theme.*
+import com.ly.wanandroid.theme.*
 
 @Composable
 fun SettingPage() {

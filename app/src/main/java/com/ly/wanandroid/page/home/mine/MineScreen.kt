@@ -38,7 +38,7 @@ import com.ly.wanandroid.domain.LoginData
 import com.ly.wanandroid.route.goRecord
 import com.ly.wanandroid.route.goSetting
 import com.ly.wanandroid.route.goWebView
-import com.ly.wanandroid.ui.theme.*
+import com.ly.wanandroid.theme.*
 
 @Composable
 fun MineScreen(viewModel: MineViewModel = hiltViewModel()) {

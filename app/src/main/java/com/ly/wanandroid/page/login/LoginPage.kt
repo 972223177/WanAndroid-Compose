@@ -28,8 +28,8 @@ import com.ly.wanandroid.LocalNavController
 import com.ly.wanandroid.R
 import com.ly.wanandroid.base.widgets.WAppBar
 import com.ly.wanandroid.base.widgets.WAppBarHeight
-import com.ly.wanandroid.ui.theme.mainOrSurface
-import com.ly.wanandroid.ui.theme.onMainOrSurface
+import com.ly.wanandroid.theme.mainOrSurface
+import com.ly.wanandroid.theme.onMainOrSurface
 
 private object ConstraintIds {
     const val Header = "header"
